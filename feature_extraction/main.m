@@ -14,16 +14,4 @@ sd1 = sd1(sdsd);
 sd2 = sd2(sdsd, sdnn);
 sd1_sd2_ratio = sd1_sd2_ratio(sd1, sd2);
 
-%hrv triangular index
-bin_size = 7.812;
-a = a*1000;
-max_val = max(a);
-min_val = min(a);
-bin_count = ceil((max_val-min_val)/bin_size);
-%generate edges
-edges = zeros(bin_count+1, 1);
-edges(1) = min_val;
-for i=2:bin_count+1
-    edges(i) = edges(i-1) + bin_size;
-end
-N = histcounts(a, edges);
+hrv_tri = hrv_triangular_index(a);
