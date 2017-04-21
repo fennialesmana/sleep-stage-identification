@@ -1,15 +1,13 @@
-clear;clc;
-fid = fopen('slp04annotations.txt', 'r'); %read data from file
-line = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]'); % get first 7 column of the data
-fclose(fid); %close the stream
-
+%read data from file
+fid = fopen('slp04annotations.txt', 'r');
+line = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]');%get first 
+fclose(fid);
 % hapus line pertama kalo di file data ada header
-total_line_col = size(line, 2);
-for i=1:total_line_col
-   line{i}(1) = [];
-end
+line{1}(1) = []; 
 
-total_row = size(line{1}, 1);
+total_row = size(line{1});
+total_row = total_row(1);
+annotation = zeros(total_row, 4);
 %{
 annotations:
 01. hour
@@ -25,9 +23,6 @@ annotations:
 %}
 %annotation(find(a==7)) = 10
 
-%{
-% isi data ke annotation versi 1:: pakai matrix
-annotation = zeros(total_row, 4);
 for i=1:total_row
     time = strsplit(char(line{1}(i)), ':')';
     time_size = size(time);
@@ -42,12 +37,7 @@ for i=1:total_row
         count_time = count_time - 1;
     end
     
-    %if i == 4
-    %    annotation(:, i) = line{7};
-    %end
+    if i == 4
+        annotation(:, i) = line{7};
+    end
 end
-%}
-
-% isi data ke annotation versi 1:: pakai struct
-annotation = struct('time', line{1}, 'class', char(line{7}));
-%{annotation.time}'
