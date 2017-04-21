@@ -21,6 +21,7 @@ sec_per_epoch = 30;
 
 %{
 % FIRST WAY to get the data ------------------------------------
+% /////////////////////////////////////////////////////////////////
 %{
     in variable name 'raw', will be transformed into:
     idx. column_name
@@ -104,14 +105,19 @@ end
 %}
 
 % SECOND WAY to get the data ------------------------------------
+% /////////////////////////////////////////////////////////////////
 %{
     in variable name 'raw', will be transformed into:
     idx. column_name
     01. start_hour
     02. start_minute
     03. start_second
-    07. rr_interval
+    04. rr_interval
 %}
+
+%{
+
+
 raw = zeros(total_row, 4);
 for i = 1:total_row
     start_time = strsplit(char(line{1}(i)), ':')';
@@ -153,5 +159,32 @@ id = unique(raw(:, 1:3), 'rows');
 %         
 %     end
 % end
+
+
+
+%}
+
+
+% tes yang cell
+for i = 1:total_row
+    start_time = strsplit(char(line{1}(i)), ':')';
+    
+    time = cell2mat(line{1}(i));
+    time(end-2:end) = 48;
+    
+    second = str2num(cell2mat(start_time(end)));
+    temp = floor(second/sec_per_epoch)*sec_per_epoch;
+    
+    if temp == 0
+        time(end-5) = 0;
+    elseif temp == 30
+        time(end-5) = 51;
+    end
+    
+    time(end-4) = 48;
+    
+    dis
+end
+
 
 toc;

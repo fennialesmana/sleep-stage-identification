@@ -1,5 +1,5 @@
-clear;clc;
-fid = fopen('slp04annotations.txt', 'r'); %read data from file
+function [annotation, an_time, an_class] = import_annotation(file_name)
+fid = fopen(file_name, 'r'); %read data from file
 line = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]'); % get first 7 column of the data
 fclose(fid); %close the stream
 
@@ -49,5 +49,8 @@ end
 %}
 
 % isi data ke annotation versi 1:: pakai struct
-annotation = struct('time', line{1}, 'class', char(line{7}));
+annotation = struct('time', line{1}, 'class', line{7});
+an_time = line{1};
+an_class = line{7};
 %{annotation.time}'
+end
