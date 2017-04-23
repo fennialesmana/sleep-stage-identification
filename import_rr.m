@@ -163,7 +163,6 @@ id = unique(raw(:, 1:3), 'rows');
 
 %}
 
-
 % tes yang cell
 for i = 1:total_row
     start_time = strsplit(char(line{1}(i)), ':')';

@@ -49,6 +49,7 @@ end
 %}
 
 % isi data ke annotation versi 1:: pakai struct
+line{1}(1) = {'0:00.000'};
 annotation = struct('time', line{1}, 'class', line{7});
 an_time = line{1};
 an_class = line{7};

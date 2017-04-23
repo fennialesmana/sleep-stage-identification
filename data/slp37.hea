@@ -1,0 +1,10 @@
+slp37 7 250/0.033333333(18) 5250000 0:08:30 10/8/1989
+slp37.dat 212 -1585/mV 12 0 119 33459 0 ECG
+slp37.dat 212 10(-400)/mmHg 12 0 529 41812 0 BP
+slp37.dat 212 -17343.2/mV 12 0 -95 22574 0 EEG (C4-A1)
+slp37.dat 212 -1668/l 12 0 75 13776 0 Resp (nasal)
+slp37.dat 212 -2116/l 12 0 140 24071 0 Resp (abdominal)
+slp37.dat 212 -2023.36/mV 12 0 -38 58638 0 EOG (right)
+slp37.dat 212 -28923.6/mV 12 0 -165 4792 0 EMG
+# 39 M 125 22-08-89
+# BP gain and baseline are guesses; previous values of 5.69(344) were wrong
