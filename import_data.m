@@ -1,7 +1,7 @@
 function data = import_data(file_name, sec_per_epoch)
 file_name = strcat('data/', cell2mat(file_name));
-fprintf('Importing %s data...\n', file_name);
-
+fprintf('\n%s importing...\n', file_name);
+data = [];
 %% IMPORT HEADER DATA
 fid = fopen(strcat(file_name, '.hea'), 'r');
 header_file = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]');
@@ -112,7 +112,7 @@ end
 % *) cek class harus '1', '2', '3', '4', 'W', atau 'R'
 distinct_class = char(unique(an_class));
 for i=1:size(distinct_class, 1)
-    if distinct_class(i) ~= '1' && distinct_class(i) ~= '2' && distinct_class(i) ~= '3' && distinct_class(i) ~= '4' && distinct_class(i) ~= 'W' && distinct_class(i) ~= 'R'
+    if distinct_class(i) ~= '1' && distinct_class(i) ~= '2' && distinct_class(i) ~= '3' && distinct_class(i) ~= '4' && distinct_class(i) ~= 'W' && distinct_class(i) ~= 'R' && distinct_class(i) ~= 'M'
         fprintf('[Failed ] Class member checking\n');
         return
     end
