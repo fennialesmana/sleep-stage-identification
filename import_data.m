@@ -1,21 +1,21 @@
 function data = import_data(file_name, sec_per_epoch)
 file_name = strcat('data/', cell2mat(file_name));
-fprintf('\n%s importing...\n', file_name);
 data = [];
 %% IMPORT HEADER DATA
+fprintf('%s header data import...\n', file_name);
 fid = fopen(strcat(file_name, '.hea'), 'r');
 header_file = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]');
 fclose(fid);
 
-sampling_frequency = strsplit(char(header_file{3}(1)), '/');
-sampling_frequency = str2num(cell2mat(sampling_frequency(1)));
-total_samples = str2num(cell2mat(header_file{4}(1)));
+hea_sampling_freq = strsplit(char(header_file{3}(1)), '/');
+hea_sampling_freq = str2num(cell2mat(hea_sampling_freq(1)));
+hea_total_samples = str2num(cell2mat(header_file{4}(1)));
 
-rec_length_in_sec = ceil(total_samples/sampling_frequency);
-number_of_epoch = ceil(rec_length_in_sec/30);
+hea_rec_length_in_sec = ceil(hea_total_samples/hea_sampling_freq);
+hea_total_epoch = ceil(hea_rec_length_in_sec/sec_per_epoch);
 
 idx = size(header_file{1}, 1);
-if cell2mat(header_file{1}(end-1)) == '#'
+if cell2mat(header_file{1}(end-1)) == '#' % for slp37.hea (the last line is not age, gender, and weight information)
     idx = idx - 1;
 end
 %age = str2num(cell2mat(header_file{2}(idx)));
@@ -27,17 +27,21 @@ weight = header_file{4}(idx);
 % END OF IMPORT HEADER DATA
 
 %% IMPORT ANNOTATION DATA
+fprintf('%s annotation data import...\n', file_name);
 fid = fopen(strcat(file_name, '.an'), 'r');
 annotation_file = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]');
 fclose(fid);
 
-% hapus line pertama untuk menghilangkan header
+% hapus line pertama untuk menghilangkan header data
 for i=1:size(annotation_file, 2)
    annotation_file{i}(1) = [];
 end
 
 % ubah start time epoch pertama menjadi 0:00.000
-annotation_file{1}(1) = {'0:00.000'};
+temp = cell2mat(annotation_file{1}(1));
+temp(end-2:end) = 48;
+annotation_file{1}(1) = cellstr(temp);
+%annotation_file{1}(1) = {'0:00.000'};
 
 % isi data ke annotation
 % annotation = struct('time', annotation_file{1}, 'class', annotation_file{7});
@@ -46,19 +50,23 @@ an_class = annotation_file{7};
 % END OF IMPORT ANNOTATION DATA
 
 %% IMPORT RR DATA
+fprintf('%s rr data import...\n', file_name);
 fid = fopen(strcat(file_name, '.rr'), 'r');
 rr_file = textscan(fid, '%s%s%s%s%s%*[^\n]');
 fclose(fid);
+
 converted_time = rr_file{1};
 for i = 1:size(converted_time, 1);
+    % split start time by ":" into matrix
     start_time = strsplit(char(converted_time(i)), ':')';
     
-    time = cell2mat(converted_time(i));
-    time(end-2:end) = 48;
+    time = cell2mat(converted_time(i)); % convert cell into char
+    time(end-2:end) = 48; % change xx:xx:xx.ooo -> ooo part into 000
     
-    second = str2num(cell2mat(start_time(end)));
-    temp = floor(second/sec_per_epoch)*sec_per_epoch;
+    second = str2num(cell2mat(start_time(end))); % get second from the last element
+    temp = floor(second/sec_per_epoch)*sec_per_epoch; % epoch grouping
     
+    % set epoch grouping
     if temp == 0
         time(end-5) = 48;
     elseif temp == 30
@@ -77,39 +85,46 @@ rr_int = single_numeric_cell_to_matrix(rr_file{3});
 %% VALIDITY CHECK
 fprintf('Conducting validity check of %s data...\n', file_name);
 % A. Annotation File Check
-% *) cek jumlah epoch
-if size(an_time, 1) ~= number_of_epoch
-    fprintf('[Failed ] Number of epoch check from duration and number of line\n');
-    return
-else
-    fprintf('[Success] Number of epoch check from duration and number of line\n');
-end
 
-% *) cek time
-time_counter = zeros(number_of_epoch, 3);
-for i=2:number_of_epoch
-   time_counter(i, 3) =  time_counter(i-1, 3) + sec_per_epoch;
-   time_counter(i, 2) = time_counter(i-1, 2);
-   time_counter(i, 1) = time_counter(i-1, 1);
-   if time_counter(i, 3) >= 60
-       time_counter(i, 3) = 0;
-       time_counter(i, 2) = time_counter(i-1, 2) + 1;
-       if time_counter(i, 2) >= 60
-           time_counter(i, 2) = 0;
-           time_counter(i, 1) = time_counter(i-1, 1) + 1;
+% *) generate time
+an_time_generated = zeros(hea_total_epoch, 3);
+for i=2:hea_total_epoch
+   an_time_generated(i, 3) =  an_time_generated(i-1, 3) + sec_per_epoch;
+   an_time_generated(i, 2) = an_time_generated(i-1, 2);
+   an_time_generated(i, 1) = an_time_generated(i-1, 1);
+   if an_time_generated(i, 3) >= 60
+       an_time_generated(i, 3) = 0;
+       an_time_generated(i, 2) = an_time_generated(i-1, 2) + 1;
+       if an_time_generated(i, 2) >= 60
+           an_time_generated(i, 2) = 0;
+           an_time_generated(i, 1) = an_time_generated(i-1, 1) + 1;
        end
    end
 end
 
-time_from_file = time_cell_to_matrix(an_time);
-if sum(sum(time_counter == time_from_file)) ~= (number_of_epoch * 3)
-    fprintf('[Failed ] Time generated checking with time from file\n');
-    return
+an_time_generated_cell = time_matrix_to_cell(an_time_generated);
+
+% *) cek jumlah epoch dari semua data
+if size(an_time, 1) == hea_total_epoch && size(unique(rr_converted_time), 1) == size(an_time_generated, 1) && hea_total_epoch == size(unique(rr_converted_time), 1)
+    fprintf('[Success] hea_total_epoch (%d) == an_time size (%d) == rr_converted_time (%d) == time_generated (%d)\n', hea_total_epoch, size(an_time, 1), size(unique(rr_converted_time), 1), size(an_time_generated, 1));
 else
-    fprintf('[Success] Time generated checking with time from file\n');
+    fprintf('[Warning] hea_total_epoch (%d) != an_time size (%d) != rr_converted_time (%d) != time_generated (%d)\n', hea_total_epoch, size(an_time, 1), size(unique(rr_converted_time), 1), size(an_time_generated, 1));
 end
 
-% *) cek class harus '1', '2', '3', '4', 'W', atau 'R'
+% *) cek jumlah epoch an_time dan hea_total_epoch
+if size(an_time, 1) == hea_total_epoch
+    time_from_file = time_cell_to_matrix(an_time);
+    if sum(sum(an_time_generated == time_from_file)) ~= (hea_total_epoch * 3)
+        fprintf('[Failed ] time_generated != an_time\n');
+        return
+    else
+        fprintf('[Success] time_generated == an_time\n');
+    end
+else
+    fprintf('[Warning] total an_time (%d) != total hea_total_epoch (%d), time_generated will be used\n', size(an_time, 1), hea_total_epoch);
+end
+
+% *) cek class harus '1', '2', '3', '4', 'W', atau 'R' (ada 'MT' juga, nanti diakhir baru dihilangin)
 distinct_class = char(unique(an_class));
 for i=1:size(distinct_class, 1)
     if distinct_class(i) ~= '1' && distinct_class(i) ~= '2' && distinct_class(i) ~= '3' && distinct_class(i) ~= '4' && distinct_class(i) ~= 'W' && distinct_class(i) ~= 'R' && distinct_class(i) ~= 'M'
@@ -120,28 +135,32 @@ end
 fprintf('[Success] Class member checking\n');
 
 % B. RR File Check
-% *) cek jumlah epoch berdasarkan data RR interval
-if size(unique(rr_converted_time), 1) ~= number_of_epoch
-    fprintf('[Warning] Different number of epoch check from Annotation (%d) and RR data (%d)\n', number_of_epoch, size(unique(rr_converted_time), 1));
+% *) cek jumlah epoch rr_converted_time dan hea_total_epoch
+if size(unique(rr_converted_time), 1) ~= hea_total_epoch
+    fprintf('[Warning] total rr_converted_time (%d) != total hea_total_epoch (%d)\n', size(unique(rr_converted_time), 1), hea_total_epoch);
 else
-    fprintf('[Success] The same number of epoch check from Annotation and RR data\n');
+    fprintf('[Success] total rr_converted_time (%d) == total hea_total_epoch (%d)\n', size(unique(rr_converted_time), 1), hea_total_epoch);
 end
 % END OF VALIDITY CHECK
 
 %% SYNCHRONIZE RR AND ANNOTATION DATA
 epoch_counter = 1;
 rr_counter = 1;
-rr_collection = cell(size(an_time, 1), 1);
-time_collection = cell(size(an_time, 1), 1);
+%rr_collection = cell(size(an_time, 1), 1);
+%time_collection = cell(size(an_time, 1), 1);
+rr_collection = cell(hea_total_epoch, 1);
+time_collection = cell(hea_total_epoch, 1);
+
 %converted_time_collection = cell(size(an_time, 1), 1);
-for i=1:size(rr_converted_time, 1)
-    if strcmp(rr_converted_time(i), an_time(epoch_counter))
+for i=1:size(rr_converted_time, 1) % looping for each rr in that file
+    if strcmp(rr_converted_time(i), an_time_generated_cell(epoch_counter)) % kalo rr ke i sama dengan an
         rr_collection{epoch_counter}(rr_counter) = rr_int(i);
         time_collection{epoch_counter}(rr_counter) = rr_time(i);
         %converted_time_collection{epoch_counter}(rr_counter) = rr_converted_time(i);
         rr_counter=rr_counter+1;
-    elseif ~strcmp(rr_converted_time(i), an_time(epoch_counter)) && ~strcmp(rr_converted_time(i), an_time(epoch_counter+1))
-        while ~strcmp(rr_converted_time(i), an_time(epoch_counter+1))
+    elseif ~strcmp(rr_converted_time(i), an_time_generated_cell(epoch_counter)) && ~strcmp(rr_converted_time(i), an_time_generated_cell(epoch_counter+1))
+        % kasus beda dan sama selanjutnya jg beda
+        while ~strcmp(rr_converted_time(i), an_time_generated_cell(epoch_counter+1))
             epoch_counter = epoch_counter + 1;
         end
         rr_counter=1;
@@ -150,7 +169,7 @@ for i=1:size(rr_converted_time, 1)
         time_collection{epoch_counter}(rr_counter) = rr_time(i);
         %converted_time_collection{epoch_counter}(rr_counter) = rr_converted_time(i);
         rr_counter=rr_counter+1;
-    elseif ~strcmp(rr_converted_time(i), an_time(epoch_counter)) && strcmp(rr_converted_time(i), an_time(epoch_counter+1))
+    elseif ~strcmp(rr_converted_time(i), an_time_generated_cell(epoch_counter)) && strcmp(rr_converted_time(i), an_time_generated_cell(epoch_counter+1))
         rr_counter=1;
         epoch_counter=epoch_counter+1;
         rr_collection{epoch_counter}(rr_counter) = rr_int(i);
@@ -162,8 +181,12 @@ end
 % END OF SYNCHRONIZE RR AND ANNOTATION DATA
 
 %% SYNCHRONIZED DATA VALIDITY CHECK
+% buang yg tdk adaannotation
+% buang yg annotationnya MT
+
+
 % cek sum rr interval dari setiap epoch tidak boleh di bawah 28 (menurut slp04 min sum 29 max 30)
-for i=number_of_epoch:-1:1
+for i=hea_total_epoch:-1:1
     if sum(rr_collection{i}) < 28 || sum(rr_collection{i}) > 32
         an_time{i} = [];
         rr_collection{i} = [];
