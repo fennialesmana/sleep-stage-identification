@@ -222,6 +222,5 @@ an_class_generated_cell = an_class_generated_cell(~cellfun(@isempty, an_class_ge
 
 %% PREPARE THE OUTPUT
 data = struct('time', an_time_generated_cell, 'rr', rr_collection, 'annotation', an_class_generated_cell, 'age', age, 'gender', gender, 'weight', weight);
-disp('hai');
 % END OF PREPARE THE OUTPUT
 end
