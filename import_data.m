@@ -181,24 +181,45 @@ end
 % END OF SYNCHRONIZE RR AND ANNOTATION DATA
 
 %% SYNCHRONIZED DATA VALIDITY CHECK
-% buang yg tdk adaannotation
-% buang yg annotationnya MT
+% isi annotation yang tidak ada annotationnya
+an_class_generated_cell = cell(size(an_time_generated, 1), 1);
+je = 1;
+for i=1:size(an_time_generated, 1)
+   if strcmp(an_time_generated_cell(i), an_time(je))
+       an_class_generated_cell(i) = an_class(je);
+       je = je + 1;
+   else
+       an_class_generated_cell(i) = {'none'};
+   end
+end
 
-
-% cek sum rr interval dari setiap epoch tidak boleh di bawah 28 (menurut slp04 min sum 29 max 30)
 for i=hea_total_epoch:-1:1
-    if sum(rr_collection{i}) < 28 || sum(rr_collection{i}) > 32
-        an_time{i} = [];
+    flag = 0;
+    if sum(rr_collection{i}) < 28 || sum(rr_collection{i}) > 32 % cek sum rr interval dari setiap epoch tidak boleh di bawah 28 (menurut slp04 min sum 29 max 30)
+        flag = 1;
+        fprintf('row %d epoch %s is removed because rr_collection < 28 || > 32\n', i, an_time_generated_cell{i});
+    elseif strcmp(an_class_generated_cell(i), {'none'}) % buang yg tdk ada annotation
+        flag = 1;
+        fprintf('row %d epoch %s is removed because no annotation\n', i, an_time_generated_cell{i});
+    elseif strcmp(an_class_generated_cell(i), {'MT'}) % buang yg annotationnya MT
+        flag = 1;
+        fprintf('row %d epoch %s is removed because the annotation is MT\n', i, an_time_generated_cell{i});
+    end
+    
+    if flag == 1
+        an_time_generated_cell{i} = [];
         rr_collection{i} = [];
-        an_class{i} = [];
+        an_class_generated_cell{i} = [];
     end
 end
-an_time = an_time(~cellfun(@isempty, an_time));
+
+an_time_generated_cell = an_time_generated_cell(~cellfun(@isempty, an_time_generated_cell));
 rr_collection = rr_collection(~cellfun(@isempty, rr_collection));
-an_class = an_class(~cellfun(@isempty, an_class));
+an_class_generated_cell = an_class_generated_cell(~cellfun(@isempty, an_class_generated_cell));
 %END OF SYNCHRONIZED DATA VALIDITY CHECK
 
 %% PREPARE THE OUTPUT
-data = struct('time', an_time, 'rr', rr_collection, 'annotation', an_class, 'age', age, 'gender', gender, 'weight', weight);
+data = struct('time', an_time_generated_cell, 'rr', rr_collection, 'annotation', an_class_generated_cell, 'age', age, 'gender', gender, 'weight', weight);
+disp('hai');
 % END OF PREPARE THE OUTPUT
 end

@@ -52,7 +52,7 @@ all_data = [];
 data = [];
 %data = import_data(file_names(6), sec_per_epoch);
 
-for i=7:size(file_names, 2)
+for i=17:size(file_names, 2)
     fprintf('\n\n%s importing...\n', cell2mat(file_names(i)));
     data = import_data(file_names(i), sec_per_epoch);
     all_data = [all_data;data];
