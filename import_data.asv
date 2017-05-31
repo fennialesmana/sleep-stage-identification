@@ -188,7 +188,7 @@ for i=1:size(an_time_generated, 1)
    if strcmp(an_time_generated_cell(i), an_time(je))
        an_class_generated_cell(i) = an_class(je);
        if je < size(an_class, 1)
-           je = je + 1;
+       je = je + 1;
        end
    else
        an_class_generated_cell(i) = {'none'};
