@@ -8,8 +8,8 @@ header_file = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]');
 fclose(fid);
 
 hea_sampling_freq = strsplit(char(header_file{3}(1)), '/');
-hea_sampling_freq = str2num(cell2mat(hea_sampling_freq(1)));
-hea_total_samples = str2num(cell2mat(header_file{4}(1)));
+hea_sampling_freq = str2double(cell2mat(hea_sampling_freq(1)));
+hea_total_samples = str2double(cell2mat(header_file{4}(1)));
 
 hea_rec_length_in_sec = ceil(hea_total_samples/hea_sampling_freq);
 hea_total_epoch = ceil(hea_rec_length_in_sec/sec_per_epoch);
@@ -18,9 +18,9 @@ idx = size(header_file{1}, 1);
 if cell2mat(header_file{1}(end-1)) == '#' % for slp37.hea (the last line is not age, gender, and weight information)
     idx = idx - 1;
 end
-%age = str2num(cell2mat(header_file{2}(idx)));
+%age = str2double(cell2mat(header_file{2}(idx)));
 %gender = cell2mat(header_file{3}(idx));
-%weight = str2num(cell2mat(header_file{4}(idx)));
+%weight = str2double(cell2mat(header_file{4}(idx)));
 age = header_file{2}(idx);
 gender = header_file{3}(idx);
 weight = header_file{4}(idx);
@@ -63,7 +63,7 @@ for i = 1:size(converted_time, 1);
     time = cell2mat(converted_time(i)); % convert cell into char
     time(end-2:end) = 48; % change xx:xx:xx.ooo -> ooo part into 000
     
-    second = str2num(cell2mat(start_time(end))); % get second from the last element
+    second = str2double(cell2mat(start_time(end))); % get second from the last element
     temp = floor(second/sec_per_epoch)*sec_per_epoch; % epoch grouping
     
     % set epoch grouping

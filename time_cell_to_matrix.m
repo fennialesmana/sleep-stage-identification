@@ -6,12 +6,12 @@ for i = 1:size(time_cell, 1)
     
     if start_time_size == 2
         output(i, 1) = 0;
-        output(i, 2) = str2num(cell2mat(start_time(1)));
-        output(i, 3) = str2num(cell2mat(start_time(2)));
+        output(i, 2) = str2double(cell2mat(start_time(1)));
+        output(i, 3) = str2double(cell2mat(start_time(2)));
     elseif start_time_size == 3
-        output(i, 1) = str2num(cell2mat(start_time(1)));
-        output(i, 2) = str2num(cell2mat(start_time(2)));
-        output(i, 3) = str2num(cell2mat(start_time(3)));
+        output(i, 1) = str2double(cell2mat(start_time(1)));
+        output(i, 2) = str2double(cell2mat(start_time(2)));
+        output(i, 3) = str2double(cell2mat(start_time(3)));
     end
 end    
 

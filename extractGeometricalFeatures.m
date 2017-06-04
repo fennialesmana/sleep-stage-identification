@@ -1,6 +1,6 @@
-function output = hrv_triangular_index(rr)
+function output = extractGeometricalFeatures(rr)
     bin_size = 7.812;
-    rr = rr*1000;
+    rr = rr.*1000;
     max_val = max(rr);
     min_val = min(rr);
     bin_count = ceil((max_val-min_val)/bin_size);
@@ -13,5 +13,5 @@ function output = hrv_triangular_index(rr)
     %calculate histogram
     N = histcounts(rr, edges);
     %calculate hrv triangular index
-    output = max(N)/sum(N);
+    output.TRIANGULAR_INDEX = max(N)/sum(N);
 end
