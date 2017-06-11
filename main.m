@@ -16,7 +16,10 @@ end
 save('all_data', 'all_data');
 %}
 
-load('all_data');
+% load('all_data.mat');
+
+%{
+% FEATURE EXTRACTION
 
 %{
 % FEATURE EXTRACTION using separated methods
@@ -74,3 +77,52 @@ for i=1:size(all_data, 1)
     all_data(i).LF = LF;
     all_data(i).HF = HF;
 end
+
+% move features to matrix
+nFeatures = 17;
+hrv = zeros(size(all_data, 1), nFeatures+1);
+for i=1:size(all_data, 1)
+    hrv(i, 1) = all_data(i).AVNN;
+    hrv(i, 2) = all_data(i).SDNN;
+    hrv(i, 3) = all_data(i).RMSSD;
+    hrv(i, 4) = all_data(i).SDSD;
+    hrv(i, 5) = all_data(i).NN50;
+    hrv(i, 6) = all_data(i).PNN50;
+    
+    hrv(i, 7) = all_data(i).HRV_TRIANGULAR_IDX;
+    
+    hrv(i, 8) = all_data(i).SD1;
+    hrv(i, 9) = all_data(i).SD2;
+    hrv(i, 10) = all_data(i).SD1_SD2_RATIO;
+    hrv(i, 11) = all_data(i).S;
+    
+    hrv(i, 12) = all_data(i).pLF;
+    hrv(i, 13) = all_data(i).pHF;
+    hrv(i, 14) = all_data(i).LFHFratio;
+    hrv(i, 15) = all_data(i).VLF;
+    hrv(i, 16) = all_data(i).LF;
+    hrv(i, 17) = all_data(i).HF;
+    
+    % 6 class classification
+    switch all_data(i).annotation
+        case '1'
+            hrv(i, 18) = 1;
+        case '2'
+            hrv(i, 18) = 2;
+        case '3'
+            hrv(i, 18) = 3;
+        case '4'
+            hrv(i, 18) = 4;
+        case 'R'
+            hrv(i, 18) = 5;
+        case 'W'
+            hrv(i, 18) = 0;
+    end
+end
+
+save('features.mat', 'hrv');
+
+%}
+
+load('features.mat');
+

@@ -203,9 +203,9 @@ for i=hea_total_epoch:-1:1
     elseif strcmp(an_class_generated_cell(i), {'none'}) % buang yg tdk ada annotation
         flag = 1;
         fprintf('row %d epoch %s is removed because no annotation\n', i, an_time_generated_cell{i});
-    elseif strcmp(an_class_generated_cell(i), {'MT'}) % buang yg annotationnya MT
+    elseif strcmp(an_class_generated_cell(i), {'MT'}) || strcmp(an_class_generated_cell(i), {'M'}) % buang yg annotationnya MT atau M
         flag = 1;
-        fprintf('row %d epoch %s is removed because the annotation is MT\n', i, an_time_generated_cell{i});
+        fprintf('row %d epoch %s is removed because the annotation is %s\n', i, an_time_generated_cell{i}, an_class_generated_cell{i});
     end
     
     if flag == 1
