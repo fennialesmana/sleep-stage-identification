@@ -16,148 +16,38 @@ end
 save('all_data', 'all_data');
 %}
 
+% feature extraction here
 % load('all_data.mat');
+% extractFeatures(all_data);
 
-%{
-% FEATURE EXTRACTION
-
-%{
-% FEATURE EXTRACTION using separated methods
-for i=1:size(all_data, 1)
-    timeDomain = extractTimeDomainFeatures(all_data(i).rr);
-    geometrical = extractGeometricalFeatures(all_data(i).rr);
-    poincare = extractPoincareFeatures(timeDomain.SDSD, timeDomain.SDNN);
-    features = struct('timeDomain', timeDomain, 'geometrical', geometrical, 'poincare', poincare);
-    all_data(i).features = features;
-end
-%}
-[all_data.AVNN] = deal([]);
-[all_data.SDNN] = deal([]);
-[all_data.RMSSD] = deal([]);
-[all_data.SDSD] = deal([]);
-[all_data.NN50] = deal([]);
-[all_data.PNN50] = deal([]);
-
-[all_data.HRV_TRIANGULAR_IDX] = deal([]);
-
-[all_data.SD1] = deal([]);
-[all_data.SD2] = deal([]);
-[all_data.SD1_SD2_RATIO] = deal([]);
-[all_data.S] = deal([]);
-
-[all_data.pLF] = deal([]);
-[all_data.pHF] = deal([]);
-[all_data.LFHFratio] = deal([]);
-[all_data.VLF] = deal([]);
-[all_data.LF] = deal([]);
-[all_data.HF] = deal([]);
-
-% FEATURE EXTRACTION using class
-for i=1:size(all_data, 1)
-    rr_diff = diff(all_data(i).rr);
-    all_data(i).AVNN = HRVFeature.AVNN(all_data(i).rr);
-    all_data(i).SDNN = HRVFeature.SDNN(all_data(i).rr);
-    all_data(i).RMSSD = HRVFeature.RMSSD(rr_diff);
-    all_data(i).SDSD = HRVFeature.SDSD(rr_diff);
-    all_data(i).NN50 = HRVFeature.NNx(50, rr_diff);
-    all_data(i).PNN50 = HRVFeature.PNNx(all_data(i).NN50, size(all_data(i).rr, 2));
-    
-    all_data(i).HRV_TRIANGULAR_IDX = HRVFeature.HRV_TRIANGULAR_IDX(all_data(i).rr);
-    
-    all_data(i).SD1 = HRVFeature.SD1(all_data(i).SDSD);
-    all_data(i).SD2 = HRVFeature.SD2(all_data(i).SDNN, all_data(i).SDSD);
-    all_data(i).SD1_SD2_RATIO = HRVFeature.SD1_SD2_RATIO(all_data(i).SD1, all_data(i).SD2);
-    all_data(i).S = HRVFeature.S(all_data(i).SD1, all_data(i).SD2);
-    
-    [pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = HRVFeature.fft_val_fun(all_data(i).rr,2);
-    all_data(i).pLF = pLF;
-    all_data(i).pHF = pHF;
-    all_data(i).LFHFratio = LFHFratio;
-    all_data(i).VLF = VLF;
-    all_data(i).LF = LF;
-    all_data(i).HF = HF;
-end
-
-% move features to matrix
-nFeatures = 17;
-hrv = zeros(size(all_data, 1), nFeatures+1);
-for i=1:size(all_data, 1)
-    hrv(i, 1) = all_data(i).AVNN;
-    hrv(i, 2) = all_data(i).SDNN;
-    hrv(i, 3) = all_data(i).RMSSD;
-    hrv(i, 4) = all_data(i).SDSD;
-    hrv(i, 5) = all_data(i).NN50;
-    hrv(i, 6) = all_data(i).PNN50;
-    
-    hrv(i, 7) = all_data(i).HRV_TRIANGULAR_IDX;
-    
-    hrv(i, 8) = all_data(i).SD1;
-    hrv(i, 9) = all_data(i).SD2;
-    hrv(i, 10) = all_data(i).SD1_SD2_RATIO;
-    hrv(i, 11) = all_data(i).S;
-    
-    hrv(i, 12) = all_data(i).pLF;
-    hrv(i, 13) = all_data(i).pHF;
-    hrv(i, 14) = all_data(i).LFHFratio;
-    hrv(i, 15) = all_data(i).VLF;
-    hrv(i, 16) = all_data(i).LF;
-    hrv(i, 17) = all_data(i).HF;
-    
-    % 6 class classification
-    switch all_data(i).annotation
-        case '1'
-            hrv(i, 18) = 1;
-        case '2'
-            hrv(i, 18) = 2;
-        case '3'
-            hrv(i, 18) = 3;
-        case '4'
-            hrv(i, 18) = 4;
-        case 'R'
-            hrv(i, 18) = 5;
-        case 'W'
-            hrv(i, 18) = 6;
-    end
-end
-
-save('features.mat', 'hrv');
-
-%}
 tic;
-load('features.mat');
-
-% data normalization: using min max normalization
-C = -1;
-D = 1;
-E = (D-C) + C;
-for i=1:size(hrv(:, 1:end-1), 2)
-    minVal = min(hrv(:, i));
-    maxVal = max(hrv(:, i));
-    hrv(:, i) = ( (hrv(:, i)-minVal) ./ (maxVal + minVal) ) .* repmat(E, size(hrv(:, i)));
-end
+%hrv = load('features.mat');
+hrv = load('features2class.mat');
+hrv = hrv.features2class;
 
 % SPLIT DATA
-% 70% training data and 30% testing data
-nSamples = size(hrv, 1);
-trainingData = hrv(1:ceil(nSamples*0.7), :);
-testingData = hrv((nSamples-ceil(nSamples*0.7)):end, :);
-
-%featureMask = [1 1 1 1 1  0 0 0 0 0  0 0 0 0 0  0 0];
-featureMask = [1 1 1 1 1  1 1 1 1 1  1 1 1 1 1  1 1];
-
-% prepare the feature data (masking)
-maskedFeature = zeros(size(hrv, 1), sum(featureMask));
-j = 1;
-for i=1:sum(featureMask)
-    if featureMask(1, i) == 1
-       maskedFeature(:, j) = hrv(:, i);
-       j = j + 1;
-    end
+% 70% training data and 30% testing data using stratified sampling
+nClasses = 2;
+trainingData = [];
+testingData = [];
+for i=1:nClasses
+    ithClassInd = find(hrv(:, end) == i);
+    nithClass = ceil(size(ithClassInd, 1)*0.7);
+    trainingData = [trainingData; hrv(ithClassInd(1:nithClass), :)];
+    testingData = [testingData; hrv(ithClassInd(nithClass+1:end), :)];
 end
 
-% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
-target = full(ind2vec(hrv(:,end)'))';
+featureMask = [1 1 1 1 0  1 1 0 0 1  1 1 1 0 0  0 0];
+%featureMask = [1 1 1 1 1  1 1 1 1 1  1 1 1 1 1  1 1];
 
-[inputWeight, outputWeight, accuracy] = trainELM(100, maskedFeature, target);
+% TRAINING
+maskedTrainingFeature = featureMasking(trainingData, featureMask);% prepare the feature data (masking)
+trainingTarget = full(ind2vec(trainingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
+elmModel = trainELM(100, maskedTrainingFeature, trainingTarget);
+
+% TESTING
+maskedTestingFeature = featureMasking(testingData, featureMask);% prepare the feature data (masking)
+testingTarget = full(ind2vec(testingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
+elmModel = testELM(elmModel, maskedTestingFeature, testingTarget);
 
 toc;
