@@ -140,7 +140,7 @@ end
 % 70% training data and 30% testing data
 nSamples = size(hrv, 1);
 trainingData = hrv(1:ceil(nSamples*0.7), :);
-testingData = hrv((nSamples-ceil(nSamples*0.7)):end, :);
+testingData = hrv(nSamples-ceil(nSamples*0.7):end, :);
 
 %featureMask = [1 1 1 1 1  0 0 0 0 0  0 0 0 0 0  0 0];
 featureMask = [1 1 1 1 1  1 1 1 1 1  1 1 1 1 1  1 1];
