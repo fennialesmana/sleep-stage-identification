@@ -37,17 +37,31 @@ for i=1:nClasses
     testingData = [testingData; hrv(ithClassInd(nithClass+1:end), :)];
 end
 
-featureMask = [1 1 1 1 0  1 1 0 0 1  1 1 1 0 0  0 0];
+% Particle Swarm Optimization (PSO) process
+nParticles = 20;
+nFeatures = 17;
+nBits = size(decToBin(size(trainingData, 1)), 2); %bin2 = de2bi(nSamples);
+
+% Population Initialization: [FeatureMask HiddenNode]
+population = rand(nParticles, nFeatures+nBits) > 0.5;
+fitnessValue = zeros(nParticles, 1);
+velocity = zeros(nParticles, 1);
+pBest = zeros(nParticles, nFeatures+nBits); % max fitness function 
+gBest = zeros(1, nFeatures+nBits); % max fitness function all particle all iteration
+%featureMask = [1 1 1 1 0  1 1 0 0 1  1 1 1 0 0  0 0];
 %featureMask = [1 1 1 1 1  1 1 1 1 1  1 1 1 1 1  1 1];
+for i=1:nParticles
+    % TRAINING
+    maskedTrainingFeature = featureMasking(trainingData, population(i, 1:nFeatures));% prepare the feature data (masking)
+    trainingTarget = full(ind2vec(trainingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
+    elmModel = trainELM(binToDec(population(i, nFeatures+1:end)), maskedTrainingFeature, trainingTarget);
 
-% TRAINING
-maskedTrainingFeature = featureMasking(trainingData, featureMask);% prepare the feature data (masking)
-trainingTarget = full(ind2vec(trainingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
-elmModel = trainELM(100, maskedTrainingFeature, trainingTarget);
-
-% TESTING
-maskedTestingFeature = featureMasking(testingData, featureMask);% prepare the feature data (masking)
-testingTarget = full(ind2vec(testingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
-elmModel = testELM(elmModel, maskedTestingFeature, testingTarget);
-
+    % TESTING
+    maskedTestingFeature = featureMasking(testingData, population(i, 1:nFeatures));% prepare the feature data (masking)
+    testingTarget = full(ind2vec(testingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
+    elmModel = testELM(elmModel, maskedTestingFeature, testingTarget);
+    fitnessValue(i, 1) = fitness(0.95, 0.05, elmModel.testingAccuracy, population(i, 1:nFeatures));
+    
+    %disp('hai')
+end
 toc;
