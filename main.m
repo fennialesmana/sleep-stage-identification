@@ -38,12 +38,12 @@ for i=1:nClasses
 end
 
 % Particle Swarm Optimization (PSO) process
-nParticles = 2; % ganti-ganti
+nParticles = 5; % ganti-ganti
 nFeatures = 17;
 nBits = size(decToBin(size(trainingData, 1)), 2); %bin2 = de2bi(nSamples);
 
 % Population Initialization: [FeatureMask HiddenNode]
-population = rand(nParticles, nFeatures+nBits) > 0.8;
+population = rand(nParticles, nFeatures+nBits) > 0.8; % check whether the value is more than sample data
 fitnessValue = zeros(nParticles, 1);
 velocity = zeros(nParticles, 1);
 pBest_particle = zeros(nParticles, nFeatures+nBits); % max fitness function
@@ -88,5 +88,14 @@ end
 W = 0.6;
 c1 = 1.2;
 c2 = 1.2;
+r1 = rand();
+r2 = rand();
+for i=1:nParticles
+    particleDec = binToDec(population(i, :));
+    velocity(i, 1) = W * velocity(i, 1) + c1 * r1 * (binToDec(pBest_particle(i, :)) - particleDec) + c2 * r2 * (binToDec(gBest_particle) - particleDec);
+    popDec = particleDec + velocity(i, 1);
+    population(i, :) = decToBin(popDec);
+end
+
 
 toc;
