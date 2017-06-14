@@ -40,10 +40,19 @@ end
 % Particle Swarm Optimization (PSO) process
 nParticles = 5; % ganti-ganti
 nFeatures = 17;
-nBits = size(decToBin(size(trainingData, 1)), 2); %bin2 = de2bi(nSamples);
+maxTrainingDataBin = size(trainingData, 1);
+nBits = size(decToBin(maxTrainingDataBin), 2); %bin2 = de2bi(nSamples);
 
 % Population Initialization: [FeatureMask HiddenNode]
 population = rand(nParticles, nFeatures+nBits) > 0.8; % check whether the value is more than sample data
+for i=1:nParticles
+    
+    while binToDec(population(i, nFeatures+1:end)) < nFeatures || binToDec(population(i, nFeatures+1:end)) > size(trainingData, 1)
+        population(i, :) = rand(1, nFeatures+nBits) > 0.8;
+    end
+    %fprintf('%d=%d\n', i, binToDec(population(i, nFeatures+1:end)));
+end
+
 fitnessValue = zeros(nParticles, 1);
 velocity = zeros(nParticles, 1);
 pBest_particle = zeros(nParticles, nFeatures+nBits); % max fitness function
@@ -93,9 +102,11 @@ r2 = rand();
 for i=1:nParticles
     particleDec = binToDec(population(i, :));
     velocity(i, 1) = W * velocity(i, 1) + c1 * r1 * (binToDec(pBest_particle(i, :)) - particleDec) + c2 * r2 * (binToDec(gBest_particle) - particleDec);
-    popDec = particleDec + velocity(i, 1);
-    population(i, :) = decToBin(popDec);
+    popDec = abs(particleDec + velocity(i, 1));
+    popBin = decToBin(popDec);
+    %if popBin > size(trainingData, 1)
+    %    popDec = size(trainingData, 1);
+    %end
+    %population(i, :) = 
 end
-
-
 toc;
