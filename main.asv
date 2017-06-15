@@ -37,8 +37,8 @@ for i=1:nClasses
 end
 
 % Particle Swarm Optimization (PSO) process
-max_iteration = 10; 
-nParticles = 20; % ganti-ganti
+max_iteration = 2;
+nParticles = 3; % ganti-ganti
 nFeatures = 17;
 maxTrainingDataBin = size(trainingData, 1);
 nBits = size(decToBin(maxTrainingDataBin), 2); %bin2 = de2bi(nSamples);
@@ -62,7 +62,7 @@ gBest_fitness = -1000000;
 %featureMask = [1 1 1 1 1  1 1 1 1 1  1 1 1 1 1  1 1];
 fprintf('Initialization:\n');
 %fprintf('| %8s | %15s | %15s | %15s | %15s | %15s | %15s |\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
-fprintf('%8s %15s %15s %15s %15s %15s %20s\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
+fprintf('%8s %15s %15s %15s %15s %15s %15s\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
 for i=1:nParticles
     tic;
     %fprintf('Particle %d | Hidden node = %d', i, binToDec(population(i, nFeatures+1:end)));
@@ -85,12 +85,10 @@ for i=1:nParticles
     end
     endTime = toc;
     %fprintf(' | pBest = %d | time = %d | trainAcc = %d | testAcc = %d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy);
-    fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
+    fprintf('%15d %15d %15d %15d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy);
     f = find(population(i, 1:nFeatures)==1);
-    for l=1:size(f, 2)
-        fprintf('%d ', f(1, l));
-    end
-    fprintf('\n');
+    for l=1:
+    
 end
 
 % gBest Update
@@ -154,15 +152,7 @@ for iteration=1:max_iteration
         endTime = toc;
         %fprintf(' | pBest = %d | time = %d | trainAcc = %d | testAcc = %d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy);
         %fprintf('%15d | %15d | %15d | %15d | %15d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, 1);
-        %fprintf('%15d %15d %15d %15d %15d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, 1);
-        
-        fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
-        f = find(population(i, 1:nFeatures)==1);
-        for l=1:size(f, 2)
-            fprintf('%d ', f(1, l));
-        end
-        fprintf('\n');        
-        
+        fprintf('%15d %15d %15d %15d %15d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, 1);
     end
 
     % gBest Update
