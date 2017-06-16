@@ -1,7 +1,8 @@
 function data = normalizeData(data, lowerLimit, upperLimit)
     % data normalization: using min max normalization
-    %lowerLimit = -1;
-    %upperLimit = 1;
+    % data = nSamples X nFeatures;
+    % lowerLimit = -1;
+    % upperLimit = 1;
     E = (upperLimit-lowerLimit) + lowerLimit;
     for i=1:size(data(:, 1:end-1), 2)
         minVal = min(data(:, i));

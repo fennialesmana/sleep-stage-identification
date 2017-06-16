@@ -1,0 +1,300 @@
+
+slp01a importing...
+slpdb/slp01a header data import...
+slpdb/slp01a annotation data import...
+slpdb/slp01a rr data import...
+Conducting validity check of slpdb/slp01a data...
+[Success] hea_total_epoch (240) == an_time size (240) == rr_converted_time (240) == time_generated (240)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (240) == total hea_total_epoch (240)
+row 162 epoch 1:20:30.000 is removed because the annotation is MT
+
+slp01b importing...
+slpdb/slp01b header data import...
+slpdb/slp01b annotation data import...
+slpdb/slp01b rr data import...
+Conducting validity check of slpdb/slp01b data...
+[Success] hea_total_epoch (360) == an_time size (360) == rr_converted_time (360) == time_generated (360)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (360) == total hea_total_epoch (360)
+
+slp02a importing...
+slpdb/slp02a header data import...
+slpdb/slp02a annotation data import...
+slpdb/slp02a rr data import...
+Conducting validity check of slpdb/slp02a data...
+[Success] hea_total_epoch (360) == an_time size (360) == rr_converted_time (360) == time_generated (360)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (360) == total hea_total_epoch (360)
+row 120 epoch 59:30.000 is removed because the annotation is MT
+row 114 epoch 56:30.000 is removed because the annotation is MT
+row 96 epoch 47:30.000 is removed because the annotation is MT
+row 93 epoch 46:00.000 is removed because the annotation is MT
+row 92 epoch 45:30.000 is removed because the annotation is MT
+row 32 epoch 15:30.000 is removed because the annotation is MT
+row 8 epoch 3:30.000 is removed because the annotation is MT
+row 7 epoch 3:00.000 is removed because the annotation is MT
+
+slp02b importing...
+slpdb/slp02b header data import...
+slpdb/slp02b annotation data import...
+slpdb/slp02b rr data import...
+Conducting validity check of slpdb/slp02b data...
+[Success] hea_total_epoch (270) == an_time size (270) == rr_converted_time (270) == time_generated (270)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (270) == total hea_total_epoch (270)
+row 95 epoch 47:00.000 is removed because the annotation is MT
+
+slp03 importing...
+slpdb/slp03 header data import...
+slpdb/slp03 annotation data import...
+slpdb/slp03 rr data import...
+Conducting validity check of slpdb/slp03 data...
+[Warning] hea_total_epoch (720) != an_time size (720) != rr_converted_time (704) != time_generated (720)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Warning] total rr_converted_time (704) != total hea_total_epoch (720)
+row 193 epoch 1:36:00.000 is removed because rr_collection < 28 || > 32
+row 192 epoch 1:35:30.000 is removed because rr_collection < 28 || > 32
+row 191 epoch 1:35:00.000 is removed because rr_collection < 28 || > 32
+row 190 epoch 1:34:30.000 is removed because rr_collection < 28 || > 32
+row 189 epoch 1:34:00.000 is removed because rr_collection < 28 || > 32
+row 188 epoch 1:33:30.000 is removed because rr_collection < 28 || > 32
+row 187 epoch 1:33:00.000 is removed because rr_collection < 28 || > 32
+row 186 epoch 1:32:30.000 is removed because rr_collection < 28 || > 32
+row 185 epoch 1:32:00.000 is removed because rr_collection < 28 || > 32
+row 184 epoch 1:31:30.000 is removed because rr_collection < 28 || > 32
+row 183 epoch 1:31:00.000 is removed because rr_collection < 28 || > 32
+row 182 epoch 1:30:30.000 is removed because rr_collection < 28 || > 32
+row 181 epoch 1:30:00.000 is removed because rr_collection < 28 || > 32
+row 180 epoch 1:29:30.000 is removed because rr_collection < 28 || > 32
+row 179 epoch 1:29:00.000 is removed because rr_collection < 28 || > 32
+row 178 epoch 1:28:30.000 is removed because rr_collection < 28 || > 32
+row 177 epoch 1:28:00.000 is removed because rr_collection < 28 || > 32
+row 176 epoch 1:27:30.000 is removed because rr_collection < 28 || > 32
+
+slp04 importing...
+slpdb/slp04 header data import...
+slpdb/slp04 annotation data import...
+slpdb/slp04 rr data import...
+Conducting validity check of slpdb/slp04 data...
+[Success] hea_total_epoch (720) == an_time size (720) == rr_converted_time (720) == time_generated (720)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (720) == total hea_total_epoch (720)
+
+slp14 importing...
+slpdb/slp14 header data import...
+slpdb/slp14 annotation data import...
+slpdb/slp14 rr data import...
+Conducting validity check of slpdb/slp14 data...
+[Warning] hea_total_epoch (720) != an_time size (714) != rr_converted_time (720) != time_generated (720)
+[Warning] total an_time (714) != total hea_total_epoch (720), time_generated will be used
+[Success] Class member checking
+[Success] total rr_converted_time (720) == total hea_total_epoch (720)
+row 74 epoch 36:30.000 is removed because the annotation is MT
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp16 importing...
+slpdb/slp16 header data import...
+slpdb/slp16 annotation data import...
+slpdb/slp16 rr data import...
+Conducting validity check of slpdb/slp16 data...
+[Warning] hea_total_epoch (720) != an_time size (694) != rr_converted_time (720) != time_generated (720)
+[Warning] total an_time (694) != total hea_total_epoch (720), time_generated will be used
+[Success] Class member checking
+[Success] total rr_converted_time (720) == total hea_total_epoch (720)
+row 26 epoch 12:30.000 is removed because no annotation
+row 25 epoch 12:00.000 is removed because no annotation
+row 24 epoch 11:30.000 is removed because no annotation
+row 23 epoch 11:00.000 is removed because no annotation
+row 22 epoch 10:30.000 is removed because no annotation
+row 21 epoch 10:00.000 is removed because no annotation
+row 20 epoch 9:30.000 is removed because no annotation
+row 19 epoch 9:00.000 is removed because no annotation
+row 18 epoch 8:30.000 is removed because no annotation
+row 17 epoch 8:00.000 is removed because no annotation
+row 16 epoch 7:30.000 is removed because no annotation
+row 15 epoch 7:00.000 is removed because no annotation
+row 14 epoch 6:30.000 is removed because no annotation
+row 13 epoch 6:00.000 is removed because no annotation
+row 12 epoch 5:30.000 is removed because no annotation
+row 11 epoch 5:00.000 is removed because no annotation
+row 10 epoch 4:30.000 is removed because no annotation
+row 9 epoch 4:00.000 is removed because no annotation
+row 8 epoch 3:30.000 is removed because no annotation
+row 7 epoch 3:00.000 is removed because no annotation
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp32 importing...
+slpdb/slp32 header data import...
+slpdb/slp32 annotation data import...
+slpdb/slp32 rr data import...
+Conducting validity check of slpdb/slp32 data...
+[Success] hea_total_epoch (640) == an_time size (640) == rr_converted_time (640) == time_generated (640)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (640) == total hea_total_epoch (640)
+
+slp37 importing...
+slpdb/slp37 header data import...
+slpdb/slp37 annotation data import...
+slpdb/slp37 rr data import...
+Conducting validity check of slpdb/slp37 data...
+[Warning] hea_total_epoch (700) != an_time size (698) != rr_converted_time (700) != time_generated (700)
+[Warning] total an_time (698) != total hea_total_epoch (700), time_generated will be used
+[Success] Class member checking
+[Success] total rr_converted_time (700) == total hea_total_epoch (700)
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp41 importing...
+slpdb/slp41 header data import...
+slpdb/slp41 annotation data import...
+slpdb/slp41 rr data import...
+Conducting validity check of slpdb/slp41 data...
+[Success] hea_total_epoch (780) == an_time size (780) == rr_converted_time (780) == time_generated (780)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (780) == total hea_total_epoch (780)
+
+slp45 importing...
+slpdb/slp45 header data import...
+slpdb/slp45 annotation data import...
+slpdb/slp45 rr data import...
+Conducting validity check of slpdb/slp45 data...
+[Success] hea_total_epoch (760) == an_time size (760) == rr_converted_time (760) == time_generated (760)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (760) == total hea_total_epoch (760)
+row 675 epoch 5:37:00.000 is removed because the annotation is M
+row 598 epoch 4:58:30.000 is removed because the annotation is M
+row 469 epoch 3:54:00.000 is removed because the annotation is M
+row 64 epoch 31:30.000 is removed because the annotation is M
+
+slp48 importing...
+slpdb/slp48 header data import...
+slpdb/slp48 annotation data import...
+slpdb/slp48 rr data import...
+Conducting validity check of slpdb/slp48 data...
+[Success] hea_total_epoch (760) == an_time size (760) == rr_converted_time (760) == time_generated (760)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (760) == total hea_total_epoch (760)
+row 721 epoch 6:00:00.000 is removed because the annotation is MT
+
+slp59 importing...
+slpdb/slp59 header data import...
+slpdb/slp59 annotation data import...
+slpdb/slp59 rr data import...
+Conducting validity check of slpdb/slp59 data...
+[Warning] hea_total_epoch (480) != an_time size (458) != rr_converted_time (480) != time_generated (480)
+[Warning] total an_time (458) != total hea_total_epoch (480), time_generated will be used
+[Success] Class member checking
+[Success] total rr_converted_time (480) == total hea_total_epoch (480)
+row 22 epoch 10:30.000 is removed because no annotation
+row 21 epoch 10:00.000 is removed because no annotation
+row 20 epoch 9:30.000 is removed because no annotation
+row 19 epoch 9:00.000 is removed because no annotation
+row 18 epoch 8:30.000 is removed because no annotation
+row 17 epoch 8:00.000 is removed because no annotation
+row 16 epoch 7:30.000 is removed because no annotation
+row 15 epoch 7:00.000 is removed because no annotation
+row 14 epoch 6:30.000 is removed because no annotation
+row 13 epoch 6:00.000 is removed because no annotation
+row 12 epoch 5:30.000 is removed because no annotation
+row 11 epoch 5:00.000 is removed because no annotation
+row 10 epoch 4:30.000 is removed because no annotation
+row 9 epoch 4:00.000 is removed because no annotation
+row 8 epoch 3:30.000 is removed because no annotation
+row 7 epoch 3:00.000 is removed because no annotation
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp60 importing...
+slpdb/slp60 header data import...
+slpdb/slp60 annotation data import...
+slpdb/slp60 rr data import...
+Conducting validity check of slpdb/slp60 data...
+[Warning] hea_total_epoch (710) != an_time size (710) != rr_converted_time (703) != time_generated (710)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Warning] total rr_converted_time (703) != total hea_total_epoch (710)
+row 548 epoch 4:33:30.000 is removed because rr_collection < 28 || > 32
+row 547 epoch 4:33:00.000 is removed because rr_collection < 28 || > 32
+row 546 epoch 4:32:30.000 is removed because rr_collection < 28 || > 32
+row 545 epoch 4:32:00.000 is removed because rr_collection < 28 || > 32
+row 544 epoch 4:31:30.000 is removed because rr_collection < 28 || > 32
+row 543 epoch 4:31:00.000 is removed because rr_collection < 28 || > 32
+row 542 epoch 4:30:30.000 is removed because rr_collection < 28 || > 32
+row 541 epoch 4:30:00.000 is removed because rr_collection < 28 || > 32
+row 540 epoch 4:29:30.000 is removed because rr_collection < 28 || > 32
+
+slp61 importing...
+slpdb/slp61 header data import...
+slpdb/slp61 annotation data import...
+slpdb/slp61 rr data import...
+Conducting validity check of slpdb/slp61 data...
+[Warning] hea_total_epoch (740) != an_time size (720) != rr_converted_time (740) != time_generated (740)
+[Warning] total an_time (720) != total hea_total_epoch (740), time_generated will be used
+[Success] Class member checking
+[Success] total rr_converted_time (740) == total hea_total_epoch (740)
+row 20 epoch 9:30.000 is removed because no annotation
+row 19 epoch 9:00.000 is removed because no annotation
+row 18 epoch 8:30.000 is removed because no annotation
+row 17 epoch 8:00.000 is removed because no annotation
+row 16 epoch 7:30.000 is removed because no annotation
+row 15 epoch 7:00.000 is removed because no annotation
+row 14 epoch 6:30.000 is removed because no annotation
+row 13 epoch 6:00.000 is removed because no annotation
+row 12 epoch 5:30.000 is removed because no annotation
+row 11 epoch 5:00.000 is removed because no annotation
+row 10 epoch 4:30.000 is removed because no annotation
+row 9 epoch 4:00.000 is removed because no annotation
+row 8 epoch 3:30.000 is removed because no annotation
+row 7 epoch 3:00.000 is removed because no annotation
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp66 importing...
+slpdb/slp66 header data import...
+slpdb/slp66 annotation data import...
+slpdb/slp66 rr data import...
+Conducting validity check of slpdb/slp66 data...
+[Warning] hea_total_epoch (440) != an_time size (439) != rr_converted_time (440) != time_generated (440)
+[Warning] total an_time (439) != total hea_total_epoch (440), time_generated will be used
+[Success] Class member checking
+[Success] total rr_converted_time (440) == total hea_total_epoch (440)
+row 440 epoch 3:39:30.000 is removed because no annotation
+
+slp67x importing...
+slpdb/slp67x header data import...
+slpdb/slp67x annotation data import...
+slpdb/slp67x rr data import...
+Conducting validity check of slpdb/slp67x data...
+[Success] hea_total_epoch (154) == an_time size (154) == rr_converted_time (154) == time_generated (154)
+[Success] time_generated == an_time
+[Success] Class member checking
+[Success] total rr_converted_time (154) == total hea_total_epoch (154)

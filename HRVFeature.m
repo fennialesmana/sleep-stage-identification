@@ -78,7 +78,7 @@ classdef HRVFeature
 
             RR = RR(:);
             if nargin<2 || isempty(Fs)
-                error('HRV.fft_val_fun: wrong number or types of arguments');
+                error('HRVFeatures.fft_val_fun: wrong number or types of arguments');
             end   
             if nargin<3
                 type = 'spline';
