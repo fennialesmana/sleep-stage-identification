@@ -1,7 +1,7 @@
 clear; clc; close all;
 
 %{
-% IMPORT AND SYNCHRONIZE ALL DATA
+% STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
 file_names = {'slp01a', 'slp01b', 'slp02a', 'slp02b', 'slp03', 'slp04', 'slp14', 'slp16', 'slp32', 'slp37', 'slp41', 'slp45', 'slp48', 'slp59', 'slp60', 'slp61', 'slp66', 'slp67x'};
 sec_per_epoch = 30;
 all_data = [];
@@ -16,17 +16,20 @@ end
 save('all_data', 'all_data');
 %}
 
-% feature extraction here
+%{
+% STEP 2: FEATURE EXTRACTION
 % load('all_data.mat');
 % extractFeatures(all_data);
+%}
 
+% STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
 %hrv = load('features.mat');
 hrv = load('features2class.mat');
 hrv = hrv.features2class;
 
 % SPLIT DATA
 % 70% training data and 30% testing data using stratified sampling
-nClasses = 2;
+nClasses = 2; % jumlah kelas ouput
 trainingData = [];
 testingData = [];
 for i=1:nClasses
@@ -61,11 +64,9 @@ gBest_fitness = -1000000;
 %featureMask = [1 1 1 1 0  1 1 0 0 1  1 1 1 0 0  0 0];
 %featureMask = [1 1 1 1 1  1 1 1 1 1  1 1 1 1 1  1 1];
 fprintf('Initialization:\n');
-%fprintf('| %8s | %15s | %15s | %15s | %15s | %15s | %15s |\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
 fprintf('%8s %15s %15s %15s %15s %15s %20s\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
 for i=1:nParticles
     tic;
-    %fprintf('Particle %d | Hidden node = %d', i, binToDec(population(i, nFeatures+1:end)));
     fprintf('%8d %15d ', i, binToDec(population(i, nFeatures+1:end)));
     % TRAINING
     maskedTrainingFeature = featureMasking(trainingData, population(i, 1:nFeatures));% prepare the feature data (masking)
@@ -84,7 +85,6 @@ for i=1:nParticles
         pBest_particle(i, :) = population(i, :);
     end
     endTime = toc;
-    %fprintf(' | pBest = %d | time = %d | trainAcc = %d | testAcc = %d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy);
     fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
     f = find(population(i, 1:nFeatures)==1);
     for l=1:size(f, 2)
@@ -133,7 +133,6 @@ for iteration=1:max_iteration
     fprintf('%8s %15s %15s %15s %15s %15s %15s\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
     for i=1:nParticles
         tic;
-        %fprintf('Particle %d | Hidden node = %d', i, binToDec(population(i, nFeatures+1:end)));
         fprintf('%8d %15d ', i, binToDec(population(i, nFeatures+1:end)));
         % TRAINING
         maskedTrainingFeature = featureMasking(trainingData, population(i, 1:nFeatures));% prepare the feature data (masking)
@@ -152,9 +151,6 @@ for iteration=1:max_iteration
             pBest_particle(i, :) = population(i, :);
         end
         endTime = toc;
-        %fprintf(' | pBest = %d | time = %d | trainAcc = %d | testAcc = %d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy);
-        %fprintf('%15d | %15d | %15d | %15d | %15d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, 1);
-        %fprintf('%15d %15d %15d %15d %15d\n', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, 1);
         
         fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
         f = find(population(i, 1:nFeatures)==1);
