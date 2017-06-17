@@ -1,4 +1,10 @@
 function maskedFeature = featureMasking(feature, mask)
+% Input:
+% feature -> original nSample X nFeature matrix size
+% mask -> boolean of 1 X nFeature matrix size
+% Output:
+% maskedFeature -> matrix size of nSample X nSelectedFeature
+
     % prepare the feature data (masking)
     maskedFeature = zeros(size(feature, 1), sum(mask));
     j = 1;

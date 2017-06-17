@@ -50,7 +50,7 @@ nTrainData = size(trainingData, 1);
 nBit = size(decToBin(nTrainData), 2); %bin2 = de2bi(nSamples);
 
 population_fitness = zeros(nParticle, 1);
-velocity = int64(zeros(nParticle, 1));
+velocity = int64(zeros(nParticle, 1)); % in decimal value
 pBest_particle = zeros(nParticle, nFeature+nBit); % max fitness value
 pBest_fitness = repmat(-1000000, nParticle, 1);
 gBest_particle = zeros(1, nFeature+nBit); % max fitness function all particle all iteration
@@ -88,6 +88,7 @@ for i=1:nParticle
     maskedTestingFeature = featureMasking(testingData, population(i, 1:nFeature));% prepare the feature data (masking)
     testingTarget = full(ind2vec(testingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
     elmModel = testELM(elmModel, maskedTestingFeature, testingTarget);
+    
     population_fitness(i, 1) = fitness(0.95, 0.05, elmModel.testingAccuracy, population(i, 1:nFeature));
     
     % pBest Update
@@ -96,6 +97,8 @@ for i=1:nParticle
         pBest_particle(i, :) = population(i, :);
     end
     endTime = toc;
+    
+    % print result
     fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
     f = find(population(i, 1:nFeature)==1);
     for l=1:size(f, 2)
@@ -120,18 +123,25 @@ for iteration=1:max_iteration
     r1 = rand();
     r2 = rand();
     for i=1:nParticle
+        % calculate velocity value
         particleDec = int64(binToDec(population(i, :)));
         velocity(i, 1) = W * velocity(i, 1) + c1 * r1 * (binToDec(pBest_particle(i, :)) - particleDec) + c2 * r2 * (binToDec(gBest_particle) - particleDec);
-        popDec = abs(int64(particleDec + velocity(i, 1)));
-        popBin = decToBin(popDec);
-        %if the total bits lower than nFeatures + nBits
+        
+        % update particle position
+        newPosDec = abs(int64(particleDec + velocity(i, 1)));
+        popBin = decToBin(newPosDec);
+        
+        %if the total bits lower than nFeatures + nBits, add zeros in front
         if size(popBin, 2) < (nFeature + nBit)
             popBin = [zeros(1, (nFeature + nBit)-size(popBin, 2)) popBin];
         end
+        
         %if the number of hidden node is more than the number of samples
         if binToDec(popBin(1, nFeature+1:end)) > size(trainingData, 1)
             popBin(1, nFeature+1:end) = decToBin(size(trainingData, 1));
         end
+        
+        %set the value
         population(i, :) = popBin;
     end
     
@@ -149,6 +159,7 @@ for iteration=1:max_iteration
         maskedTestingFeature = featureMasking(testingData, population(i, 1:nFeature));% prepare the feature data (masking)
         testingTarget = full(ind2vec(testingData(:,end)'))';% prepare the target data (transformation from 4 into [0 0 0 1 0 0])
         elmModel = testELM(elmModel, maskedTestingFeature, testingTarget);
+        
         population_fitness(i, 1) = fitness(0.95, 0.05, elmModel.testingAccuracy, population(i, 1:nFeature));
 
         % pBest Update

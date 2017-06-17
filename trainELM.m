@@ -12,14 +12,22 @@ function elmModel = trainELM(nHiddenNode, feature, target)
 %   *) elmModel.inputWeight: input weight (Matrix Size: nHiddenNode (+1 for bias) X total features)
 %   *) elmModel.outputWeight: output weight (Matrix Size: total classes X nHiddenNode)
 %   *) elmModel.trainingAccuracy: accuracy for given input
-
-    inputWeight = rand(nHiddenNode, size(feature, 2)+1);
+    
+    % STEP 1: RANDOMLY ASSIGN INPUT WEIGHT AND BIAS
+    minWeight = -1;
+    maxWeight = 1;
+    inputWeight = (maxWeight-minWeight) .* rand(nHiddenNode, size(feature, 2)+1) + minWeight;
+    
+    % STEP 2: CALCULATE THE HIDDEN LAYER OUTPUT MATRIX H
     hiddenOutput = (inputWeight(:, 1:end-1) * feature')+repmat(inputWeight(:, end), 1, size(feature, 1)); % linear combination of hidden output
     hiddenOutput = sigmoid(hiddenOutput); % apply activation function on hidden output
+    
+    % STEP 3: CALCULATE THE OUTPUT WEIGHT B
     %fprintf('before pinv');
     outputWeight = target' * pinv(hiddenOutput); % estimate output weight
     %fprintf('after pinv');
-    % calculating training accuracy
+    
+    % STEP 4: APPLY MODEL TO TRAINING DATA
     predictedOutput = outputWeight * hiddenOutput; % linear combination of predicted output
     predictedOutput = sigmoid(predictedOutput); % apply activation function on predicted output
     
@@ -31,7 +39,7 @@ function elmModel = trainELM(nHiddenNode, feature, target)
     end
     trainingAccuracy = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;
     
-    elmModel.outputWeight = outputWeight;
     elmModel.inputWeight = inputWeight;
+    elmModel.outputWeight = outputWeight;
     elmModel.trainingAccuracy = trainingAccuracy;
 end
