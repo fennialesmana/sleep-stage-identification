@@ -26,7 +26,8 @@ extractFeatures(data, nFeature, 'features/', 'all');
 %}
 
 nClass = 3; % jumlah kelas ouput
-fprintf('Building classifier model for %d classes -> %s\n', nClass, datestr(clock));
+fprintf('Building classifier model for %d classes...\n', nClass);
+fprintf('Start at %s\n', datestr(clock));
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
 switch nClass
     case 2
@@ -201,5 +202,5 @@ for iteration=1:max_iteration
     fprintf('gBest = %d\n', gBest_fitness);
 end
 
-fprintf('Finish -> %s\n', datestr(clock));
+fprintf('Finish at %s\n', datestr(clock));
 beep
