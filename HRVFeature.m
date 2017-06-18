@@ -10,7 +10,7 @@ classdef HRVFeature
             r = std(rr);
         end
         function r = RMSSD(rr_diff)
-            r = sqrt(sum((rr_diff.^2))/size(rr_diff, 2));
+            r = sqrt(mean(rr_diff.^2));
         end
         function r = SDSD(rr_diff)
             r = std(rr_diff);
