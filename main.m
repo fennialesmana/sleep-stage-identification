@@ -26,9 +26,9 @@ extractFeatures(data, nFeature, 'features/', 'all');
 %}
 
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
-nClass = 2; % jumlah kelas ouput
-hrv = load('features/normalized_hrv_2_class.mat');
-hrv = hrv.normalized_hrv_2_class;
+nClass = 3; % jumlah kelas ouput
+hrv = load('features/normalized_hrv_3_class.mat');
+hrv = hrv.normalized_hrv_3_class;
 
 % SPLIT DATA
 % 70% training data and 30% testing data using stratified sampling
@@ -44,8 +44,8 @@ end
 
 % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS
 % PSO parameter initialization
-max_iteration = 2;
-nParticle = 3;
+max_iteration = 10;
+nParticle = 20;
 nTrainData = size(trainingData, 1);
 nBit = size(decToBin(nTrainData), 2); %bin2 = de2bi(nSamples);
 
@@ -185,7 +185,7 @@ for iteration=1:max_iteration
         gBest_fitness = max(population_fitness);
         gBest_particle = population(found, :);    
     end
-    fprintf('gBest = %d\n', iteration, gBest_fitness);
+    fprintf('gBest = %d\n', gBest_fitness);
 end
 
 beep
