@@ -25,10 +25,23 @@ data = data.data;
 extractFeatures(data, nFeature, 'features/', 'all');
 %}
 
-% STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
 nClass = 3; % jumlah kelas ouput
-hrv = load('features/normalized_hrv_3_class.mat');
-hrv = hrv.normalized_hrv_3_class;
+fprintf('Building classifier model for %d classes -> %s\n', nClass, datestr(clock));
+% STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
+switch nClass
+    case 2
+        hrv = load('features/normalized_hrv_2_class.mat');
+        hrv = hrv.normalized_hrv_2_class;
+    case 3
+        hrv = load('features/normalized_hrv_3_class.mat');
+        hrv = hrv.normalized_hrv_3_class;
+    case 4
+        hrv = load('features/normalized_hrv_4_class.mat');
+        hrv = hrv.normalized_hrv_4_class;
+    case 6
+        hrv = load('features/normalized_hrv_6_class.mat');
+        hrv = hrv.normalized_hrv_6_class;
+end
 
 % SPLIT DATA
 % 70% training data and 30% testing data using stratified sampling
@@ -188,4 +201,5 @@ for iteration=1:max_iteration
     fprintf('gBest = %d\n', gBest_fitness);
 end
 
+fprintf('Finish -> %s\n', datestr(clock));
 beep
