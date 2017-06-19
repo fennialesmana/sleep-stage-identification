@@ -25,7 +25,7 @@ data = data.data;
 extractFeatures(data, nFeature, 'features/', 'all');
 %}
 
-nClass = 4; % jumlah kelas ouput
+nClass = 6; % jumlah kelas ouput
 fprintf('Building classifier model for %d classes...\n', nClass);
 fprintf('Start at %s\n', datestr(clock));
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
@@ -43,7 +43,7 @@ switch nClass
         hrv = load('features/normalized_hrv_6_class.mat');
         hrv = hrv.normalized_hrv_6_class;
 end
-
+ 
 % SPLIT DATA
 % 70% training data and 30% testing data using stratified sampling
 trainingRatio = 0.7;
