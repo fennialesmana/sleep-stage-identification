@@ -1,0 +1,3 @@
+all data in this folder use 17 features (without TP)
+frequency sampling used is 2
+feature used is in this folder -> "features" folder

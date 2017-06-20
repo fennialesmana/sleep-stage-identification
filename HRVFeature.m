@@ -56,7 +56,7 @@ classdef HRVFeature
         end
         
         % Frequency Domain Features
-        function [pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
+        function [TP,pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
         %fft_val_fun Spectral analysis of a sequence.
         %   [pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
         %   uses FFT to compute the spectral density function of the interpolated
@@ -79,7 +79,7 @@ classdef HRVFeature
             RR = RR(:);
             if nargin<2 || isempty(Fs)
                 error('HRVFeatures.fft_val_fun: wrong number or types of arguments');
-            end   
+            end
             if nargin<3
                 type = 'spline';
             end
@@ -124,7 +124,7 @@ classdef HRVFeature
 
                 pLF = LF/(TP-VLF)*100;
                 pHF = HF/(TP-VLF)*100;    
-                LFHFratio = LF/HF; 
+                LFHFratio = LF/HF;
             end
         end
         function [z,m,s] = nanzscore(x,opt,varargin)

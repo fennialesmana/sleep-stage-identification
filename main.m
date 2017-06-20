@@ -16,31 +16,30 @@ end
 save('data.mat', 'data');
 %}
 
-nFeature = 17;
-
+nFeature = 18;
 %{
 % STEP 2: FEATURE EXTRACTION
 data = load('data.mat');
 data = data.data;
-extractFeatures(data, nFeature, 'features/', 'all');
+extractFeatures(data, nFeature, 'features250/', 'all');
 %}
 
-nClass = 6; % jumlah kelas ouput
+nClass = 3; % jumlah kelas ouput
 fprintf('Building classifier model for %d classes...\n', nClass);
 fprintf('Start at %s\n', datestr(clock));
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
 switch nClass
     case 2
-        hrv = load('features/normalized_hrv_2_class.mat');
+        hrv = load('features2/normalized_hrv_2_class.mat');
         hrv = hrv.normalized_hrv_2_class;
     case 3
-        hrv = load('features/normalized_hrv_3_class.mat');
+        hrv = load('features2/normalized_hrv_3_class.mat');
         hrv = hrv.normalized_hrv_3_class;
     case 4
-        hrv = load('features/normalized_hrv_4_class.mat');
+        hrv = load('features2/normalized_hrv_4_class.mat');
         hrv = hrv.normalized_hrv_4_class;
     case 6
-        hrv = load('features/normalized_hrv_6_class.mat');
+        hrv = load('features2/normalized_hrv_6_class.mat');
         hrv = hrv.normalized_hrv_6_class;
 end
 hrv = hrv(1:599, :);
@@ -59,7 +58,7 @@ end
 % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS
 % PSO parameter initialization
 max_iteration = 100;
-gBest_temp = zeros(max_iteration, 1);
+gBest.cummulative = zeros(max_iteration, 1);
 nParticle = 20;
 nTrainData = size(trainingData, 1);
 nBit = size(decToBin(nTrainData), 2); %bin2 = de2bi(nSamples);
@@ -68,8 +67,8 @@ population_fitness = zeros(nParticle, 1);
 velocity = int64(zeros(nParticle, 1)); % in decimal value
 pBest_particle = zeros(nParticle, nFeature+nBit); % max fitness value
 pBest_fitness = repmat(-1000000, nParticle, 1);
-gBest_particle = zeros(1, nFeature+nBit); % max fitness function all particle all iteration
-gBest_fitness = -1000000;
+gBest.particle = zeros(1, nFeature+nBit); % max fitness function all particle all iteration
+gBest.fitness = -1000000;
 
 % update velocity parameter
 W = 0.6;
@@ -115,22 +114,18 @@ for i=1:nParticle
     
     % print result
     fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
-    f = find(population(i, 1:nFeature)==1);
-    for l=1:size(f, 2)
-        fprintf('%d ', f(1, l));
-    end
-    fprintf('\n');
+    fprintf('%s\n', binToStringOrder(population(i, 1:nFeature)));
 end
 
 % gBest Update
-if max(population_fitness) > gBest_fitness
+if max(population_fitness) > gBest.fitness
     found = find(population_fitness == max(population_fitness));
     found = found(1);
-    gBest_fitness = max(population_fitness);
-    gBest_particle = population(found, :);
+    gBest.fitness = max(population_fitness);
+    gBest.particle = population(found, :);
 end
 
-fprintf('gBest = %d\n', gBest_fitness);
+fprintf('gBest = %d\n', gBest.fitness);
 
 for iteration=1:max_iteration
     fprintf('\nIteration %d of %d\n', iteration, max_iteration);
@@ -140,7 +135,7 @@ for iteration=1:max_iteration
     for i=1:nParticle
         % calculate velocity value
         particleDec = int64(binToDec(population(i, :)));
-        velocity(i, 1) = W * velocity(i, 1) + c1 * r1 * (binToDec(pBest_particle(i, :)) - particleDec) + c2 * r2 * (binToDec(gBest_particle) - particleDec);
+        velocity(i, 1) = W * velocity(i, 1) + c1 * r1 * (binToDec(pBest_particle(i, :)) - particleDec) + c2 * r2 * (binToDec(gBest.particle) - particleDec);
         
         % update particle position
         newPosDec = abs(int64(particleDec + velocity(i, 1)));
@@ -185,25 +180,23 @@ for iteration=1:max_iteration
         endTime = toc;
         
         fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
-        f = find(population(i, 1:nFeature)==1);
-        for l=1:size(f, 2)
-            fprintf('%d ', f(1, l));
-        end
-        fprintf('\n');        
-        
+        fprintf('%s\n', binToStringOrder(population(i, 1:nFeature)));
     end
 
     % gBest Update
-    if max(population_fitness) > gBest_fitness
+    if max(population_fitness) > gBest.fitness
         found = find(population_fitness == max(population_fitness));
         found = found(1);
-        gBest_fitness = max(population_fitness);
-        gBest_particle = population(found, :);
+        gBest.fitness = max(population_fitness);
+        gBest.particle = population(found, :);
     end
-    fprintf('gBest = %d\n', gBest_fitness);
-    gBest_temp(iteration, 1) = gBest_fitness;
-    
+    fprintf('gBest = %d\n', gBest.fitness);
+    gBest.cummulative(iteration, 1) = gBest.fitness;
 end
-plot(gBest_temp);
+
+fprintf('Selected Feature = %s\n', binToStringOrder(gBest.particle(1, 1:nFeature)));
+fprintf('n Hidden Node = %d\n', binToDec(gBest.particle(1, nFeature+1:end)));
+
+plot(gBest.cummulative);
 fprintf('Finish at %s\n', datestr(clock));
 beep

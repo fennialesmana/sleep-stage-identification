@@ -1,4 +1,4 @@
-function extractFeatures(data, nFeatures, destination, outputFormat)
+function extractFeatures(data, nFeature, destination, outputFormat)
     % FEATURE EXTRACTION
     %{
     % prepare the struct
@@ -140,7 +140,7 @@ function extractFeatures(data, nFeatures, destination, outputFormat)
     
     % directly save the features into .xls
     nSamples = size(data, 1);
-    hrv = zeros(nSamples, nFeatures);
+    hrv = zeros(nSamples, nFeature);
     target2 = zeros(nSamples, 1);
     target3 = zeros(nSamples, 1);
     target4 = zeros(nSamples, 1);
@@ -161,13 +161,14 @@ function extractFeatures(data, nFeatures, destination, outputFormat)
         hrv(i, 10) = HRVFeature.SD1_SD2_RATIO(hrv(i, 8), hrv(i, 9));
         hrv(i, 11) = HRVFeature.S(hrv(i, 8), hrv(i, 9));
 
-        [pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = HRVFeature.fft_val_fun(data(i).rr,2);
-        hrv(i, 12) = pLF;
-        hrv(i, 13) = pHF;
-        hrv(i, 14) = LFHFratio;
-        hrv(i, 15) = VLF;
-        hrv(i, 16) = LF;
-        hrv(i, 17) = HF;
+        [TP,pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = HRVFeature.fft_val_fun(data(i).rr,2);
+        hrv(i, 12) = TP;
+        hrv(i, 13) = pLF;
+        hrv(i, 14) = pHF;
+        hrv(i, 15) = LFHFratio;
+        hrv(i, 16) = VLF;
+        hrv(i, 17) = LF;
+        hrv(i, 18) = HF;
         
         % set class annotation
         switch data(i).annotation
