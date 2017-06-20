@@ -25,7 +25,7 @@ data = data.data;
 extractFeatures(data, nFeature, 'features/', 'all');
 %}
 
-nClass = 6; % jumlah kelas ouput
+nClass = 2; % jumlah kelas ouput
 fprintf('Building classifier model for %d classes...\n', nClass);
 fprintf('Start at %s\n', datestr(clock));
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
@@ -59,7 +59,6 @@ end
 % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS
 % PSO parameter initialization
 max_iteration = 100;
-gBest_temp = zeros(max_iteration, 1);
 nParticle = 20;
 nTrainData = size(trainingData, 1);
 nBit = size(decToBin(nTrainData), 2); %bin2 = de2bi(nSamples);
@@ -201,9 +200,7 @@ for iteration=1:max_iteration
         gBest_particle = population(found, :);
     end
     fprintf('gBest = %d\n', gBest_fitness);
-    gBest_temp(iteration, 1) = gBest_fitness;
-    
 end
-plot(gBest_temp);
+
 fprintf('Finish at %s\n', datestr(clock));
 beep
