@@ -1,5 +1,16 @@
-clear; clc; close all;
 
+clear; clc; close all;
+temp = zeros(10, 4);
+classNum = [2 3 4 6];
+
+for cl=1:size(classNum, 2)
+for exp=1:10
+clearvars -except exp temp cl classNum
+clc;
+close all;
+filename = sprintf('slp02_features2_%dclass_%d', classNum(1, cl), exp);
+diary(filename)
+diary on
 %{
 % STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
 file_names = {'slp01a', 'slp01b', 'slp02a', 'slp02b', 'slp03', 'slp04', 'slp14', 'slp16', 'slp32', 'slp37', 'slp41', 'slp45', 'slp48', 'slp59', 'slp60', 'slp61', 'slp66', 'slp67x'};
@@ -24,7 +35,7 @@ data = data.data;
 extractFeatures(data, nFeature, 'features250/', 'all');
 %}
 
-nClass = 3; % jumlah kelas ouput
+nClass = classNum(cl); % jumlah kelas ouput
 fprintf('Building classifier model for %d classes...\n', nClass);
 fprintf('Start at %s\n', datestr(clock));
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
@@ -42,7 +53,8 @@ switch nClass
         hrv = load('features2/normalized_hrv_6_class.mat');
         hrv = hrv.normalized_hrv_6_class;
 end
-hrv = hrv(1:599, :);
+%hrv = hrv(1:599, :); %slp01
+hrv = hrv(600:1220, :); %slp02
 % SPLIT DATA
 % 70% training data and 30% testing data using stratified sampling
 trainingRatio = 0.7;
@@ -197,6 +209,10 @@ end
 fprintf('Selected Feature = %s\n', binToStringOrder(gBest.particle(1, 1:nFeature)));
 fprintf('n Hidden Node = %d\n', binToDec(gBest.particle(1, nFeature+1:end)));
 
-plot(gBest.cummulative);
+%plot(gBest.cummulative);
 fprintf('Finish at %s\n', datestr(clock));
 beep
+diary off
+temp(exp, classNum(cl)) = gBest.fitness;
+end
+end
