@@ -1,4 +1,4 @@
-function maskedFeature = featureMasking(feature, mask)
+function maskedFeature = featuremasking(feature, mask)
 % Input:
 % feature -> original nSample X nFeature matrix size
 % mask -> boolean of 1 X nFeature matrix size

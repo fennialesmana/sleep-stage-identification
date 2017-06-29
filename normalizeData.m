@@ -1,4 +1,4 @@
-function data = normalizeData(data, lowerLimit, upperLimit)
+function data = normalizedata(data, lowerLimit, upperLimit)
     % data normalization: using min max normalization
     % data = nSamples X nFeatures;
     % lowerLimit = -1;

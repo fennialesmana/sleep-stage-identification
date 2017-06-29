@@ -1,0 +1,372 @@
+
+slp01a importing...
+slpdb/slp01a header data import...
+slpdb/slp01a annotation data import...
+slpdb/slp01a rr data import...
+Conducting validity check of slpdb/slp01a data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (240) == size(anTime, 1) (240) == size(unique(rrConvertedTime), 1) (240) == size(anTimeGeneratedMat, 1) (240)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (240) == heaTotalEpoch (240)
+row 162 epoch 1:20:30.000 is removed because the annotation is MT
+
+slp01b importing...
+slpdb/slp01b header data import...
+slpdb/slp01b annotation data import...
+slpdb/slp01b rr data import...
+Conducting validity check of slpdb/slp01b data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (360) == size(anTime, 1) (360) == size(unique(rrConvertedTime), 1) (360) == size(anTimeGeneratedMat, 1) (360)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (360) == heaTotalEpoch (360)
+
+slp02a importing...
+slpdb/slp02a header data import...
+slpdb/slp02a annotation data import...
+slpdb/slp02a rr data import...
+Conducting validity check of slpdb/slp02a data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (360) == size(anTime, 1) (360) == size(unique(rrConvertedTime), 1) (360) == size(anTimeGeneratedMat, 1) (360)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (360) == heaTotalEpoch (360)
+row 120 epoch 59:30.000 is removed because the annotation is MT
+row 114 epoch 56:30.000 is removed because the annotation is MT
+row 96 epoch 47:30.000 is removed because the annotation is MT
+row 93 epoch 46:00.000 is removed because the annotation is MT
+row 92 epoch 45:30.000 is removed because the annotation is MT
+row 32 epoch 15:30.000 is removed because the annotation is MT
+row 8 epoch 3:30.000 is removed because the annotation is MT
+row 7 epoch 3:00.000 is removed because the annotation is MT
+
+slp02b importing...
+slpdb/slp02b header data import...
+slpdb/slp02b annotation data import...
+slpdb/slp02b rr data import...
+Conducting validity check of slpdb/slp02b data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (270) == size(anTime, 1) (270) == size(unique(rrConvertedTime), 1) (270) == size(anTimeGeneratedMat, 1) (270)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (270) == heaTotalEpoch (270)
+row 95 epoch 47:00.000 is removed because the annotation is MT
+
+slp03 importing...
+slpdb/slp03 header data import...
+slpdb/slp03 annotation data import...
+slpdb/slp03 rr data import...
+Conducting validity check of slpdb/slp03 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (720) != size(anTime, 1) (720) != size(unique(rrConvertedTime), 1) (704) != size(anTimeGeneratedMat, 1) (720)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[WARNING] size(unique(rrConvertedTime), 1) (704) != heaTotalEpoch (720)
+row 193 epoch 1:36:00.000 is removed because rr_collection < 28 || > 32
+row 192 epoch 1:35:30.000 is removed because rr_collection < 28 || > 32
+row 191 epoch 1:35:00.000 is removed because rr_collection < 28 || > 32
+row 190 epoch 1:34:30.000 is removed because rr_collection < 28 || > 32
+row 189 epoch 1:34:00.000 is removed because rr_collection < 28 || > 32
+row 188 epoch 1:33:30.000 is removed because rr_collection < 28 || > 32
+row 187 epoch 1:33:00.000 is removed because rr_collection < 28 || > 32
+row 186 epoch 1:32:30.000 is removed because rr_collection < 28 || > 32
+row 185 epoch 1:32:00.000 is removed because rr_collection < 28 || > 32
+row 184 epoch 1:31:30.000 is removed because rr_collection < 28 || > 32
+row 183 epoch 1:31:00.000 is removed because rr_collection < 28 || > 32
+row 182 epoch 1:30:30.000 is removed because rr_collection < 28 || > 32
+row 181 epoch 1:30:00.000 is removed because rr_collection < 28 || > 32
+row 180 epoch 1:29:30.000 is removed because rr_collection < 28 || > 32
+row 179 epoch 1:29:00.000 is removed because rr_collection < 28 || > 32
+row 178 epoch 1:28:30.000 is removed because rr_collection < 28 || > 32
+row 177 epoch 1:28:00.000 is removed because rr_collection < 28 || > 32
+row 176 epoch 1:27:30.000 is removed because rr_collection < 28 || > 32
+
+slp04 importing...
+slpdb/slp04 header data import...
+slpdb/slp04 annotation data import...
+slpdb/slp04 rr data import...
+Conducting validity check of slpdb/slp04 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (720) == size(anTime, 1) (720) == size(unique(rrConvertedTime), 1) (720) == size(anTimeGeneratedMat, 1) (720)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (720) == heaTotalEpoch (720)
+
+slp14 importing...
+slpdb/slp14 header data import...
+slpdb/slp14 annotation data import...
+slpdb/slp14 rr data import...
+Conducting validity check of slpdb/slp14 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (720) != size(anTime, 1) (714) != size(unique(rrConvertedTime), 1) (720) != size(anTimeGeneratedMat, 1) (720)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[WARNING] size(anTime, 1) (714) != heaTotalEpoch (720), anTimeGeneratedCell will be used
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (720) == heaTotalEpoch (720)
+row 74 epoch 36:30.000 is removed because the annotation is MT
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp16 importing...
+slpdb/slp16 header data import...
+slpdb/slp16 annotation data import...
+slpdb/slp16 rr data import...
+Conducting validity check of slpdb/slp16 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (720) != size(anTime, 1) (694) != size(unique(rrConvertedTime), 1) (720) != size(anTimeGeneratedMat, 1) (720)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[WARNING] size(anTime, 1) (694) != heaTotalEpoch (720), anTimeGeneratedCell will be used
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (720) == heaTotalEpoch (720)
+row 26 epoch 12:30.000 is removed because no annotation
+row 25 epoch 12:00.000 is removed because no annotation
+row 24 epoch 11:30.000 is removed because no annotation
+row 23 epoch 11:00.000 is removed because no annotation
+row 22 epoch 10:30.000 is removed because no annotation
+row 21 epoch 10:00.000 is removed because no annotation
+row 20 epoch 9:30.000 is removed because no annotation
+row 19 epoch 9:00.000 is removed because no annotation
+row 18 epoch 8:30.000 is removed because no annotation
+row 17 epoch 8:00.000 is removed because no annotation
+row 16 epoch 7:30.000 is removed because no annotation
+row 15 epoch 7:00.000 is removed because no annotation
+row 14 epoch 6:30.000 is removed because no annotation
+row 13 epoch 6:00.000 is removed because no annotation
+row 12 epoch 5:30.000 is removed because no annotation
+row 11 epoch 5:00.000 is removed because no annotation
+row 10 epoch 4:30.000 is removed because no annotation
+row 9 epoch 4:00.000 is removed because no annotation
+row 8 epoch 3:30.000 is removed because no annotation
+row 7 epoch 3:00.000 is removed because no annotation
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp32 importing...
+slpdb/slp32 header data import...
+slpdb/slp32 annotation data import...
+slpdb/slp32 rr data import...
+Conducting validity check of slpdb/slp32 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (640) == size(anTime, 1) (640) == size(unique(rrConvertedTime), 1) (640) == size(anTimeGeneratedMat, 1) (640)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (640) == heaTotalEpoch (640)
+
+slp37 importing...
+slpdb/slp37 header data import...
+slpdb/slp37 annotation data import...
+slpdb/slp37 rr data import...
+Conducting validity check of slpdb/slp37 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (700) != size(anTime, 1) (698) != size(unique(rrConvertedTime), 1) (700) != size(anTimeGeneratedMat, 1) (700)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[WARNING] size(anTime, 1) (698) != heaTotalEpoch (700), anTimeGeneratedCell will be used
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (700) == heaTotalEpoch (700)
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp41 importing...
+slpdb/slp41 header data import...
+slpdb/slp41 annotation data import...
+slpdb/slp41 rr data import...
+Conducting validity check of slpdb/slp41 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (780) == size(anTime, 1) (780) == size(unique(rrConvertedTime), 1) (780) == size(anTimeGeneratedMat, 1) (780)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (780) == heaTotalEpoch (780)
+
+slp45 importing...
+slpdb/slp45 header data import...
+slpdb/slp45 annotation data import...
+slpdb/slp45 rr data import...
+Conducting validity check of slpdb/slp45 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (760) == size(anTime, 1) (760) == size(unique(rrConvertedTime), 1) (760) == size(anTimeGeneratedMat, 1) (760)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (760) == heaTotalEpoch (760)
+row 675 epoch 5:37:00.000 is removed because the annotation is M
+row 598 epoch 4:58:30.000 is removed because the annotation is M
+row 469 epoch 3:54:00.000 is removed because the annotation is M
+row 64 epoch 31:30.000 is removed because the annotation is M
+
+slp48 importing...
+slpdb/slp48 header data import...
+slpdb/slp48 annotation data import...
+slpdb/slp48 rr data import...
+Conducting validity check of slpdb/slp48 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (760) == size(anTime, 1) (760) == size(unique(rrConvertedTime), 1) (760) == size(anTimeGeneratedMat, 1) (760)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (760) == heaTotalEpoch (760)
+row 721 epoch 6:00:00.000 is removed because the annotation is MT
+
+slp59 importing...
+slpdb/slp59 header data import...
+slpdb/slp59 annotation data import...
+slpdb/slp59 rr data import...
+Conducting validity check of slpdb/slp59 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (480) != size(anTime, 1) (458) != size(unique(rrConvertedTime), 1) (480) != size(anTimeGeneratedMat, 1) (480)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[WARNING] size(anTime, 1) (458) != heaTotalEpoch (480), anTimeGeneratedCell will be used
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (480) == heaTotalEpoch (480)
+row 22 epoch 10:30.000 is removed because no annotation
+row 21 epoch 10:00.000 is removed because no annotation
+row 20 epoch 9:30.000 is removed because no annotation
+row 19 epoch 9:00.000 is removed because no annotation
+row 18 epoch 8:30.000 is removed because no annotation
+row 17 epoch 8:00.000 is removed because no annotation
+row 16 epoch 7:30.000 is removed because no annotation
+row 15 epoch 7:00.000 is removed because no annotation
+row 14 epoch 6:30.000 is removed because no annotation
+row 13 epoch 6:00.000 is removed because no annotation
+row 12 epoch 5:30.000 is removed because no annotation
+row 11 epoch 5:00.000 is removed because no annotation
+row 10 epoch 4:30.000 is removed because no annotation
+row 9 epoch 4:00.000 is removed because no annotation
+row 8 epoch 3:30.000 is removed because no annotation
+row 7 epoch 3:00.000 is removed because no annotation
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp60 importing...
+slpdb/slp60 header data import...
+slpdb/slp60 annotation data import...
+slpdb/slp60 rr data import...
+Conducting validity check of slpdb/slp60 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (710) != size(anTime, 1) (710) != size(unique(rrConvertedTime), 1) (703) != size(anTimeGeneratedMat, 1) (710)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[WARNING] size(unique(rrConvertedTime), 1) (703) != heaTotalEpoch (710)
+row 548 epoch 4:33:30.000 is removed because rr_collection < 28 || > 32
+row 547 epoch 4:33:00.000 is removed because rr_collection < 28 || > 32
+row 546 epoch 4:32:30.000 is removed because rr_collection < 28 || > 32
+row 545 epoch 4:32:00.000 is removed because rr_collection < 28 || > 32
+row 544 epoch 4:31:30.000 is removed because rr_collection < 28 || > 32
+row 543 epoch 4:31:00.000 is removed because rr_collection < 28 || > 32
+row 542 epoch 4:30:30.000 is removed because rr_collection < 28 || > 32
+row 541 epoch 4:30:00.000 is removed because rr_collection < 28 || > 32
+row 540 epoch 4:29:30.000 is removed because rr_collection < 28 || > 32
+
+slp61 importing...
+slpdb/slp61 header data import...
+slpdb/slp61 annotation data import...
+slpdb/slp61 rr data import...
+Conducting validity check of slpdb/slp61 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (740) != size(anTime, 1) (720) != size(unique(rrConvertedTime), 1) (740) != size(anTimeGeneratedMat, 1) (740)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[WARNING] size(anTime, 1) (720) != heaTotalEpoch (740), anTimeGeneratedCell will be used
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (740) == heaTotalEpoch (740)
+row 20 epoch 9:30.000 is removed because no annotation
+row 19 epoch 9:00.000 is removed because no annotation
+row 18 epoch 8:30.000 is removed because no annotation
+row 17 epoch 8:00.000 is removed because no annotation
+row 16 epoch 7:30.000 is removed because no annotation
+row 15 epoch 7:00.000 is removed because no annotation
+row 14 epoch 6:30.000 is removed because no annotation
+row 13 epoch 6:00.000 is removed because no annotation
+row 12 epoch 5:30.000 is removed because no annotation
+row 11 epoch 5:00.000 is removed because no annotation
+row 10 epoch 4:30.000 is removed because no annotation
+row 9 epoch 4:00.000 is removed because no annotation
+row 8 epoch 3:30.000 is removed because no annotation
+row 7 epoch 3:00.000 is removed because no annotation
+row 6 epoch 2:30.000 is removed because no annotation
+row 5 epoch 2:00.000 is removed because no annotation
+row 4 epoch 1:30.000 is removed because no annotation
+row 3 epoch 1:00.000 is removed because no annotation
+row 2 epoch 0:30.000 is removed because no annotation
+row 1 epoch 0:00.000 is removed because no annotation
+
+slp66 importing...
+slpdb/slp66 header data import...
+slpdb/slp66 annotation data import...
+slpdb/slp66 rr data import...
+Conducting validity check of slpdb/slp66 data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[WARNING] heaTotalEpoch (440) != size(anTime, 1) (439) != size(unique(rrConvertedTime), 1) (440) != size(anTimeGeneratedMat, 1) (440)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[WARNING] size(anTime, 1) (439) != heaTotalEpoch (440), anTimeGeneratedCell will be used
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (440) == heaTotalEpoch (440)
+row 440 epoch 3:39:30.000 is removed because no annotation
+
+slp67x importing...
+slpdb/slp67x header data import...
+slpdb/slp67x annotation data import...
+slpdb/slp67x rr data import...
+Conducting validity check of slpdb/slp67x data...
+ANNOTATION FILE CHECK 1 (Total epoch of each data): 
+[SUCCESS] heaTotalEpoch (154) == size(anTime, 1) (154) == size(unique(rrConvertedTime), 1) (154) == size(anTimeGeneratedMat, 1) (154)
+ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
+[SUCCESS] anTimeGeneratedCell != anTime
+ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+[SUCCESS] Annotation values consist of '1', '2', '3', '4', 'W', 'R', or {'MT', 'M'} 
+RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch): 
+[SUCCESS] size(unique(rrConvertedTime), 1) (154) == heaTotalEpoch (154)
