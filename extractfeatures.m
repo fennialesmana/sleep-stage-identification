@@ -1,20 +1,20 @@
-function extractfeatures(Data, destination, outputFormat)
+function extractfeatures(SlpdbData, destination, outputFormat)
     % directly save the features
-    nSamples = size(Data, 1);
-    nClasses = length(unique([Data.annotation]));
+    nSamples = size(SlpdbData, 1);
+    nClasses = length(unique([SlpdbData.annotation]));
     hrv = zeros(nSamples, 25);
     target = zeros(nSamples, nClasses);
     target(:, [1 5]) = NaN;
     for i=1:nSamples
-        rr_diff = diff(Data(i).rr);
-        hrv(i, 1) = HRVFeature.AVNN(Data(i).rr);
-        hrv(i, 2) = HRVFeature.SDNN(Data(i).rr);
+        rr_diff = diff(SlpdbData(i).rr);
+        hrv(i, 1) = HRVFeature.AVNN(SlpdbData(i).rr);
+        hrv(i, 2) = HRVFeature.SDNN(SlpdbData(i).rr);
         hrv(i, 3) = HRVFeature.RMSSD(rr_diff);
         hrv(i, 4) = HRVFeature.SDSD(rr_diff);
         hrv(i, 5) = HRVFeature.NNx(50, rr_diff);
-        hrv(i, 6) = HRVFeature.PNNx(hrv(i, 5), size(Data(i).rr, 2));
+        hrv(i, 6) = HRVFeature.PNNx(hrv(i, 5), size(SlpdbData(i).rr, 2));
 
-        hrv(i, 7) = HRVFeature.HRV_TRIANGULAR_IDX(Data(i).rr);
+        hrv(i, 7) = HRVFeature.HRV_TRIANGULAR_IDX(SlpdbData(i).rr);
 
         hrv(i, 8) = HRVFeature.SD1(hrv(i, 4));
         hrv(i, 9) = HRVFeature.SD2(hrv(i, 2), hrv(i, 4));
@@ -22,7 +22,7 @@ function extractfeatures(Data, destination, outputFormat)
         hrv(i, 11) = HRVFeature.S(hrv(i, 8), hrv(i, 9));
 
         [TP,pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = ...
-            HRVFeature.fft_val_fun(Data(i).rr,2);
+            HRVFeature.fft_val_fun(SlpdbData(i).rr,2);
         hrv(i, 12) = TP;
         hrv(i, 13) = pLF;
         hrv(i, 14) = pHF;
@@ -32,7 +32,7 @@ function extractfeatures(Data, destination, outputFormat)
         hrv(i, 18) = HF;
         
         % set class annotation
-        switch Data(i).annotation
+        switch SlpdbData(i).annotation
             case '1'
                 target(i,6) = 1;
                 target(i,4) = 1;

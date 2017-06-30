@@ -1,73 +1,57 @@
 clear; clc; close all;
-
 %{
-% STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
+%% STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
 fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
-Data = [];
+SlpdbData = [];
 SingleFile = [];
-nRecordingSamples = zeros(length(fileNames), 1);
+nRecSamples = zeros(length(fileNames), 1);
 for i=1:size(fileNames, 2)
     SingleFile = importslpdb(fileNames(i));
-    Data = [Data;SingleFile];
-    nRecordingSamples(i, 1) = length(SingleFile);
+    SlpdbData = [SlpdbData;SingleFile];
+    nRecSamples(i, 1) = length(SingleFile);
 end
-
-save('nRecordingSamples.mat', 'nRecordingSamples');
-save('Data.mat', 'Data');
+save('nRecSamples.mat', 'nRecSamples');
+save('SlpdbData.mat', 'SlpdbData');
+% END OF STEP 1
+%}
+%{
+%% STEP 2: FEATURE EXTRACTION
+SlpdbData = loadmatobject('SlpdbData.mat', 1);
+extractfeatures(SlpdbData, 'features2/', 'all');
+% END OF STEP 2
 %}
 
-%{
-% STEP 2: FEATURE EXTRACTION
-Data = load('Data.mat');
-Data = Data.Data;
-extractfeatures(Data, 'features/', 'all');
-%}
-
-%{
-temp = zeros(10, 4);
+gBest_result = zeros(10, 6);
 classNum = [2 3 4 6];
-
 for cl=1:size(classNum, 2)
 for exp=1:10
 clearvars -except exp temp cl classNum
 clc;
 close all;
-filename = sprintf('slp02_features2_%dclass_%d', classNum(1, cl), exp);
+filename = sprintf('slp01_features2_%dclass_%d', classNum(1, cl), exp);
 diary(filename)
 diary on
-%}
+
 
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
-% nClass = classNum(cl); % jumlah kelas ouput
-nClasses = 2;
+nClasses = classNum(cl); % jumlah kelas ouput
+%nClasses = 2;
 fprintf('Building classifier model for %d classes...\n', nClasses);
 fprintf('Start at %s\n', datestr(clock));
 
-% load features
-hrv = load('features/hrv_features_norm.mat');
-fieldName = fieldnames(hrv);
-hrv = hrv.(fieldName{1});
+% load features and targets
+hrv = loadmatobject('features2/hrv_features_norm.mat', 1);
 nFeatures = size(hrv, 2);
-
-% load targets
-target = load('features/target.mat');
-fieldName = fieldnames(target);
-target = target.(fieldName{1});
+target = loadmatobject('features2/target.mat', 1);
 target = target(:, nClasses);
+hrv = [hrv target]; % combine features and target
 
-% combine features and target
-hrv = [hrv target];
-
-% load nRecordingSamples
-nRecordingSamples = load('nRecordingSamples');
-fieldName = fieldnames(nRecordingSamples);
-nRecordingSamples = nRecordingSamples.(fieldName{1});
-
-% retrieve selected recording
-whichRecording = 1;
-hrv = hrv(getindexrange(nRecordingSamples, whichRecording), :);
+% load nRecSamples and retrieve selected recording
+nRecSamples = loadmatobject('nRecSamples', 1);
+whichRecording = [3 4];
+hrv = hrv(getindexrange(nRecSamples, whichRecording), :);
 
 % SPLIT DATA
 % 70% training data and 30% testing data using stratified sampling
@@ -102,14 +86,13 @@ c1 = 1.2;
 c2 = 1.2;
 
 % Population Initialization: [FeatureMask HiddenNode]
-population = rand(nParticles, nFeatures+nHiddenBits) > 0.8;
+population = rand(nParticles, nFeatures+nHiddenBits) > 0.5;
 % check and re-random if the value is invalid
 for i=1:nParticles
-    nHiddenNodes = binToDec(population(i, nFeatures+1:end));
-    while nHiddenNodes < nFeatures || ...
-            nHiddenNodes > size(trainingData, 1) || ...
-            sum(population(i, 1:nFeatures)) == 0
-        population(i, :) = rand(1, nFeatures+nHiddenBits) > 0.8;
+    while binToDec(population(i, nFeatures+1:end)) < nFeatures || ...
+          binToDec(population(i, nFeatures+1:end)) > size(trainingData, 1) || ...
+          sum(population(i, 1:nFeatures)) == 0
+        population(i, :) = rand(1, nFeatures+nHiddenBits) > 0.5;
     end
 end
 
@@ -169,17 +152,17 @@ for iteration=1:MAX_ITERATIONS
         newPosDec = abs(int64(particleDec + velocity(i, 1)));
         popBin = decToBin(newPosDec);
         
-        %if the total bits lower than nFeatures + nBits, add zeros in front
+        % if the total bits lower than nFeatures + nBits, add zeros in front
         if size(popBin, 2) < (nFeatures + nHiddenBits)
             popBin = [zeros(1, (nFeatures + nHiddenBits)-size(popBin, 2)) popBin];
         end
         
-        %if the number of hidden node is more than the number of samples
+        % if the number of hidden node is more than the number of samples
         if binToDec(popBin(1, nFeatures+1:end)) > size(trainingData, 1) || size(popBin(1, nFeatures+1:end), 2) > nHiddenBits
             popBin = [popBin(1, 1:nFeatures) decToBin(size(trainingData, 1))];
         end
         
-        %set the value
+        % set the value
         population(i, :) = popBin;
     end
     
@@ -228,9 +211,11 @@ fprintf('n Hidden Node = %d\n', binToDec(gBest.particle(1, nFeatures+1:end)));
 %plot(gBest.cummulative);
 fprintf('Finish at %s\n', datestr(clock));
 
-%{
+
 diary off
-temp(exp, classNum(cl)) = gBest.fitness;
+gBest_result(exp, classNum(cl)) = gBest.fitness;
+beep
 end
 end
-%}
+
+xlswrite('features2slp01', gBest_result);
