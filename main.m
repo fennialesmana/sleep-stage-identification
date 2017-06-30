@@ -19,7 +19,7 @@ save('SlpdbData.mat', 'SlpdbData');
 %{
 %% STEP 2: FEATURE EXTRACTION
 SlpdbData = loadmatobject('SlpdbData.mat', 1);
-extractfeatures(SlpdbData, 'features2/', 'all');
+extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
 
@@ -27,14 +27,14 @@ gBest_result = zeros(10, 6);
 classNum = [2 3 4 6];
 for cl=1:size(classNum, 2)
 for exp=1:10
-clearvars -except exp temp cl classNum
+clearvars -except exp gBest_result cl classNum
 clc;
 close all;
-filename = sprintf('slp01_features2_%dclass_%d', classNum(1, cl), exp);
+filename = sprintf('slp01a_features_%dclass_%d_unorm', classNum(1, cl), exp);
 diary(filename)
 diary on
 
-
+whichRecording = 1;
 % STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
 nClasses = classNum(cl); % jumlah kelas ouput
 %nClasses = 2;
@@ -42,15 +42,14 @@ fprintf('Building classifier model for %d classes...\n', nClasses);
 fprintf('Start at %s\n', datestr(clock));
 
 % load features and targets
-hrv = loadmatobject('features2/hrv_features_norm.mat', 1);
+hrv = loadmatobject('features/hrv_features_unorm.mat', 1);
 nFeatures = size(hrv, 2);
-target = loadmatobject('features2/target.mat', 1);
+target = loadmatobject('features/target.mat', 1);
 target = target(:, nClasses);
 hrv = [hrv target]; % combine features and target
 
 % load nRecSamples and retrieve selected recording
 nRecSamples = loadmatobject('nRecSamples', 1);
-whichRecording = [3 4];
 hrv = hrv(getindexrange(nRecSamples, whichRecording), :);
 
 % SPLIT DATA
@@ -218,4 +217,4 @@ beep
 end
 end
 
-xlswrite('features2slp01', gBest_result);
+xlswrite('featuresslp01a_unorm', gBest_result);
