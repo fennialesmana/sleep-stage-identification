@@ -13,6 +13,11 @@ function elmModel = trainELM(nHiddenNode, feature, target)
 %   *) elmModel.outputWeight: output weight (Matrix Size: total classes X nHiddenNode)
 %   *) elmModel.trainingAccuracy: accuracy for given input
     
+    if size(feature, 2) == 0
+        fprintf('Someting wrong, no feature selected.');
+        return
+    end
+
     % STEP 1: RANDOMLY ASSIGN INPUT WEIGHT AND BIAS
     minWeight = -1;
     maxWeight = 1;
