@@ -1,20 +1,20 @@
-function elmModel = trainELM(nHiddenNode, feature, target)
+function [elmModel, acc] = trainELM(feature, target, nHiddenNode)
 %Train Extreme Learning Machine (ELM) model
 %   Syntax:
-%   elmModel = trainELM(nHiddenNode, feature, target)
+%   [elmModel, acc] = trainELM(feature, target, nHiddenNode)
 %
 %   Input:
-%   *) nHiddenNode: Total hidden node of Single Layer Feedforward Neural Network (Range: 1 ... total training samples)
 %   *) feature: Features used for training (Matrix Size: total training samples X total features)
 %   *) target: Target of each sample (Matrix Size: total training samples X total classes)
+%   *) nHiddenNode: Total hidden node of Single Layer Feedforward Neural Network (Range: 1 ... total training samples)
 %
 %   Output:
 %   *) elmModel.inputWeight: input weight (Matrix Size: nHiddenNode (+1 for bias) X total features)
 %   *) elmModel.outputWeight: output weight (Matrix Size: total classes X nHiddenNode)
-%   *) elmModel.trainingAccuracy: accuracy for given input
+%   *) acc = training accuracy
     
     if size(feature, 2) == 0
-        fprintf('Someting wrong, no feature selected.');
+        fprintf('Someting went wrong, no feature selected.');
         return
     end
 
@@ -42,9 +42,7 @@ function elmModel = trainELM(nHiddenNode, feature, target)
         class = find(predictedOutput(:, i) == maxPred(i));
         predictedClass(i) = class(1, 1);
     end
-    trainingAccuracy = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;
-    
+    acc = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;
     elmModel.inputWeight = inputWeight;
     elmModel.outputWeight = outputWeight;
-    elmModel.trainingAccuracy = trainingAccuracy;
 end

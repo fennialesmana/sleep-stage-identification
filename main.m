@@ -75,7 +75,8 @@ c2 = 1.2;
 % fitness parameter
 Wa = 0.95;
 Wf = 0.05;
-result = PSOforELM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+[result, startTime, endTime] = PSOforELM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+%result = PSOforSVM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
 % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
 
 %{

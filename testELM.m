@@ -1,4 +1,4 @@
-function elmModel = testELM(elmModel, feature, target)
+function acc = testELM(feature, target, elmModel)
     % calculating testing accuracy
     hiddenOutput = (elmModel.inputWeight(:, 1:end-1) * feature')+repmat(elmModel.inputWeight(:, end), 1, size(feature, 1)); % linear combination of hidden output
     hiddenOutput = sigmoid(hiddenOutput); % apply activation function on hidden output
@@ -12,6 +12,5 @@ function elmModel = testELM(elmModel, feature, target)
         class = find(predictedOutput(:, i) == maxPred(i));
         predictedClass(i) = class(1, 1);
     end
-    elmModel.testingAccuracy = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;    
-
+    acc = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;    
 end
