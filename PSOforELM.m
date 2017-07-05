@@ -14,8 +14,8 @@ function [result, startTime, endTime] = PSOforELM(MAX_ITERATIONS, nParticles, nF
 %Wf = 0.05;
 % END OF INPUT PARAMETER INITIALIZATION
 
-nClasses = length(unique([trainingData(:, end); testingData(:, end)]));
-fprintf('Running PSO-ELM for %d classes...\n', nClasses);
+%nClasses = length(unique([trainingData(:, end); testingData(:, end)]));
+%fprintf('Running PSO-ELM for %d classes...\n', nClasses);
 %fprintf('Start at %s\n', datestr(clock));
 startTime = clock;
 
@@ -23,20 +23,20 @@ startTime = clock;
 nHiddenBits = length(decToBin(size(trainingData, 1)));
 
 % Population Initialization: [FeatureMask HiddenNode]
-population_position = rand(nParticles, nFeatures+nHiddenBits) > 0.5;
+populationPosition = rand(nParticles, nFeatures+nHiddenBits) > 0.5;
 % check and re-random if the value is invalid:
 for i=1:nParticles
-    while binToDec(population_position(i, nFeatures+1:end)) < nFeatures || ...
-          binToDec(population_position(i, nFeatures+1:end)) > size(trainingData, 1) || ...
-          sum(population_position(i, 1:nFeatures)) == 0
-        population_position(i, :) = rand(1, nFeatures+nHiddenBits) > 0.5;
+    while binToDec(populationPosition(i, nFeatures+1:end)) < nFeatures || ...
+          binToDec(populationPosition(i, nFeatures+1:end)) > size(trainingData, 1) || ...
+          sum(populationPosition(i, 1:nFeatures)) == 0
+        populationPosition(i, :) = rand(1, nFeatures+nHiddenBits) > 0.5;
     end
 end
-population_fitness = zeros(nParticles, 1);
-population_velocity = int64(zeros(nParticles, 1)); % in decimal value
+populationFitness = zeros(nParticles, 1);
+populationVelocity = int64(zeros(nParticles, 1)); % in decimal value
 
-pBest_position = zeros(nParticles, nFeatures+nHiddenBits);
-pBest_fitness = repmat(-1000000, nParticles, 1); % max fitness value
+pBestPosition = zeros(nParticles, nFeatures+nHiddenBits);
+pBestFitness = repmat(-1000000, nParticles, 1); % max fitness value
 
 gBest.position = zeros(1, nFeatures+nHiddenBits); 
 gBest.fitness = -1000000; % max fitness value all particle all iteration
@@ -52,21 +52,21 @@ for i=1:nParticles
     tic;
     %fprintf('%8d %15d ', i, binToDec(population(i, nFeatures+1:end)));
     % TRAINING
-    maskedTrainingFeature = featuremasking(trainingData, population_position(i, 1:nFeatures)); % remove unselected features
+    maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
     trainingTarget = full(ind2vec(trainingData(:,end)'))'; % prepare the target data (transformation from 4 into [0 0 0 1 0 0])
-    [elmModel, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, binToDec(population_position(i, nFeatures+1:end)));
+    [elmModel, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, binToDec(populationPosition(i, nFeatures+1:end)));
     
     % TESTING
-    maskedTestingFeature = featuremasking(testingData, population_position(i, 1:nFeatures)); % remove unselected features
+    maskedTestingFeature = featuremasking(testingData, populationPosition(i, 1:nFeatures)); % remove unselected features
     testingTarget = full(ind2vec(testingData(:,end)'))'; % prepare the target data (transformation from 4 into [0 0 0 1 0 0])
     testAcc = testELM(maskedTestingFeature, testingTarget, elmModel);
     
-    population_fitness(i, 1) = fitness(Wa, Wf, testAcc, population_position(i, 1:nFeatures));
+    populationFitness(i, 1) = fitness(Wa, Wf, testAcc, populationPosition(i, 1:nFeatures));
     
     % pBest Update
-    if population_fitness(i, 1) > pBest_fitness(i, 1)
-        pBest_fitness(i, 1) = population_fitness(i, 1);
-        pBest_position(i, :) = population_position(i, :);
+    if populationFitness(i, 1) > pBestFitness(i, 1)
+        pBestFitness(i, 1) = populationFitness(i, 1);
+        pBestPosition(i, :) = populationPosition(i, :);
     end
     endT = toc;
     
@@ -75,9 +75,9 @@ for i=1:nParticles
     %fprintf('%s\n', binToStringOrder(population(i, 1:nFeatures)));
     
     % save result to struct - part 2
-    result(1).nHiddenNodes(i) = binToDec(population_position(i, nFeatures+1:end));
-    result(1).selectedFeatures(i) = {binToStringOrder(population_position(i, 1:nFeatures))};    
-    result(1).pBest(i) = pBest_fitness(i, 1);
+    result(1).nHiddenNodes(i) = binToDec(populationPosition(i, nFeatures+1:end));
+    result(1).selectedFeatures(i) = {binToStringOrder(populationPosition(i, 1:nFeatures))};    
+    result(1).pBest(i) = pBestFitness(i, 1);
     result(1).time(i) = endT;
     result(1).trainingAccuracy(i) = trainAcc;
     result(1).testingAccuracy(i) = testAcc;
@@ -85,8 +85,8 @@ for i=1:nParticles
 end
 
 % gBest Update
-if max(population_fitness) > gBest.fitness
-    found = find(population_fitness == max(population_fitness));
+if max(populationFitness) > gBest.fitness
+    found = find(populationFitness == max(populationFitness));
     if length(found) > 1 % if have the same gBest fitness value, get the max of testAcc
         maxTestAcc = max(result(1).testingAccuracy(found));
         found2 = find(result(1).testingAccuracy(found) == maxTestAcc);
@@ -102,10 +102,10 @@ if max(population_fitness) > gBest.fitness
             found = found(found2);
         end
     end
-    gBest.fitness = max(population_fitness);
-    gBest.position = population_position(found, :);
-    gBest.iterationOrigin = 0;
-    gBest.particleOrigin = found;
+    gBest.fitness = max(populationFitness);
+    gBest.position = populationPosition(found, :);
+    gBest.whichIteration = 0;
+    gBest.whichParticle = found;
 end
 %fprintf('gBest = %d\n', gBest.fitness);
 % save result to struct - part 3
@@ -123,13 +123,13 @@ for iteration=1:MAX_ITERATIONS
     r2 = rand();
     for i=1:nParticles
         % calculate velocity value
-        positionDec = int64(binToDec(population_position(i, :)));
-        population_velocity(i, 1) = W * population_velocity(i, 1) + ...
-            c1 * r1 * (binToDec(pBest_position(i, :)) - positionDec) + ...
+        positionDec = int64(binToDec(populationPosition(i, :)));
+        populationVelocity(i, 1) = W * populationVelocity(i, 1) + ...
+            c1 * r1 * (binToDec(pBestPosition(i, :)) - positionDec) + ...
             c2 * r2 * (binToDec(gBest.position) - positionDec);
         
         % update particle position
-        newPosDec = abs(int64(positionDec + population_velocity(i, 1)));
+        newPosDec = abs(int64(positionDec + populationVelocity(i, 1)));
         newPosBin = decToBin(newPosDec);
         
         % if the total bits is lower than nFeatures + nHiddenBits, add zeros in front
@@ -149,7 +149,7 @@ for iteration=1:MAX_ITERATIONS
         end
         
         % set the value
-        population_position(i, :) = newPosBin;
+        populationPosition(i, :) = newPosBin;
     end
     
     % Calculate Fitness Value
@@ -158,30 +158,30 @@ for iteration=1:MAX_ITERATIONS
         tic;
         %fprintf('%8d %15d ', i, binToDec(population(i, nFeatures+1:end)));
         % TRAINING
-        maskedTrainingFeature = featuremasking(trainingData, population_position(i, 1:nFeatures)); % remove unselected features
+        maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
         trainingTarget = full(ind2vec(trainingData(:,end)'))'; % prepare the target data (transformation from 4 into [0 0 0 1 0 0])
-        [elmModel, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, binToDec(population_position(i, nFeatures+1:end)));
+        [elmModel, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, binToDec(populationPosition(i, nFeatures+1:end)));
 
         % TESTING
-        maskedTestingFeature = featuremasking(testingData, population_position(i, 1:nFeatures)); % remove unselected features
+        maskedTestingFeature = featuremasking(testingData, populationPosition(i, 1:nFeatures)); % remove unselected features
         testingTarget = full(ind2vec(testingData(:,end)'))'; % prepare the target data (transformation from 4 into [0 0 0 1 0 0])
         testAcc = testELM(maskedTestingFeature, testingTarget, elmModel);
         
-        population_fitness(i, 1) = fitness(Wa, Wf, testAcc, population_position(i, 1:nFeatures));
+        populationFitness(i, 1) = fitness(Wa, Wf, testAcc, populationPosition(i, 1:nFeatures));
 
         % pBest Update
-        if population_fitness(i, 1) > pBest_fitness(i, 1)
-            pBest_fitness(i, 1) = population_fitness(i, 1);
-            pBest_position(i, :) = population_position(i, :);
+        if populationFitness(i, 1) > pBestFitness(i, 1)
+            pBestFitness(i, 1) = populationFitness(i, 1);
+            pBestPosition(i, :) = populationPosition(i, :);
         end
         endT = toc;
         
         %fprintf('%15d %15d %15d %15d %4s', pBest_fitness(i, 1), endTime, elmModel.trainingAccuracy, elmModel.testingAccuracy, ' ');
         %fprintf('%s\n', binToStringOrder(population(i, 1:nFeatures)));
         % save result to struct - part 2    
-        result(iteration+1).nHiddenNodes(i) = binToDec(population_position(i, nFeatures+1:end));
-        result(iteration+1).selectedFeatures(i) = {binToStringOrder(population_position(i, 1:nFeatures))};
-        result(iteration+1).pBest(i) = pBest_fitness(i, 1);
+        result(iteration+1).nHiddenNodes(i) = binToDec(populationPosition(i, nFeatures+1:end));
+        result(iteration+1).selectedFeatures(i) = {binToStringOrder(populationPosition(i, 1:nFeatures))};
+        result(iteration+1).pBest(i) = pBestFitness(i, 1);
         result(iteration+1).time(i) = endT;
         result(iteration+1).trainingAccuracy(i) = trainAcc;
         result(iteration+1).testingAccuracy(i) = testAcc;
@@ -190,8 +190,8 @@ for iteration=1:MAX_ITERATIONS
     end
 
     % gBest Update
-    if max(population_fitness) > gBest.fitness
-        found = find(population_fitness == max(population_fitness));
+    if max(populationFitness) > gBest.fitness
+        found = find(populationFitness == max(populationFitness));
         if length(found) > 1 % if have the same gBest fitness value, get the max of testAcc
             maxTestAcc = max(result(iteration+1).testingAccuracy(found));
             found2 = find(result(iteration+1).testingAccuracy(found) == maxTestAcc);
@@ -207,8 +207,8 @@ for iteration=1:MAX_ITERATIONS
                 found = found(found2);
             end
         end
-        gBest.fitness = max(population_fitness);
-        gBest.position = population_position(found, :);
+        gBest.fitness = max(populationFitness);
+        gBest.position = populationPosition(found, :);
         gBest.whichIteration = iteration;
         gBest.whichParticle = found;
     end
