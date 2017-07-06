@@ -29,7 +29,8 @@ extractfeatures(SlpdbData, 'features/', 'all');
 %% STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
-for iFile=1:length(fileNames)
+%for iFile=1:length(fileNames)
+iFile = 17;
     AllClassesResult = ([]);
     for iClass=1:length(classNum)
         ExperimentResult = struct([]);
@@ -79,11 +80,11 @@ for iFile=1:length(fileNames)
             ExperimentResult(iExp).iteration = result;
             ExperimentResult(iExp).startTime = startTime;
             ExperimentResult(iExp).endTime = endTime;
-            beep
+            %beep
         end
         AllClassesResult(iClass).totalClass = classNum(iClass);
         AllClassesResult(iClass).experimentResult = ExperimentResult;
     end
-    save(strcat(fileNames{iFile}, '_result.mat'), 'AllClassesResult');
-end
+    save(strcat(fileNames{iFile}, '_PSOELM_result.mat'), 'AllClassesResult');
+%end
 % END OF STEP 3
