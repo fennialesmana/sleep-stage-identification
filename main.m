@@ -30,7 +30,7 @@ extractfeatures(SlpdbData, 'features/', 'all');
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
 %for iFile=1:length(fileNames)
-iFile = 17;
+iFile = 13; 
     AllClassesResult = ([]);
     for iClass=1:length(classNum)
         ExperimentResult = struct([]);
@@ -85,6 +85,6 @@ iFile = 17;
         AllClassesResult(iClass).totalClass = classNum(iClass);
         AllClassesResult(iClass).experimentResult = ExperimentResult;
     end
-    save(strcat(fileNames{iFile}, '_PSOELM_result.mat'), 'AllClassesResult');
+    save(strcat(fileNames{iFile}, '_PSOELM_result.mat'), 'AllClassesResult', '-v7.3');
 %end
 % END OF STEP 3
