@@ -26,7 +26,8 @@ extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
 
-%% STEP 3: BUILD CLASSIFIER MODEL USING PSO AND ELM
+%{
+%% STEP 3: BUILD CLASSIFIER MODEL
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
 %for iFile=1:length(fileNames)
@@ -88,3 +89,12 @@ iFile = 13;
     save(strcat(fileNames{iFile}, '_PSOELM_result.mat'), 'AllClassesResult', '-v7.3');
 %end
 % END OF STEP 3
+%}
+            
+%% STEP 4: RESULT EXTRXTION slp01a_PSOELM_result.mat
+nFiles = length(fileNames);
+%for iFile=1:nFiles
+    iFile = 15;
+    extractResult(sprintf('%s_%s_%s.mat', cell2mat(fileNames(iFile)), 'PSOELM', 'result'));
+%end
+% END OF STEP 4
