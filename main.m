@@ -95,7 +95,7 @@ iFile = 13;
 %% STEP 4: RESULT EXTRACTION
 nFiles = length(fileNames);
 %for iFile=1:nFiles
-    iFile = 18;
+    iFile = 15;
     extractresults(sprintf('%s_result/%s_%s_result.mat', method, method, cell2mat(fileNames(iFile))));
 %end
 % END OF STEP 4

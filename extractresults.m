@@ -1,7 +1,7 @@
 function extractresults(path)
     % Name Format: 'slp01a_PSOELM_result.mat'
     header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'HiddenNodes', 'SelectedFeatures'};
-    AllClassesResult = loadmatobject(fileName, 1);
+    AllClassesResult = loadmatobject(path, 1);
     fileName = strsplit(path, '/');
     folderName = cell2mat(fileName(1));
     fileName = cell2mat(fileName(end));
