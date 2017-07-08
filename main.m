@@ -95,6 +95,6 @@ iFile = 13;
 nFiles = length(fileNames);
 %for iFile=1:nFiles
     iFile = 14;
-    extractresult(sprintf('%s_%s_%s.mat', cell2mat(fileNames(iFile)), 'PSOELM', 'result'));
+    extractresults(sprintf('%s_%s_%s.mat', cell2mat(fileNames(iFile)), 'PSOELM', 'result'));
 %end
 % END OF STEP 4
