@@ -25,11 +25,12 @@ SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
-
+method = 'PSOELM';
 %{
 %% STEP 3: BUILD CLASSIFIER MODEL
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
+mkdir(method);
 %for iFile=1:length(fileNames)
 iFile = 13; 
     AllClassesResult = ([]);
@@ -86,15 +87,15 @@ iFile = 13;
         AllClassesResult(iClass).totalClass = classNum(iClass);
         AllClassesResult(iClass).experimentResult = ExperimentResult;
     end
-    save(strcat(fileNames{iFile}, '_PSOELM_result.mat'), 'AllClassesResult', '-v7.3');
+    save(sprintf('%s_%s_result.mat', method, fileNames{iFile}), 'AllClassesResult', '-v7.3');
 %end
 % END OF STEP 3
 %}
-            
-%% STEP 4: RESULT EXTRXTION slp01a_PSOELM_result.mat
+
+%% STEP 4: RESULT EXTRACTION
 nFiles = length(fileNames);
 %for iFile=1:nFiles
-    iFile = 14;
-    extractresults(sprintf('%s_%s_%s.mat', cell2mat(fileNames(iFile)), 'PSOELM', 'result'));
+    iFile = 18;
+    extractresults(sprintf('%s_result/%s_%s_result.mat', method, method, cell2mat(fileNames(iFile))));
 %end
 % END OF STEP 4

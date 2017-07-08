@@ -1,7 +1,13 @@
-function extractresults(fileName)
+function extractresults(path)
     % Name Format: 'slp01a_PSOELM_result.mat'
     header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'HiddenNodes', 'SelectedFeatures'};
     AllClassesResult = loadmatobject(fileName, 1);
+    fileName = strsplit(path, '/');
+    folderName = cell2mat(fileName(1));
+    fileName = cell2mat(fileName(end));
+    recName = strsplit(fileName, '.');
+    recName = cell2mat(recName(1));
+    mkdir(recName);
     nClasses = length(AllClassesResult);
     nExperiments = length(AllClassesResult(1).experimentResult);
     
@@ -29,10 +35,10 @@ function extractresults(fileName)
             tempCell(iExp, 1) = selectedFeatures;
             %fprintf('%5d %5d %15d %15d %15d %15d %15s\n', totalClass, iExp, gBestFitness, trainAcc, testAcc, nHiddenNodes, cell2mat(selectedFeatures));
         end
-        recName = strsplit(fileName, '.');
-        xlswrite(strcat(recName{1}, '.xlsx'), header, sprintf('%d classes', totalClass), 'A1');
-        xlswrite(strcat(recName{1}, '.xlsx'), temp, sprintf('%d classes', totalClass), 'A2');
-        xlswrite(strcat(recName{1}, '.xlsx'), tempCell, sprintf('%d classes', totalClass), 'F2');
+        
+        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), header, sprintf('%d classes', totalClass), 'A1');
+        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), temp, sprintf('%d classes', totalClass), 'A2');
+        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), tempCell, sprintf('%d classes', totalClass), 'F2');
         
         bestIdx = -1;
         found = find(temp(:, 2) == max(temp(:, 2)));
@@ -66,7 +72,7 @@ function extractresults(fileName)
         end
         
         %to-do: plot the best index
-        xlswrite(strcat(recName{1}, '.xlsx'), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
+        xlswrite(strcat(recName, '.xlsx'), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
 
         nIterations = length(AllClassesResult(iClass).experimentResult(bestIdx).iteration)-1;
         gBest = zeros();
@@ -75,13 +81,12 @@ function extractresults(fileName)
         end
         
         % save graphics
-        fName = strsplit(recName{1}, '_');
-        fName = fName(1);
+        fName = strsplit(recName, '_');
         f = figure;
         plot(1:nIterations, gBest);
         ylabel('gBest Fitness'); xlabel('Iteration');
-        title(sprintf('Best Experiment of %s (%d Classes Classification)', cell2mat(fName), totalClass));
-        saveas(f, sprintf('gBest of %s (%d classes).png', cell2mat(fName), totalClass));
+        title(sprintf('[%s] Best Experiment of %s (%d classes)', cell2mat(fName(1)), cell2mat(fName(2)), totalClass));
+        saveas(f, sprintf('%s/[%s] gBest of %s (%d classes).png', recName, cell2mat(fName(1)), cell2mat(fName(2)), totalClass));
         close all;
         %fprintf('\n');
     end
