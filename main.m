@@ -94,7 +94,7 @@ iFile = 13;
 %% STEP 4: RESULT EXTRXTION slp01a_PSOELM_result.mat
 nFiles = length(fileNames);
 %for iFile=1:nFiles
-    iFile = 15;
+    iFile = 18;
     extractResult(sprintf('%s_%s_%s.mat', cell2mat(fileNames(iFile)), 'PSOELM', 'result'));
 %end
 % END OF STEP 4
