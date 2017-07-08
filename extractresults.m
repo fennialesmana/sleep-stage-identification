@@ -3,7 +3,6 @@ function extractresults(path)
     header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'HiddenNodes', 'SelectedFeatures'};
     AllClassesResult = loadmatobject(path, 1);
     fileName = strsplit(path, '/');
-    folderName = cell2mat(fileName(1));
     fileName = cell2mat(fileName(end));
     recName = strsplit(fileName, '.');
     recName = cell2mat(recName(1));
@@ -36,9 +35,9 @@ function extractresults(path)
             %fprintf('%5d %5d %15d %15d %15d %15d %15s\n', totalClass, iExp, gBestFitness, trainAcc, testAcc, nHiddenNodes, cell2mat(selectedFeatures));
         end
         
-        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), header, sprintf('%d classes', totalClass), 'A1');
-        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), temp, sprintf('%d classes', totalClass), 'A2');
-        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), tempCell, sprintf('%d classes', totalClass), 'F2');
+        xlswrite(sprintf('%s/%s.xlsx', recName, fileName), header, sprintf('%d classes', totalClass), 'A1');
+        xlswrite(sprintf('%s/%s.xlsx', recName, fileName), temp, sprintf('%d classes', totalClass), 'A2');
+        xlswrite(sprintf('%s/%s.xlsx', recName, fileName), tempCell, sprintf('%d classes', totalClass), 'F2');
         
         bestIdx = -1;
         found = find(temp(:, 2) == max(temp(:, 2)));
@@ -72,7 +71,7 @@ function extractresults(path)
         end
         
         %to-do: plot the best index
-        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
+        xlswrite(sprintf('%s/%s.xlsx', recName, fileName), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
 
         nIterations = length(AllClassesResult(iClass).experimentResult(bestIdx).iteration)-1;
         gBest = zeros();
