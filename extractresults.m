@@ -72,7 +72,7 @@ function extractresults(path)
         end
         
         %to-do: plot the best index
-        xlswrite(strcat(recName, '.xlsx'), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
+        xlswrite(sprintf('%s/%s.xlsx', folderName, fileName), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
 
         nIterations = length(AllClassesResult(iClass).experimentResult(bestIdx).iteration)-1;
         gBest = zeros();
