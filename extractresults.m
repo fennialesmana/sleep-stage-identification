@@ -1,4 +1,4 @@
-function extractresult(fileName)
+function extractresults(fileName)
     % Name Format: 'slp01a_PSOELM_result.mat'
     header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'HiddenNodes', 'SelectedFeatures'};
     AllClassesResult = loadmatobject(fileName, 1);
