@@ -114,6 +114,9 @@ result(1).gBest = gBest;
 
 %% PSO ITERATION
 for iteration=1:MAX_ITERATIONS
+    if mod(iteration, 10)==0
+        fprintf('%s = %d/%d\n', datestr(clock), iteration, MAX_ITERATIONS);
+    end
     %fprintf('\nIteration %d of %d\n', iteration, MAX_ITERATIONS);
     % save result to struct - part 1
     result(iteration+1).iteration = iteration;
