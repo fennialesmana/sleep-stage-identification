@@ -40,34 +40,37 @@ function extractresults(path)
         xlswrite(sprintf('%s/%s.xlsx', recName, recName), tempCell, sprintf('%d classes', totalClass), 'F2');
         
         bestIdx = -1;
-        found = find(temp(:, 2) == max(temp(:, 2)));
-        if length(found) > 1
-            found2 = find(temp(found, 4) == max(temp(found, 4)));
-            if length(found2) > 1
-                found3 = find(temp(found2, 3) == max(temp(found2, 3)));
-                if length(found3) > 1
-                    found4 = find(temp(found3, 5) == min(temp(found3, 5)));
-                    if length(found4) > 1
-                        minLength = length(tempCell{found4(1)});
-                        bestIdx = found4(1);
-                        for i=2:length(found4)
-                            if length(tempCell{found4(i)}) < minLength
-                                minLength = length(tempCell{found4(i)});
-                                bestIdx = found4(i);
+        maxGBestIdx = find(temp(:, 2) == max(temp(:, 2)));
+        if length(maxGBestIdx) > 1
+            maxTestIdx = find(temp(maxGBestIdx, 4) == max(temp(maxGBestIdx, 4)));
+            maxGBestIdx = maxGBestIdx(maxTestIdx);
+            if length(maxGBestIdx) > 1
+                maxTrainIdx = find(temp(maxGBestIdx, 3) == max(temp(maxGBestIdx, 3)));
+                maxGBestIdx = maxGBestIdx(maxTrainIdx);
+                if length(maxGBestIdx) > 1
+                    minHiddenIdx = find(temp(maxGBestIdx, 5) == min(temp(maxGBestIdx, 5)));
+                    maxGBestIdx = maxGBestIdx(minHiddenIdx);
+                    if length(maxGBestIdx) > 1
+                        minLength = length(tempCell{maxGBestIdx(1)});
+                        bestIdx = maxGBestIdx(1);
+                        for i=2:length(maxGBestIdx)
+                            if length(tempCell{maxGBestIdx(i)}) < minLength
+                                minLength = length(tempCell{maxGBestIdx(i)});
+                                bestIdx = maxGBestIdx(i);
                             end
                         end
                         
                     else
-                        bestIdx = found4;
+                        bestIdx = maxGBestIdx;
                     end
                 else
-                    bestIdx = found3;
+                    bestIdx = maxGBestIdx;
                 end
             else
-                bestIdx = found2;
+                bestIdx = maxGBestIdx;
             end
         else
-            bestIdx = found;
+            bestIdx = maxGBestIdx;
         end
         
         %to-do: plot the best index
