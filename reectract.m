@@ -12,7 +12,7 @@ firstExp = [12 19 10 18 25 22 8 11 4 25 10]';
 secondCol = [4 0 3 0 4 0 0 2 0 0 0]';
 secondExp = [19 0 8 0 12 0 0 19 0 0 0]';
 nIterations = 100;
-for iProb=2:length(problem)
+for iProb=10:11%length(problem)
     path = sprintf('PSOELM_result/PSOELM_%s_result.mat', fileNames{problem(iProb)});
     AllClassesResult = loadmatobject(path, 1);
 	
