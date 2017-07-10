@@ -25,14 +25,14 @@ SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
-method = 'PSOELM';
-%{
+method = 'PSOSVM';
+
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
-mkdir(strcat(method, '_result'));
+%mkdir(strcat(method, '_result'));
 %for iFile=1:length(fileNames)
-iFile = 13; 
+iFile = 1;
     AllClassesResult = ([]);
     for iClass=1:length(classNum)
         ExperimentResult = struct([]);
@@ -70,13 +70,17 @@ iFile = 13;
 
             % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
             % PSO parameter initialization
-            MAX_ITERATIONS = 100; nParticles = 20;
+            MAX_ITERATION = 100; nParticles = 20;
             % update velocity parameter
             W = 0.6; c1 = 1.2; c2 = 1.2;
             % fitness parameter
             Wa = 0.95; Wf = 0.05;
-            [result, startTime, endTime] = PSOforELM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
-            %result = PSOforSVM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+            switch method
+                case 'PSOELM'
+                    [result, startTime, endTime] = PSOforELM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+                case 'PSOSVM'
+                    [result, startTime, endTime] = PSOforSVM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+            end
             % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
 
             ExperimentResult(iExp).iteration = result;
@@ -90,8 +94,9 @@ iFile = 13;
     save(sprintf('%s_%s_result.mat', method, fileNames{iFile}), 'AllClassesResult', '-v7.3');
 %end
 % END OF STEP 3
-%}
 
+
+%{
 %% STEP 3b: BUILD CLASSIFIER MODEL (ALL OBJECT RECORDINGS)
 MAX_EXPERIMENT = 1; %changed (before: 25)
 classNum = [2 3 4 6];
@@ -133,13 +138,13 @@ iFile = 1:18;
 
             % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
             % PSO parameter initialization
-            MAX_ITERATIONS = 100; nParticles = 20;
+            MAX_ITERATION = 100; nParticles = 20;
             % update velocity parameter
             W = 0.6; c1 = 1.2; c2 = 1.2;
             % fitness parameter
             Wa = 0.95; Wf = 0.05;
-            [result, startTime, endTime] = PSOforELM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
-            %result = PSOforSVM(MAX_ITERATIONS, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+            [result, startTime, endTime] = PSOforELM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+            %result = PSOforSVM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
             % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
 
             ExperimentResult(iExp).iteration = result;
@@ -152,6 +157,7 @@ iFile = 1:18;
     end
     save(sprintf('%s_all_exp1_result.mat', method), 'AllClassesResult', '-v7.3');
 % END OF STEP 3
+%}
 
 %{
 %% STEP 4: RESULT EXTRACTION

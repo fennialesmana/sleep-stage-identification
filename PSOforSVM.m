@@ -1,4 +1,4 @@
-function [result, startTime, endTime] = PSOforELM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf)
+function [result, startTime, endTime] = PSOforSVM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf)
 %% INPUT PARAMETER INITIALIZATION
 %MAX_ITERATIONS = 100;
 %nParticles = 20;
@@ -20,32 +20,28 @@ function [result, startTime, endTime] = PSOforELM(MAX_ITERATION, nParticles, nFe
 startTime = clock;
 
 %% PSO PARAMETER PREPARATION
-nHiddenBits = length(decToBin(size(trainingData, 1))); % max total bits for hidden nodes
-
-% Population Initialization: [FeatureMask HiddenNode]
-populationPosition = rand(nParticles, nFeatures+nHiddenBits) > 0.5;
+% Population Initialization: [FeatureMask]
+populationPosition = rand(nParticles, nFeatures) > 0.5;
 % check and re-random if the value is invalid:
 for i=1:nParticles
-    while binToDec(populationPosition(i, nFeatures+1:end)) < nFeatures || ...
-          binToDec(populationPosition(i, nFeatures+1:end)) > size(trainingData, 1) || ...
-          sum(populationPosition(i, 1:nFeatures)) == 0
-        populationPosition(i, :) = rand(1, nFeatures+nHiddenBits) > 0.5;
+    while sum(populationPosition(i, 1:nFeatures)) == 0
+        populationPosition(i, :) = rand(1, nFeatures) > 0.5;
     end
 end
 populationFitness = zeros(nParticles, 1);
 populationVelocity = int64(zeros(nParticles, 1)); % in decimal value
 
-pBestPosition = zeros(nParticles, nFeatures+nHiddenBits);
+pBestPosition = zeros(nParticles, nFeatures);
 pBestFitness = repmat(-1000000, nParticles, 1); % max fitness value
 
-gBest.position = zeros(1, nFeatures+nHiddenBits); 
+gBest.position = zeros(1, nFeatures); 
 gBest.fitness = -1000000; % max fitness value all particle all iteration
 % END OF PSO PARAMETER PREPARATION
 
 %% INITIALIZATION STEP
 % save result to struct - part 1
 result(1).iteration = 0;
-result(1).nParticles = nParticles;
+%result(1).nParticles = nParticles;
 
 %fprintf('%8s %15s %15s %15s %15s %15s %20s\n', 'Particle', 'nHiddenNode', 'pBest', 'Time', 'TrainAcc', 'TestAcc', 'SelectedFeatures');
 for i=1:nParticles
@@ -122,13 +118,13 @@ result(1).gBest = gBest;
 
 %% PSO ITERATION
 for iteration=1:MAX_ITERATION
-    if mod(iteration, 10)==0
-        fprintf('%s = %d/%d\n', datestr(clock), iteration, MAX_ITERATION);
-    end
+    %if mod(iteration, 10)==0
+    %    fprintf('%s = %d/%d\n', datestr(clock), iteration, MAX_ITERATION);
+    %end
     %fprintf('\nIteration %d of %d\n', iteration, MAX_ITERATIONS);
     % save result to struct - part 1
     result(iteration+1).iteration = iteration;
-    result(iteration+1).nParticles = nParticles;
+    %result(iteration+1).nParticles = nParticles;
     % Update Velocity
     r1 = rand();
     r2 = rand();

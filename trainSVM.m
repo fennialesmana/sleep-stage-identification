@@ -1,13 +1,24 @@
-function SVMModel = trainSVM(feature, target, kernel)
+function SVMModels = trainSVM(feature, target, kernel)
+%Train Support Vector Machines (SVM) model using One VS All
+%   Syntax:
+%   SVMModel = trainSVM(feature, target, kernel)
+%
+%   Input:
+%   *) feature: Features used for training (Matrix Size: total training samples X total features)
+%   *) target: Target of each sample (Matrix Size: total training samples X 1)
+%   *) kernel: kernel used for SVM
+%
+%   Output:
+%   *) SVMModels: SVM models of totalClass classifier
     if nargin == 2
         kernel = 'linear';
     end
     className = unique(target);
-    nClass = length(className);
-    SVMModel = cell(nClass,1);
+    nClasses = length(className);
+    SVMModels = cell(nClasses,1);
     
-    for i=1:nClass
+    for i=1:nClasses
         label = (target==className(i));
-        SVMModel{i} = fitcsvm(feature,label, 'KernelFunction', kernel, 'Standardize', true);
+        SVMModels{i} = fitcsvm(feature, label, 'KernelFunction', kernel, 'Standardize', true);
     end
 end

@@ -1,10 +1,9 @@
-function acc = testSVM(feature, target, SVMModel)
-    className = unique(target);
-    nClass = length(className);
+function acc = testSVM(feature, target, SVMModels)
+    nClasses = length(SVMModels{1}.ClassNames);
     predicted = zeros(size(target));
     for i=1:size(feature, 1)
-        for k=1:nClass
-            if(predict(SVMModel{k},feature(i,:))) 
+        for k=1:nClasses
+            if predict(SVMModels{k},feature(i,:))
                 break;
             end
         end

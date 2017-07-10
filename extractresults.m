@@ -1,5 +1,4 @@
 function extractresults(path)
-    % Name Format: 'slp01a_PSOELM_result.mat'
     header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'HiddenNodes', 'SelectedFeatures'};
     AllClassesResult = loadmatobject(path, 1);
     fileName = strsplit(path, '/');
@@ -39,42 +38,30 @@ function extractresults(path)
         xlswrite(sprintf('%s/%s.xlsx', recName, recName), temp, sprintf('%d classes', totalClass), 'A2');
         xlswrite(sprintf('%s/%s.xlsx', recName, recName), tempCell, sprintf('%d classes', totalClass), 'F2');
         
-        bestIdx = -1;
-        maxGBestIdx = find(temp(:, 2) == max(temp(:, 2)));
-        if length(maxGBestIdx) > 1
-            maxTestIdx = find(temp(maxGBestIdx, 4) == max(temp(maxGBestIdx, 4)));
-            maxGBestIdx = maxGBestIdx(maxTestIdx);
-            if length(maxGBestIdx) > 1
-                maxTrainIdx = find(temp(maxGBestIdx, 3) == max(temp(maxGBestIdx, 3)));
-                maxGBestIdx = maxGBestIdx(maxTrainIdx);
-                if length(maxGBestIdx) > 1
-                    minHiddenIdx = find(temp(maxGBestIdx, 5) == min(temp(maxGBestIdx, 5)));
-                    maxGBestIdx = maxGBestIdx(minHiddenIdx);
-                    if length(maxGBestIdx) > 1
-                        minLength = length(tempCell{maxGBestIdx(1)});
-                        bestIdx = maxGBestIdx(1);
-                        for i=2:length(maxGBestIdx)
-                            if length(tempCell{maxGBestIdx(i)}) < minLength
-                                minLength = length(tempCell{maxGBestIdx(i)});
-                                bestIdx = maxGBestIdx(i);
+        bestIdx = find(temp(:, 2) == max(temp(:, 2)));
+        if length(bestIdx) > 1
+            bestIdx = bestIdx(temp(bestIdx, 4) == max(temp(bestIdx, 4)));
+            if length(bestIdx) > 1
+                bestIdx = bestIdx(temp(bestIdx, 3) == max(temp(bestIdx, 3)));
+                if length(bestIdx) > 1
+                    bestIdx = bestIdx(temp(bestIdx, 5) == min(temp(bestIdx, 5)));
+                    if length(bestIdx) > 1
+                        minLength = sum(tempCell{bestIdx(1)} == ' ');
+                        minIdx = bestIdx(1);
+                        for i=2:length(bestIdx)
+                            if sum(tempCell{bestIdx(i)} == ' ') < minLength
+                                minLength = sum(tempCell{bestIdx(i)} == ' ');
+                                minIdx = bestIdx(i);
                             end
                         end
-                        
-                    else
-                        bestIdx = maxGBestIdx;
+                        bestIdx = minIdx;
                     end
-                else
-                    bestIdx = maxGBestIdx;
                 end
-            else
-                bestIdx = maxGBestIdx;
             end
-        else
-            bestIdx = maxGBestIdx;
         end
         
         %to-do: plot the best index
-        xlswrite(sprintf('%s/%s.xlsx', recName, recName), {'best experiment'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
+        xlswrite(sprintf('%s/%s.xlsx', recName, recName), {'BEST EXPERIMENT'}, sprintf('%d classes', totalClass), sprintf('G%d', bestIdx+1));
 
         nIterations = length(AllClassesResult(iClass).experimentResult(bestIdx).iteration)-1;
         gBest = zeros();
