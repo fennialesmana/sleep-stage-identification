@@ -9,7 +9,7 @@ function SVMModels = trainSVM(feature, target, kernel)
 %   *) kernel: kernel used for SVM
 %
 %   Output:
-%   *) SVMModels: SVM models of totalClass classifier
+%   *) SVMModels: SVM model collection, cell size of totalClass classifier
     if nargin == 2
         kernel = 'linear';
     end

@@ -1,5 +1,17 @@
 function acc = testSVM(feature, target, SVMModels)
-    nClasses = length(SVMModels{1}.ClassNames);
+%Test Support Vector Machines (SVM) model using One VS All
+%   Syntax:
+%   acc = testSVM(feature, target, SVMModels)
+%
+%   Input:
+%   *) feature: Features used for training (Matrix Size: total training samples X total features)
+%   *) target: Target of each sample (Matrix Size: total training samples X 1)
+%   *) SVMModels: SVM model collection, cell size of totalClass classifier
+%
+%   Output:
+%   *) acc: accuracy
+
+    nClasses = length(SVMModels);
     predicted = zeros(size(target));
     for i=1:size(feature, 1)
         for k=1:nClasses

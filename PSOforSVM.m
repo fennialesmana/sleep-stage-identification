@@ -31,10 +31,10 @@ end
 populationFitness = zeros(nParticles, 1);
 populationVelocity = int64(zeros(nParticles, 1)); % in decimal value
 
-pBestPosition = zeros(nParticles, nFeatures);
+pBestPosition = false(nParticles, nFeatures);
 pBestFitness = repmat(-1000000, nParticles, 1); % max fitness value
 
-gBest.position = zeros(1, nFeatures); 
+gBest.position = false(1, nFeatures);
 gBest.fitness = -1000000; % max fitness value all particle all iteration
 % END OF PSO PARAMETER PREPARATION
 
@@ -48,16 +48,15 @@ for i=1:nParticles
     tic;
     %fprintf('%8d %15d ', i, binToDec(population(i, nFeatures+1:end)));
     % TRAINING
-    maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-    trainingTarget = full(ind2vec(trainingData(:,end)'))'; % prepare the target data (example: transformation from 4 into [0 0 0 1 0 0])
-    [elmModel, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, binToDec(populationPosition(i, nFeatures+1:end)));
+    maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, :)); % remove unselected features
+    SVMModels = trainSVM(maskedTrainingFeature, trainingData(:,end));
+    trainAcc = testSVM(maskedTrainingFeature, trainingData(:,end), SVMModels);
     
     % TESTING
-    maskedTestingFeature = featuremasking(testingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-    testingTarget = full(ind2vec(testingData(:,end)'))'; % prepare the target data (example: transformation from 4 into [0 0 0 1 0 0])
-    testAcc = testELM(maskedTestingFeature, testingTarget, elmModel);
+    maskedTestingFeature = featuremasking(testingData, populationPosition(i, :)); % remove unselected features
+    testAcc = testSVM(maskedTestingFeature, testingData(:,end), SVMModels);
     
-    populationFitness(i, 1) = fitness(Wa, Wf, testAcc, populationPosition(i, 1:nFeatures));
+    populationFitness(i, 1) = fitness(Wa, Wf, testAcc, populationPosition(i, :));
     
     % pBest Update
     if populationFitness(i, 1) > pBestFitness(i, 1)
@@ -71,13 +70,12 @@ for i=1:nParticles
     %fprintf('%s\n', binToStringOrder(population(i, 1:nFeatures)));
     
     % save result to struct - part 2
-    result(1).nHiddenNodes(i) = binToDec(populationPosition(i, nFeatures+1:end));
-    result(1).selectedFeatures(i) = {binToStringOrder(populationPosition(i, 1:nFeatures))};    
+    result(1).particlePosition(i, :) = populationPosition(i, :);
     result(1).pBest(i) = pBestFitness(i, 1);
     result(1).time(i) = endT;
     result(1).trainingAccuracy(i) = trainAcc;
     result(1).testingAccuracy(i) = testAcc;
-    result(1).elmModel(i) = elmModel;
+    result(1).SVMModels{i} = SVMModels;
 end
 
 % gBest Update
@@ -89,20 +87,16 @@ if max(populationFitness) > gBest.fitness
         if length(found) > 1 % if have the same testAcc, get the max of trainAcc
             maxTrainAcc = max(result(1).trainingAccuracy(found));
             found = found(result(1).trainingAccuracy(found) == maxTrainAcc);
-            if length(found) > 1 % if have the same trainAcc, get the min of hidden nodes
-                minHidden = min(result(1).nHiddenNodes(found));
-                found = found(result(1).nHiddenNodes(found) == minHidden);
-                if length(found) > 1 % if have the same hiddenNodes, get the min of selected features
-                    minLength = sum(result(1).selectedFeatures{found(1)} == ' ');
-                    minIdx = found(1);
-                    for i=2:length(found)
-                        if sum(result(1).selectedFeatures{found(i)} == ' ') < minLength
-                            minLength = sum(result(1).selectedFeatures{found(i)} == ' ');
-                            minIdx = found(i);
-                        end
+            if length(found) > 1 % if have the same trainAcc, get the min of selected features
+                minLength = sum(result(1).selectedFeatures{found(1)} == ' ');
+                minIdx = found(1);
+                for i=2:length(found)
+                    if sum(result(1).selectedFeatures{found(i)} == ' ') < minLength
+                        minLength = sum(result(1).selectedFeatures{found(i)} == ' ');
+                        minIdx = found(i);
                     end
-                    found = minIdx;
                 end
+                found = minIdx;
             end
         end
     end

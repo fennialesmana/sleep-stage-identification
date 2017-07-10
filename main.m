@@ -25,7 +25,7 @@ SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
-method = 'PSOSVM';
+method = 'PSOELM';
 
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 MAX_EXPERIMENT = 25;
@@ -69,15 +69,24 @@ iFile = 1;
             % END OF SPLIT DATA
 
             % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
+            %{
             % PSO parameter initialization
             MAX_ITERATION = 100; nParticles = 20;
             % update velocity parameter
             W = 0.6; c1 = 1.2; c2 = 1.2;
             % fitness parameter
             Wa = 0.95; Wf = 0.05;
+            %}
+            PSOSettings.MAX_ITERATION = 100;
+            PSOSettings.nParticles = 20;
+            PSOSettings.W = 0.6;
+            PSOSettings.c1 = 1.2;
+            PSOSettings.c2 = 1.2;
+            PSOSettings.Wa = 0.95;
+            PSOSettings.Wf = 0.05;
             switch method
                 case 'PSOELM'
-                    [result, startTime, endTime] = PSOforELM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+                    [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings);
                 case 'PSOSVM'
                     [result, startTime, endTime] = PSOforSVM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
             end
