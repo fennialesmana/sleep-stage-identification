@@ -68,9 +68,8 @@ result(1).gBest = gBest;
 %% PSO ITERATION
 for iteration=1:PSOSettings.MAX_ITERATION
     %if mod(iteration, 10)==0
-    %    fprintf('%s = %d/%d\n', datestr(clock), iteration, MAX_ITERATION);
+    %    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     %end
-    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     
     % Update Velocity
     r1 = rand();
