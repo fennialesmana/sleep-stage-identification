@@ -25,7 +25,7 @@ SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
-method = 'PSOELM';
+method = 'PSOSVM';
 
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 MAX_EXPERIMENT = 25;
@@ -74,7 +74,7 @@ for iFile=1:length(fileNames)
                 case 'PSOELM'
                     [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings);
                 case 'PSOSVM'
-                    [result, startTime, endTime] = PSOforSVM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
+                    [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings);
             end
             % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
 
@@ -88,69 +88,6 @@ for iFile=1:length(fileNames)
     end
 end
 % END OF STEP 3
-
-%{
-%% STEP 3b: BUILD CLASSIFIER MODEL (ALL OBJECT RECORDINGS)
-MAX_EXPERIMENT = 1; %changed (before: 25)
-classNum = [2 3 4 6];
-iFile = 1:18;
-    AllClassesResult = ([]);
-    for iClass=1:length(classNum)
-        ExperimentResult = struct([]);
-        for iExp=1:MAX_EXPERIMENT
-            fprintf('%s - Building iClass = %d/%d, iExp = %d/%d\n', datestr(clock), iClass, length(classNum), iExp, MAX_EXPERIMENT);
-            clearvars -except fileNames MAX_EXPERIMENT classNum method AllClassesResult ExperimentResult iFile iClass iExp
-            %clc; close all;
-            whichRecording = iFile;
-            nClasses = classNum(iClass); % jumlah kelas ouput
-            %nClasses = 2;
-
-            % load features and targets
-            hrv = loadmatobject('features/hrv_features_norm.mat', 1);
-            nFeatures = size(hrv, 2);
-            target = loadmatobject('features/target.mat', 1);
-            target = target(:, nClasses);
-            hrv = [hrv target]; % combine features and target
-
-            % load nRecSamples and retrieve selected recording
-            nRecSamples = loadmatobject('nRecSamples', 1);
-            hrv = hrv(getindexrange(nRecSamples, whichRecording), :);
-
-            % SPLIT DATA
-            % 70% training data and 30% testing data using stratified sampling
-            trainingRatio = 0.7;
-            trainingData = [];
-            testingData = [];
-            for i=1:nClasses
-                ithClassInd = find(hrv(:, end) == i);
-                nithClass = ceil(size(ithClassInd, 1)*trainingRatio);
-                trainingData = [trainingData; hrv(ithClassInd(1:nithClass), :)];
-                testingData = [testingData; hrv(ithClassInd(nithClass+1:end), :)];
-            end
-            % END OF SPLIT DATA
-
-            % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
-            % PSO parameter initialization
-            MAX_ITERATION = 100; nParticles = 20;
-            % update velocity parameter
-            W = 0.6; c1 = 1.2; c2 = 1.2;
-            % fitness parameter
-            Wa = 0.95; Wf = 0.05;
-            [result, startTime, endTime] = PSOforELM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
-            %result = PSOforSVM(MAX_ITERATION, nParticles, nFeatures, trainingData, testingData, W, c1, c2, Wa, Wf);
-            % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
-
-            ExperimentResult(iExp).iteration = result;
-            ExperimentResult(iExp).startTime = startTime;
-            ExperimentResult(iExp).endTime = endTime;
-            %beep
-        end
-        AllClassesResult(iClass).totalClass = classNum(iClass);
-        AllClassesResult(iClass).experimentResult = ExperimentResult;
-    end
-    save(sprintf('%s_all_exp1_result.mat', method), 'AllClassesResult', '-v7.3');
-% END OF STEP 3
-%}
 
 %{
 %% STEP 4: RESULT EXTRACTION
