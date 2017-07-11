@@ -90,6 +90,11 @@ for iteration=1:PSOSettings.MAX_ITERATION
             newPosBin = [zeros(1, (nFeatures)-size(newPosBin, 2)) newPosBin];
         end
         
+        % if the total bits is higher than nFeatures, get first nFeatures
+        if size(newPosBin, 2) > nFeatures
+            newPosBin = newPosBin(1, 1:nFeatures);
+        end
+        
         % if the number of selected features is 0
         while sum(newPosBin(1, 1:nFeatures)) == 0
             newPosBin(1, 1:nFeatures) = rand(1, nFeatures) > 0.5;
