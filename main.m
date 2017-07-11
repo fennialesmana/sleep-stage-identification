@@ -30,19 +30,13 @@ method = 'PSOELM';
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
-%mkdir(strcat(method, '_result'));
-%for iFile=1:length(fileNames)
-iFile = 1;
-    AllClassesResult = ([]);
+for iFile=1:length(fileNames)
     for iClass=1:length(classNum)
         ExperimentResult = struct([]);
         for iExp=1:MAX_EXPERIMENT
             fprintf('Building iFile = %d/%d, iClass = %d/%d, iExp = %d/%d\n', iFile, length(fileNames), iClass, length(classNum), iExp, MAX_EXPERIMENT);
-            clearvars -except fileNames MAX_EXPERIMENT classNum method AllClassesResult ExperimentResult iFile iClass iExp
-            %clc; close all;
-            whichRecording = iFile;
+            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp
             nClasses = classNum(iClass); % jumlah kelas ouput
-            %nClasses = 2;
 
             % load features and targets
             hrv = loadmatobject('features/hrv_features_norm.mat', 1);
@@ -53,7 +47,7 @@ iFile = 1;
 
             % load nRecSamples and retrieve selected recording
             nRecSamples = loadmatobject('nRecSamples', 1);
-            hrv = hrv(getindexrange(nRecSamples, whichRecording), :);
+            hrv = hrv(getindexrange(nRecSamples, iFile), :);
 
             % SPLIT DATA
             % 70% training data and 30% testing data using stratified sampling
@@ -69,14 +63,6 @@ iFile = 1;
             % END OF SPLIT DATA
 
             % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
-            %{
-            % PSO parameter initialization
-            MAX_ITERATION = 100; nParticles = 20;
-            % update velocity parameter
-            W = 0.6; c1 = 1.2; c2 = 1.2;
-            % fitness parameter
-            Wa = 0.95; Wf = 0.05;
-            %}
             PSOSettings.MAX_ITERATION = 100;
             PSOSettings.nParticles = 20;
             PSOSettings.W = 0.6;
@@ -92,18 +78,16 @@ iFile = 1;
             end
             % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
 
-            ExperimentResult(iExp).iteration = result;
+            ExperimentResult(iExp).iterationResult = result;
             ExperimentResult(iExp).startTime = startTime;
             ExperimentResult(iExp).endTime = endTime;
-            %beep
         end
-        AllClassesResult(iClass).totalClass = classNum(iClass);
-        AllClassesResult(iClass).experimentResult = ExperimentResult;
+        path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
+        mkdir(path);
+        save(sprintf('%s/%s_%s_%dclasses_raw_result.mat', path, method, fileNames{iFile}, nClasses), 'ExperimentResult', '-v7.3');
     end
-    save(sprintf('%s_%s_result.mat', method, fileNames{iFile}), 'AllClassesResult', '-v7.3');
-%end
+end
 % END OF STEP 3
-
 
 %{
 %% STEP 3b: BUILD CLASSIFIER MODEL (ALL OBJECT RECORDINGS)

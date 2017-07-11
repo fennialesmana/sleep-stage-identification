@@ -1,19 +1,14 @@
 function [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings)
 %% INPUT PARAMETER INITIALIZATION
-%MAX_ITERATIONS = 100;
-%nParticles = 20;
-%nFeatures = 18; % total all features to be selected
-%trainingData = matrix nTrainingSamples X nFeatures
-%testingData = matrix nTestingSamples X nFeatures
+% MAX_ITERATIONS = 100;
+% nParticles = 20;
+% nFeatures = 18; % total all features to be selected
+% trainingData = testingData = total samples X nFeatures
 % update velocity parameter: W = 0.6; c1 = 1.2; c2 = 1.2;
 % fitness parameter: Wa = 0.95; Wf = 0.05;
 % END OF INPUT PARAMETER INITIALIZATION
 
-%nClasses = length(unique([trainingData(:, end); testingData(:, end)]));
-%fprintf('Running PSO-ELM for %d classes...\n', nClasses);
-%fprintf('Start at %s\n', datestr(clock));
 startTime = clock;
-
 %% PSO PARAMETER PREPARATION
 nHiddenBits = length(decToBin(size(trainingData, 1))); % max total bits for hidden nodes
 % population [FeatureMask HiddenNode]
@@ -109,16 +104,16 @@ for iteration=1:PSOSettings.MAX_ITERATION
             newPosBin(1, 1:nFeatures) = rand(1, nFeatures) > 0.5;
         end
         
-        % set the value
+        % set the new value of position
         populationPosition(i, :) = newPosBin;
     end
     
-    % fitness Function Evaluation
+    % fitness function evaluation
     [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
     gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration+1);
 
     % save data
-    result(iteration+1).iteration = 0;
+    result(iteration+1).iteration = iteration;
     result(iteration+1).populationPosition = populationPosition;
     result(iteration+1).pBest = pBest;
     result(iteration+1).time = timeArr;
@@ -128,7 +123,6 @@ for iteration=1:PSOSettings.MAX_ITERATION
     result(iteration+1).gBest = gBest;
 end
 % END OF PSO ITERATION
-
 endTime = clock;
 end
 
@@ -187,7 +181,7 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
 end
 
 function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration)
-    if max(populationFitness) > gBest.fitness
+    if max(populationFitness) >= gBest.fitness
         found = find(populationFitness == max(populationFitness));
         if length(found) > 1 % if have the same gBest fitness value, get the max of testAcc
             found = found(testAccArr(found) == max(testAccArr(found)));
@@ -214,8 +208,5 @@ function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitne
         gBest.testingAccuracy = testAccArr(found);
         gBest.fromIteration = iteration;
         gBest.fromParticle = found;
-    elseif max(populationFitness) == gBest.fitness
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %%%%DO SOMETHING PLEASE%%%%
     end
 end
