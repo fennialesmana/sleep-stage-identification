@@ -76,14 +76,14 @@ for iteration=1:PSOSettings.MAX_ITERATION
     r2 = rand();
     for i=1:PSOSettings.nParticles
         % calculate velocity value
-        positionDec = int64(binToDec(populationPosition(i, :)));
+        positionDec = int64(bintodec(populationPosition(i, :)));
         populationVelocity(i, 1) = PSOSettings.W * populationVelocity(i, 1) + ...
-            PSOSettings.c1 * r1 * (binToDec(pBest(i).position) - positionDec) + ...
-            PSOSettings.c2 * r2 * (binToDec(gBest.position) - positionDec);
+            PSOSettings.c1 * r1 * (bintodec(pBest(i).position) - positionDec) + ...
+            PSOSettings.c2 * r2 * (bintodec(gBest.position) - positionDec);
         
         % update particle position
         newPosDec = abs(int64(positionDec + populationVelocity(i, 1)));
-        newPosBin = decToBin(newPosDec);
+        newPosBin = dectobin(newPosDec);
         
         % if the total bits is lower than nFeatures, add zeros in front
         if size(newPosBin, 2) < nFeatures

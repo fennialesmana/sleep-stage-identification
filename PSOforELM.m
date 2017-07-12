@@ -10,12 +10,12 @@ function [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testi
 
 startTime = clock;
 %% PSO PARAMETER PREPARATION
-nHiddenBits = length(decToBin(size(trainingData, 1))); % max total bits for hidden nodes
+nHiddenBits = length(dectobin(size(trainingData, 1))); % max total bits for hidden nodes
 % population [FeatureMask HiddenNode]
 populationPosition = rand(PSOSettings.nParticles, nFeatures+nHiddenBits) > 0.5;
 for i=1:PSOSettings.nParticles
-    while binToDec(populationPosition(i, nFeatures+1:end)) < nFeatures || ...
-          binToDec(populationPosition(i, nFeatures+1:end)) > size(trainingData, 1) || ...
+    while bintodec(populationPosition(i, nFeatures+1:end)) < nFeatures || ...
+          bintodec(populationPosition(i, nFeatures+1:end)) > size(trainingData, 1) || ...
           sum(populationPosition(i, 1:nFeatures)) == 0
         populationPosition(i, :) = rand(1, nFeatures+nHiddenBits) > 0.5;
     end
@@ -79,14 +79,14 @@ for iteration=1:PSOSettings.MAX_ITERATION
     r2 = rand();
     for i=1:PSOSettings.nParticles
         % calculate velocity value
-        positionDec = int64(binToDec(populationPosition(i, :)));
+        positionDec = int64(bintodec(populationPosition(i, :)));
         populationVelocity(i, 1) = PSOSettings.W * populationVelocity(i, 1) + ...
-            PSOSettings.c1 * r1 * (binToDec(pBest(i).position) - positionDec) + ...
-            PSOSettings.c2 * r2 * (binToDec(gBest.position) - positionDec);
+            PSOSettings.c1 * r1 * (bintodec(pBest(i).position) - positionDec) + ...
+            PSOSettings.c2 * r2 * (bintodec(gBest.position) - positionDec);
         
         % update particle position
         newPosDec = abs(int64(positionDec + populationVelocity(i, 1)));
-        newPosBin = decToBin(newPosDec);
+        newPosBin = dectobin(newPosDec);
         
         % if the total bits is lower than nFeatures + nHiddenBits, add zeros in front
         if size(newPosBin, 2) < (nFeatures + nHiddenBits)
@@ -94,9 +94,9 @@ for iteration=1:PSOSettings.MAX_ITERATION
         end
         
         % if the number of hidden node is more than the number of samples
-        if binToDec(newPosBin(1, nFeatures+1:end)) > size(trainingData, 1) ...
+        if bintodec(newPosBin(1, nFeatures+1:end)) > size(trainingData, 1) ...
                 || size(newPosBin(1, nFeatures+1:end), 2) > nHiddenBits
-            newPosBin = [newPosBin(1, 1:nFeatures) decToBin(size(trainingData, 1))];
+            newPosBin = [newPosBin(1, 1:nFeatures) dectobin(size(trainingData, 1))];
         end
         
         % if the number of selected features is 0
@@ -139,7 +139,7 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
         % TRAINING
         maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
         trainingTarget = full(ind2vec(trainingData(:,end)'))'; % prepare the target data (example: transformation from 4 into [0 0 0 1 0 0])
-        [Model, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, binToDec(populationPosition(i, nFeatures+1:end)));
+        [Model, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, bintodec(populationPosition(i, nFeatures+1:end)));
 
         % TESTING
         maskedTestingFeature = featuremasking(testingData, populationPosition(i, 1:nFeatures)); % remove unselected features
@@ -160,8 +160,8 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
             elseif sum(pBest(i).position(1, 1:nFeatures)) > ...
                     sum(populationPosition(i, 1:nFeatures))
                 ischanged = 1;
-            elseif binToDec(pBest(i).position(1, nFeatures+1:end)) > ...
-                    binToDec(populationPosition(i, nFeatures+1:end))
+            elseif bintodec(pBest(i).position(1, nFeatures+1:end)) > ...
+                    bintodec(populationPosition(i, nFeatures+1:end))
                 ischanged = 1;
             end
         end
@@ -192,7 +192,7 @@ function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitne
                     if length(found) > 1 % if have the same selected feature, get the min of hidden node
                         hn = zeros(length(found), 1);
                         for i=1:length(found)
-                            hn(i, 1) = binToDec(populationPosition(found(i), nFeatures+1:end));
+                            hn(i, 1) = bintodec(populationPosition(found(i), nFeatures+1:end));
                         end
                         found = found(hn == min(hn));
                         if length(found) > 1
