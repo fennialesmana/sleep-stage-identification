@@ -31,11 +31,13 @@ method = 'PSOELM';
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
 for iFile=1:length(fileNames)
+    path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
+    mkdir(path);
     for iClass=1:length(classNum)
         ExperimentResult = struct([]);
         for iExp=1:MAX_EXPERIMENT
             fprintf('Building iFile = %d/%d, iClass = %d/%d, iExp = %d/%d\n', iFile, length(fileNames), iClass, length(classNum), iExp, MAX_EXPERIMENT);
-            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp
+            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp path
             nClasses = classNum(iClass); % jumlah kelas ouput
 
             % load features and targets
@@ -82,8 +84,7 @@ for iFile=1:length(fileNames)
             ExperimentResult(iExp).startTime = startTime;
             ExperimentResult(iExp).endTime = endTime;
         end
-        path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
-        mkdir(path);
+        
         save(sprintf('%s/%s_%s_%dclasses_raw_result.mat', path, method, fileNames{iFile}, nClasses), 'ExperimentResult', '-v7.3');
     end
 end
