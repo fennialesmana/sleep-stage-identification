@@ -25,7 +25,7 @@ SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
-method = 'PSOSVM';
+method = 'PSOELM';
 
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 MAX_EXPERIMENT = 25;
