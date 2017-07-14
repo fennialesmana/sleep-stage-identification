@@ -13,6 +13,8 @@ function SVMModels = trainSVM(feature, target, kernel)
     if nargin == 2
         kernel = 'linear';
     end
+    
+    %{
     className = unique(target);
     nClasses = length(className);
     SVMModels = cell(nClasses,1);
@@ -21,4 +23,8 @@ function SVMModels = trainSVM(feature, target, kernel)
         label = (target==className(i));
         SVMModels{i} = fitcsvm(feature, label, 'KernelFunction', kernel, 'Standardize', true);
     end
+    %}
+    
+    t = templateSVM('KernelFunction', kernel);
+    SVMModels = fitcecoc(feature, target, 'Learners', t);
 end

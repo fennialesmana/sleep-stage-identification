@@ -45,13 +45,14 @@ result(PSOSettings.MAX_ITERATION+1).pBest = [];
 result(PSOSettings.MAX_ITERATION+1).time = [];
 result(PSOSettings.MAX_ITERATION+1).trainingAccuracy = [];
 result(PSOSettings.MAX_ITERATION+1).testingAccuracy = [];
-result(PSOSettings.MAX_ITERATION+1).model = [];
+%result(PSOSettings.MAX_ITERATION+1).model = [];
 result(PSOSettings.MAX_ITERATION+1).gBest = [];
 % END OF PSO PARAMETER PREPARATION
 
 %% INITIALIZATION STEP
 %Fitness Function Evaluation
-[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
+[trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
+%[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
 gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, 0);
 
 % save data
@@ -61,7 +62,7 @@ result(1).pBest = pBest;
 result(1).time = timeArr;
 result(1).trainingAccuracy = trainAccArr;
 result(1).testingAccuracy = testAccArr;
-result(1).model = modelArr;
+%result(1).model = modelArr;
 result(1).gBest = gBest;
 % END OF INITIALIZATION STEP
 
@@ -70,7 +71,7 @@ for iteration=1:PSOSettings.MAX_ITERATION
     %if mod(iteration, 10)==0
     %    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     %end
-    
+    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     % Update Velocity
     r1 = rand();
     r2 = rand();
@@ -105,7 +106,8 @@ for iteration=1:PSOSettings.MAX_ITERATION
     end
     
     % fitness function evaluation
-    [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
+    [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
+    %[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
     gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration+1);
 
     % save data
@@ -115,15 +117,16 @@ for iteration=1:PSOSettings.MAX_ITERATION
     result(iteration+1).time = timeArr;
     result(iteration+1).trainingAccuracy = trainAccArr;
     result(iteration+1).testingAccuracy = testAccArr;
-    result(iteration+1).model = modelArr;
+    %result(iteration+1).model = modelArr;
     result(iteration+1).gBest = gBest;
 end
 % END OF PSO ITERATION
 endTime = clock;
 end
 
-function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
-    modelArr(PSOSettings.nParticles).models = [];
+function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
+%function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
+    %modelArr(PSOSettings.nParticles).models = [];
     trainAccArr = zeros(PSOSettings.nParticles, 1);
     testAccArr = zeros(PSOSettings.nParticles, 1);
     timeArr = zeros(PSOSettings.nParticles, 1);
@@ -133,7 +136,7 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
         tic;
         % TRAINING
         maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-        Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'linear');
+        Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'RBF');
         trainAcc = testSVM(maskedTrainingFeature, trainingData(:,end), Model);
         
         % TESTING
@@ -164,7 +167,7 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
         end
         % end of pBest update
         
-        modelArr(i).models = Model;
+        %modelArr(i).models = Model;
         timeArr(i) = toc;
         trainAccArr(i) = trainAcc;
         testAccArr(i) = testAcc;

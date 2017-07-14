@@ -11,6 +11,7 @@ function acc = testSVM(feature, target, SVMModels)
 %   Output:
 %   *) acc: accuracy
 
+%{
     nClasses = length(SVMModels);
     predicted = zeros(size(target));
     for i=1:size(feature, 1)
@@ -22,5 +23,9 @@ function acc = testSVM(feature, target, SVMModels)
         predicted(i) = k;
     end
     
+    acc = sum(target == predicted) / length(target) * 100;
+%}
+
+    predicted = predict(SVMModels, feature);
     acc = sum(target == predicted) / length(target) * 100;
 end
