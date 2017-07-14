@@ -30,7 +30,7 @@ method = 'PSOSVM';
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
-for iFile=1:length(fileNames)
+for iFile=5:length(fileNames)
     path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
     mkdir(path);
     for iClass=1:length(classNum)

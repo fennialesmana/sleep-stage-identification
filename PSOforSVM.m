@@ -71,7 +71,7 @@ for iteration=1:PSOSettings.MAX_ITERATION
     %if mod(iteration, 10)==0
     %    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     %end
-    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
+    %fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     % Update Velocity
     r1 = rand();
     r2 = rand();
@@ -136,7 +136,7 @@ function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluate
         tic;
         % TRAINING
         maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-        Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'RBF');
+        Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'linear');
         trainAcc = testSVM(maskedTrainingFeature, trainingData(:,end), Model);
         
         % TESTING
