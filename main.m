@@ -26,11 +26,12 @@ extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
 method = 'PSOSVM';
-
-%% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
-MAX_EXPERIMENT = 25;
 classNum = [2 3 4 6];
-for iFile=5:length(fileNames)
+MAX_EXPERIMENT = 25;
+MAX_ITERATION = 100;
+%{
+%% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
+for iFile=1:length(fileNames)
     path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
     mkdir(path);
     for iClass=1:length(classNum)
@@ -65,7 +66,7 @@ for iFile=5:length(fileNames)
             % END OF SPLIT DATA
 
             % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
-            PSOSettings.MAX_ITERATION = 100;
+            PSOSettings.MAX_ITERATION = MAX_ITERATION;
             PSOSettings.nParticles = 20;
             PSOSettings.W = 0.6;
             PSOSettings.c1 = 1.2;
@@ -89,13 +90,8 @@ for iFile=5:length(fileNames)
     end
 end
 % END OF STEP 3
-
-%{
-%% STEP 4: RESULT EXTRACTION
-nFiles = length(fileNames);
-for iFile=13:15
-    %iFile = 14;
-    extractresults(sprintf('%s_result/%s_%s_result.mat', method, method, cell2mat(fileNames(iFile))));
-end
-% END OF STEP 4
 %}
+
+%% STEP 4: RESULT EXTRACTION
+extractresultsnew('PSOSVM_raw_result_RBF', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);
+% END OF STEP 4
