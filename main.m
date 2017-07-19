@@ -38,7 +38,7 @@ for iFile=1:length(fileNames)
         ExperimentResult = struct([]);
         for iExp=1:MAX_EXPERIMENT
             fprintf('Building iFile = %d/%d, iClass = %d/%d, iExp = %d/%d\n', iFile, length(fileNames), iClass, length(classNum), iExp, MAX_EXPERIMENT);
-            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp path
+            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp path MAX_EXPERIMENT MAX_ITERATION
             nClasses = classNum(iClass); % jumlah kelas ouput
 
             % load features and targets
