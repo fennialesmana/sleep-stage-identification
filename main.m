@@ -25,11 +25,11 @@ SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
 % END OF STEP 2
 %}
-method = 'PSOSVM';
+method = 'PSOELM';
 classNum = [2 3 4 6];
 MAX_EXPERIMENT = 25;
 MAX_ITERATION = 100;
-%{
+
 %% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 for iFile=1:length(fileNames)
     path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
@@ -90,8 +90,10 @@ for iFile=1:length(fileNames)
     end
 end
 % END OF STEP 3
-%}
 
+
+%{
 %% STEP 4: RESULT EXTRACTION
-extractresultsnew('PSOSVM_raw_result_RBF', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);
+extractresultsnew('PSOELM_raw_result', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);
 % END OF STEP 4
+%}

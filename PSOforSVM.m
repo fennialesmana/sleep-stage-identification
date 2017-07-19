@@ -136,7 +136,7 @@ function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluate
         tic;
         % TRAINING
         maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-        Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'linear');
+        Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'RBF');
         trainAcc = testSVM(maskedTrainingFeature, trainingData(:,end), Model);
         
         % TESTING
