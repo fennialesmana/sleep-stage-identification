@@ -1,5 +1,5 @@
-function extractresultsnew(resultRootFolder, nFeatures, classNum, nExperiments, nIterations)
-    %resultRootFolder = 'PSOSVM_raw_result_RBF';
+function extractresults(resultRootFolder, nFeatures, classNum, nExperiments, nIterations)
+    %resultRootFolder = 'PSOELM_raw_result';
     %nFeatures = 18;
     %classNum = [2 3 4 6];
     %nExperiments = 25;
@@ -8,30 +8,30 @@ function extractresultsnew(resultRootFolder, nFeatures, classNum, nExperiments, 
                 'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
                 'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};    
     method = strsplit(resultRootFolder, '_');
-    method = method{1};
-    nClassClassifiers = length(classNum);
-    header = [];
+    method = method{1}; % PSOSVM | PSOELM
+    nClassClassifiers = length(classNum); % 4
+    headerEachExp = [];
     switch method
         case 'PSOELM'
-            header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'HiddenNodes', 'SelectedFeatures'};
+            headerEachExp = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'ProcessTime(Sec)', 'HiddenNodes', 'SelectedFeatures'};
         case 'PSOSVM'
-            header = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'SelectedFeatures'};
+            headerEachExp = {'Experiment', 'gBestFitness', 'TrainAcc', 'TestAcc', 'ProcessTime(Sec)', 'SelectedFeatures'};
     end
-    main_header = header;
-    main_header{1} = 'RecordingName';
+    headerBestExp = headerEachExp;
+    headerBestExp{1} = 'RecordingName';
 
-    % write header for main result
+    % write header for main excel result (only 1 excel)
     for i=1:length(classNum)
-        xlswrite(sprintf('%s/%s_result.xlsx', resultRootFolder, method), main_header, sprintf('%d classes', classNum(i)));
+        xlswrite(sprintf('%s/%s_result.xlsx', resultRootFolder, method), headerBestExp, sprintf('%d classes', classNum(i)));
     end
     
     for iFile=1:length(fileNames) % loop for each file
-        eachFileFolder = sprintf('%s/%s_%s_raw_result', resultRootFolder, method, fileNames{iFile});
-        for iClass=1:nClassClassifiers
+        eachFileFolder = sprintf('%s/%s_%s_raw_result', resultRootFolder, method, fileNames{iFile}); %example: PSOELM_raw_result/PSOELM_slp01a_raw_result
+        for iClass=1:nClassClassifiers % loop for each class number
             matFileName = sprintf('%s/%s_%s_%dclasses_raw_result.mat', eachFileFolder, method, fileNames{iFile}, classNum(iClass));
             ExperimentResult = loadmatobject(matFileName, 1);
             
-            temp = zeros(nExperiments, length(header)-1);
+            temp = zeros(nExperiments, length(headerEachExp)-1);
             nBits = length(ExperimentResult(4).iterationResult(end).gBest.position)-nFeatures;
             gBestParticles = false(nExperiments, nFeatures+nBits);
             tempCell = cell(nExperiments, 1);
@@ -43,17 +43,19 @@ function extractresultsnew(resultRootFolder, nFeatures, classNum, nExperiments, 
                 temp(iExp, 2) = lastResult.gBest.fitness;
                 temp(iExp, 3) = lastResult.gBest.trainingAccuracy;
                 temp(iExp, 4) = lastResult.gBest.testingAccuracy;
+                temp(iExp, 5) = etime(ExperimentResult(iExp).endTime,ExperimentResult(iExp).startTime);
                 if strcmp(method, 'PSOELM')
-                    temp(iExp, 5) = bintodec(lastResult.gBest.position(nFeatures+1:end));
+                    temp(iExp, 6) = bintodec(lastResult.gBest.position(nFeatures+1:end));
                 end
+                
                 tempCell(iExp, 1) = {bintostringorder(lastResult.gBest.position)};
                 gBestParticles(iExp, :) = lastResult.gBest.position;
             end
 
             eachFileExcelPath = sprintf('%s/%s_%s_extracted_result.xlsx', eachFileFolder, method, fileNames{iFile});
-            xlswrite(eachFileExcelPath, header, sprintf('%d classes', classNum(iClass)), 'A1');
+            xlswrite(eachFileExcelPath, headerEachExp, sprintf('%d classes', classNum(iClass)), 'A1');
             xlswrite(eachFileExcelPath, temp, sprintf('%d classes', classNum(iClass)), 'A2');
-            xlswrite(eachFileExcelPath, tempCell, sprintf('%d classes', classNum(iClass)), sprintf('%s2', getexcelcolumncode(length(header))));
+            xlswrite(eachFileExcelPath, tempCell, sprintf('%d classes', classNum(iClass)), sprintf('%s2', getexcelcolumncode(length(headerEachExp))));
             
             % get the best experiment of each classification
             bestExpIdx = find(temp(:, 2) == max(temp(:, 2)));
@@ -66,7 +68,7 @@ function extractresultsnew(resultRootFolder, nFeatures, classNum, nExperiments, 
                         if length(bestExpIdx) > 1 % if have the same selected feature, check the method used
                             switch method
                                 case 'PSOELM'
-                                    bestExpIdx = bestExpIdx(temp(bestExpIdx, 5) == min(temp(bestExpIdx, 5)));
+                                    bestExpIdx = bestExpIdx(temp(bestExpIdx, 6) == min(temp(bestExpIdx, 6)));
                                     if length(bestExpIdx) > 1 % if have the same selected feature, get the first
                                         bestExpIdx = bestExpIdx(1);
                                     end
@@ -79,7 +81,7 @@ function extractresultsnew(resultRootFolder, nFeatures, classNum, nExperiments, 
             end
 
             % mark the best index
-            xlswrite(eachFileExcelPath, {'BEST EXPERIMENT'}, sprintf('%d classes', classNum(iClass)), sprintf('%s%d', getexcelcolumncode(length(header)+1), bestExpIdx+1));
+            xlswrite(eachFileExcelPath, {'BEST EXPERIMENT'}, sprintf('%d classes', classNum(iClass)), sprintf('%s%d', getexcelcolumncode(length(headerEachExp)+1), bestExpIdx+1));
 
             % gather gBest fitness of the best experiment
             gBest = zeros(nIterations, 1);
@@ -96,7 +98,13 @@ function extractresultsnew(resultRootFolder, nFeatures, classNum, nExperiments, 
             close all;
             
             % save result to main excel
-            xlswrite(sprintf('%s/%s_result.xlsx', resultRootFolder, method), [fileNames(iFile) temp(bestExpIdx, 2) temp(bestExpIdx, 3) temp(bestExpIdx, 4) tempCell(bestExpIdx)], sprintf('%d classes', classNum(iClass)), sprintf('A%d', iFile+1));
+            switch method
+                case 'PSOELM'
+                    xlswrite(sprintf('%s/%s_result.xlsx', resultRootFolder, method), [fileNames(iFile) temp(bestExpIdx, 2) temp(bestExpIdx, 3) temp(bestExpIdx, 4) temp(bestExpIdx, 5) temp(bestExpIdx, 6) tempCell(bestExpIdx)], sprintf('%d classes', classNum(iClass)), sprintf('A%d', iFile+1));
+                case 'PSOSVM'
+                    xlswrite(sprintf('%s/%s_result.xlsx', resultRootFolder, method), [fileNames(iFile) temp(bestExpIdx, 2) temp(bestExpIdx, 3) temp(bestExpIdx, 4) temp(bestExpIdx, 5) tempCell(bestExpIdx)], sprintf('%d classes', classNum(iClass)), sprintf('A%d', iFile+1));
+            end
+            
         end
     end
 end
