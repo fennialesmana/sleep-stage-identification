@@ -4,12 +4,15 @@ function SVMModels = trainSVM(feature, target, kernel)
 %   SVMModels = trainSVM(feature, target, kernel)
 %
 %   Input:
-%   *) feature - feature collection (Matrix Size: total samples X total features)
-%   *) target  - target of each sample (Matrix Size: total samples X 1)
+%   *) feature - feature collection
+%      (Matrix size: total samples X total features)
+%   *) target  - target of each sample
+%      (Matrix size: total samples X 1)
 %   *) kernel  - kernel used for SVM
 %
 %   Output:
-%   *) SVMModels - SVM model collection, cell size of totalClass classifier
+%   *) SVMModels - SVM model collection
+%      (Cell size: totalClass * (totalClass - 1) / 2)
 
     if nargin == 2
         kernel = 'linear';

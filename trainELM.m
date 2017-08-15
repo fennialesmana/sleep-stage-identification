@@ -4,13 +4,18 @@ function [ELMModel, trainAcc] = trainELM(feature, target, nHiddenNode)
 %   [ELMModel, trainAcc] = trainELM(feature, target, nHiddenNode)
 %
 %   Input:
-%   *) feature     - feature collection (Matrix Size: total samples X total features)
-%   *) target      - target of each sample (Matrix Size: total samples X total classes). Example: class 4 -> target is [0 0 0 1].
+%   *) feature     - feature collection
+%      (Matrix size: total samples X total features)
+%   *) target      - target of each sample
+%      (Matrix size: total samples X total classes)
+%       Example: class 4 -> target is [0 0 0 1]
 %   *) nHiddenNode - total hidden nodes of ELM
 %
 %   Output:
-%   *) ELMModel.inputWeight  - input weight (Matrix Size: nHiddenNode (+1 for bias) X total features)
-%   *) ELMModel.outputWeight - output weight (Matrix Size: total classes X nHiddenNode)
+%   *) ELMModel.inputWeight  - input weight of ELM
+%      (Matrix size: nHiddenNode (+1 for bias) X total features)
+%   *) ELMModel.outputWeight - output weight of ELM
+%      (Matrix size: total classes X nHiddenNode)
 %   *) trainAcc              - training accuracy
 
     if size(feature, 2) == 0
@@ -21,18 +26,25 @@ function [ELMModel, trainAcc] = trainELM(feature, target, nHiddenNode)
     % STEP 1: RANDOMLY ASSIGN INPUT WEIGHT AND BIAS
     minWeight = -1;
     maxWeight = 1;
-    inputWeight = (maxWeight-minWeight) .* rand(nHiddenNode, size(feature, 2)+1) + minWeight;
+    inputWeight = (maxWeight-minWeight) .* ...
+        rand(nHiddenNode, size(feature, 2)+1) + minWeight;
     
     % STEP 2: CALCULATE THE HIDDEN LAYER OUTPUT MATRIX H
-    hiddenOutput = (inputWeight(:, 1:end-1) * feature')+repmat(inputWeight(:, end), 1, size(feature, 1)); % linear combination of hidden output
-    hiddenOutput = sigmoid(hiddenOutput); % apply activation function on hidden output
+    % linear combination of hidden output
+    hiddenOutput = (inputWeight(:, 1:end-1) * feature')+ ...
+        repmat(inputWeight(:, end), 1, size(feature, 1));
+    % apply activation function on hidden output
+    hiddenOutput = sigmoid(hiddenOutput);
     
     % STEP 3: CALCULATE THE OUTPUT WEIGHT B
-    outputWeight = target' * pinv(hiddenOutput); % estimate output weight
+    % estimate output weight
+    outputWeight = target' * pinv(hiddenOutput);
     
     % STEP 4: APPLY MODEL TO TRAINING DATA
-    predictedOutput = outputWeight * hiddenOutput; % linear combination of predicted output
-    predictedOutput = sigmoid(predictedOutput); % apply activation function on predicted output
+    % linear combination of predicted output
+    predictedOutput = outputWeight * hiddenOutput;
+    % apply activation function on predicted output
+    predictedOutput = sigmoid(predictedOutput);
     
     maxPred = max(predictedOutput);
     predictedClass = zeros(size(predictedOutput, 2), 1);
@@ -40,7 +52,8 @@ function [ELMModel, trainAcc] = trainELM(feature, target, nHiddenNode)
         class = find(predictedOutput(:, i) == maxPred(i));
         predictedClass(i) = class(1, 1);
     end
-    trainAcc = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;
+    trainAcc = sum(predictedClass == vec2ind(target')')/ ...
+        size(predictedOutput, 2) * 100;
     ELMModel.inputWeight = inputWeight;
     ELMModel.outputWeight = outputWeight;
 end

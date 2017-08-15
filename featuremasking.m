@@ -1,11 +1,17 @@
 function maskedFeature = featuremasking(feature, mask)
-% Input:
-% feature -> original nSample X nFeature matrix size
-% mask -> boolean of 1 X nFeature matrix size
-% Output:
-% maskedFeature -> matrix size of nSample X nSelectedFeature
+%Retrieve masked features
+%   Syntax:
+%   maskedFeature = featuremasking(feature, mask)
+%
+%   Input:
+%   *) feature       - feature collection
+%      (Matrix size: total samples X total features)
+%   *) mask          - logical matrix, 1 means selected, 0 is not selected
+%      (Matrix size: 1 X total features)
+%   Output:
+%   *) maskedFeature - matrix with selected features only
+%      (Matrix size: total samples X total selected features
 
-    % prepare the feature data (masking)
     maskedFeature = zeros(size(feature, 1), sum(mask));
     j = 1;
     for i=1:sum(mask)

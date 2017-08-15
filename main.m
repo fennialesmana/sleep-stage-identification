@@ -19,9 +19,9 @@ save('SlpdbData.mat', 'SlpdbData');
 % Output of this step:
 % 1. nRecSamples.mat -> 18 x 1 matrix contains number of samples each file
 % 2. SlpdbData.mat   -> 10154 x 1 struct contains synchronized data
-
-% END OF STEP 1
 %}
+% END OF STEP 1
+
 
 %{
 %% STEP 2: FEATURE EXTRACTION
@@ -62,7 +62,7 @@ for iFile=1:length(fileNames)
             hrv = [hrv target]; % combine features and target
 
             % load nRecSamples and retrieve selected recording
-            nRecSamples = loadmatobject('nRecSamples', 1);
+            nRecSamples = loadmatobject('nRecSamples.mat', 1);
             hrv = hrv(getindexrange(nRecSamples, iFile), :);
 
             % SPLIT DATA

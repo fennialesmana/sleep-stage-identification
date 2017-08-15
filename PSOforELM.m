@@ -1,17 +1,30 @@
 function [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings)
-%% INPUT PARAMETER INITIALIZATION
-% MAX_ITERATIONS = 100;
-% nParticles = 20;
-% nFeatures = 18; % total all features to be selected
-% trainingData = testingData = total samples X nFeatures
-% update velocity parameter: W = 0.6; c1 = 1.2; c2 = 1.2;
-% fitness parameter: Wa = 0.95; Wf = 0.05;
-% END OF INPUT PARAMETER INITIALIZATION
+%Running PSO with ELM for feature selection and number of hidden nodes
+%optimization
+%   Syntax:
+%   [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings)
+%
+%   Input:
+%   *) nFeatures    - total number of features to be selected
+%   *) trainingData - training data (Matrix size: total samples X nFeatures)
+%   *) testingData  - testing data (Matrix size: total samples X nFeatures)
+%   *) PSOSettings  - struct contains PSO parameters, examples:
+%                       PSOSettings.MAX_ITERATION = MAX_ITERATION;
+%                       PSOSettings.nParticles = 20;
+%                       PSOSettings.W = 0.6;
+%                       PSOSettings.c1 = 1.2;
+%                       PSOSettings.c2 = 1.2;
+%                       PSOSettings.Wa = 0.95;
+%                       PSOSettings.Wf = 0.05;
+%
+%   Output:
+%   *) result    - struct contains records of PSO ELM result
+%   *) startTime - time when the experiment starts
+%   *) endTime   - time when the experiment ends
 
 startTime = clock;
 %% PSO PARAMETER PREPARATION
 nHiddenBits = length(dectobin(size(trainingData, 1))); % max total bits for hidden nodes
-% population [FeatureMask HiddenNode]
 populationPosition = rand(PSOSettings.nParticles, nFeatures+nHiddenBits) > 0.5;
 for i=1:PSOSettings.nParticles
     while bintodec(populationPosition(i, nFeatures+1:end)) < nFeatures || ...
@@ -21,6 +34,7 @@ for i=1:PSOSettings.nParticles
     end
 end
 populationVelocity = int64(zeros(PSOSettings.nParticles, 1)); % in decimal value
+
 % pBest
 pBest(PSOSettings.nParticles).position = [];
 pBest(PSOSettings.nParticles).fitness = [];
@@ -41,7 +55,7 @@ gBest.testingAccuracy = [];
 gBest.fromIteration = [];
 gBest.fromParticle = [];
 
-% struct data
+% initialize struct data
 result(PSOSettings.MAX_ITERATION+1).iteration = [];
 result(PSOSettings.MAX_ITERATION+1).populationPosition = [];
 result(PSOSettings.MAX_ITERATION+1).pBest = [];
@@ -53,11 +67,11 @@ result(PSOSettings.MAX_ITERATION+1).gBest = [];
 % END OF PSO PARAMETER PREPARATION
 
 %% INITIALIZATION STEP
-%Fitness Function Evaluation
+%fitness function evaluation
 [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
 gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, 0);
 
-% save data
+% save initial data
 result(1).iteration = 0;
 result(1).populationPosition = populationPosition;
 result(1).pBest = pBest;
@@ -70,10 +84,6 @@ result(1).gBest = gBest;
 
 %% PSO ITERATION
 for iteration=1:PSOSettings.MAX_ITERATION
-    %if mod(iteration, 10)==0
-    %    fprintf('%s = %d/%d\n', datestr(clock), iteration, MAX_ITERATION);
-    %end
-    
     % Update Velocity
     r1 = rand();
     r2 = rand();
@@ -133,7 +143,6 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
     testAccArr = zeros(PSOSettings.nParticles, 1);
     timeArr = zeros(PSOSettings.nParticles, 1);
     populationFitness = zeros(PSOSettings.nParticles, 1);
-    %currIterResult
     for i=1:PSOSettings.nParticles
         tic;
         % TRAINING

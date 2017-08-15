@@ -4,9 +4,12 @@ function acc = testSVM(feature, target, SVMModels)
 %   acc = testSVM(feature, target, SVMModels)
 %
 %   Input:
-%   *) feature   - feature collection (Matrix Size: total samples X total features)
-%   *) target    - target of each sample (Matrix Size: total samples X 1)
-%   *) SVMModels - SVM model collection, cell size of totalClass classifier
+%   *) feature   - feature collection
+%      (Matrix size: total samples X total features)
+%   *) target    - target of each sample
+%      (Matrix size: total samples X 1)
+%   *) SVMModels - SVM model collection from trainSVM() function
+%      (Cell size: totalClass * (totalClass - 1) / 2)
 %
 %   Output:
 %   *) acc       - accuracy

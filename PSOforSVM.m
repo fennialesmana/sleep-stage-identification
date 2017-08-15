@@ -1,16 +1,28 @@
 function [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings)
-%% INPUT PARAMETER INITIALIZATION
-% MAX_ITERATIONS = 100;
-% nParticles = 20;
-% nFeatures = 18; % total all features to be selected
-% trainingData = testingData = total samples X nFeatures
-% update velocity parameter: W = 0.6; c1 = 1.2; c2 = 1.2;
-% fitness parameter: Wa = 0.95; Wf = 0.05;
-% END OF INPUT PARAMETER INITIALIZATION
+%Running PSO with SVM for feature selection
+%   Syntax:
+%   [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings)
+%
+%   Input:
+%   *) nFeatures    - total number of features to be selected
+%   *) trainingData - training data (Matrix size: total samples X nFeatures)
+%   *) testingData  - testing data (Matrix size: total samples X nFeatures)
+%   *) PSOSettings  - struct contains PSO parameters, examples:
+%                       PSOSettings.MAX_ITERATION = MAX_ITERATION;
+%                       PSOSettings.nParticles = 20;
+%                       PSOSettings.W = 0.6;
+%                       PSOSettings.c1 = 1.2;
+%                       PSOSettings.c2 = 1.2;
+%                       PSOSettings.Wa = 0.95;
+%                       PSOSettings.Wf = 0.05;
+%
+%   Output:
+%   *) result    - struct contains records of PSO SVM result
+%   *) startTime - time when the experiment starts
+%   *) endTime   - time when the experiment ends
 
 startTime = clock;
 %% PSO PARAMETER PREPARATION
-% population [FeatureMask]
 populationPosition = rand(PSOSettings.nParticles, nFeatures) > 0.5;
 for i=1:PSOSettings.nParticles
     while sum(populationPosition(i, 1:nFeatures)) == 0
@@ -18,6 +30,7 @@ for i=1:PSOSettings.nParticles
     end
 end
 populationVelocity = int64(zeros(PSOSettings.nParticles, 1)); % in decimal value
+
 % pBest
 pBest(PSOSettings.nParticles).position = [];
 pBest(PSOSettings.nParticles).fitness = [];
@@ -38,40 +51,33 @@ gBest.testingAccuracy = [];
 gBest.fromIteration = [];
 gBest.fromParticle = [];
 
-% struct data
+% initialize struct data
 result(PSOSettings.MAX_ITERATION+1).iteration = [];
 result(PSOSettings.MAX_ITERATION+1).populationPosition = [];
 result(PSOSettings.MAX_ITERATION+1).pBest = [];
 result(PSOSettings.MAX_ITERATION+1).time = [];
 result(PSOSettings.MAX_ITERATION+1).trainingAccuracy = [];
 result(PSOSettings.MAX_ITERATION+1).testingAccuracy = [];
-%result(PSOSettings.MAX_ITERATION+1).model = [];
 result(PSOSettings.MAX_ITERATION+1).gBest = [];
 % END OF PSO PARAMETER PREPARATION
 
 %% INITIALIZATION STEP
-%Fitness Function Evaluation
+%fitness function evaluation
 [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
-%[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
 gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, 0);
 
-% save data
+% save initial data
 result(1).iteration = 0;
 result(1).populationPosition = populationPosition;
 result(1).pBest = pBest;
 result(1).time = timeArr;
 result(1).trainingAccuracy = trainAccArr;
 result(1).testingAccuracy = testAccArr;
-%result(1).model = modelArr;
 result(1).gBest = gBest;
 % END OF INITIALIZATION STEP
 
 %% PSO ITERATION
 for iteration=1:PSOSettings.MAX_ITERATION
-    %if mod(iteration, 10)==0
-    %    fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
-    %end
-    %fprintf('%s = %d/%d\n', datestr(clock), iteration, PSOSettings.MAX_ITERATION);
     % Update Velocity
     r1 = rand();
     r2 = rand();
@@ -107,7 +113,6 @@ for iteration=1:PSOSettings.MAX_ITERATION
     
     % fitness function evaluation
     [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
-    %[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
     gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration+1);
 
     % save data
@@ -117,7 +122,6 @@ for iteration=1:PSOSettings.MAX_ITERATION
     result(iteration+1).time = timeArr;
     result(iteration+1).trainingAccuracy = trainAccArr;
     result(iteration+1).testingAccuracy = testAccArr;
-    %result(iteration+1).model = modelArr;
     result(iteration+1).gBest = gBest;
 end
 % END OF PSO ITERATION
@@ -125,13 +129,10 @@ endTime = clock;
 end
 
 function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
-%function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
-    %modelArr(PSOSettings.nParticles).models = [];
     trainAccArr = zeros(PSOSettings.nParticles, 1);
     testAccArr = zeros(PSOSettings.nParticles, 1);
     timeArr = zeros(PSOSettings.nParticles, 1);
     populationFitness = zeros(PSOSettings.nParticles, 1);
-    %currIterResult
     for i=1:PSOSettings.nParticles
         tic;
         % TRAINING
@@ -167,7 +168,6 @@ function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluate
         end
         % end of pBest update
         
-        %modelArr(i).models = Model;
         timeArr(i) = toc;
         trainAccArr(i) = trainAcc;
         testAccArr(i) = testAcc;
