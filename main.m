@@ -2,11 +2,9 @@ clear; clc; close all;
 fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
+
 %{
 %% STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
-fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
-            'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
-            'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
 SlpdbData = [];
 SingleFile = [];
 nRecSamples = zeros(length(fileNames), 1);
@@ -17,20 +15,35 @@ for i=1:size(fileNames, 2)
 end
 save('nRecSamples.mat', 'nRecSamples');
 save('SlpdbData.mat', 'SlpdbData');
+
+% Output of this step:
+% 1. nRecSamples.mat -> 18 x 1 matrix contains number of samples each file
+% 2. SlpdbData.mat   -> 10154 x 1 struct contains synchronized data
+
 % END OF STEP 1
 %}
+
 %{
 %% STEP 2: FEATURE EXTRACTION
 SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
+
+% Output of this step:
+% 1. hrv_features_unorm.xlsx
+% 2. hrv_features_norm.xlsx
+% 3. target.xlsx
+% 4. hrv_features_unorm.mat
+% 5. hrv_features_norm.mat
+% 6. target.mat
 % END OF STEP 2
 %}
 method = 'PSOSVM';
 classNum = [2 3 4 6];
 MAX_EXPERIMENT = 25;
 MAX_ITERATION = 100;
+
 %{
-%% STEP 3a: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
+%% STEP 3: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 for iFile=1:length(fileNames)
     path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
     mkdir(path);
@@ -39,7 +52,7 @@ for iFile=1:length(fileNames)
         for iExp=1:MAX_EXPERIMENT
             fprintf('Building iFile = %d/%d, iClass = %d/%d, iExp = %d/%d\n', iFile, length(fileNames), iClass, length(classNum), iExp, MAX_EXPERIMENT);
             clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp path MAX_EXPERIMENT MAX_ITERATION
-            nClasses = classNum(iClass); % jumlah kelas ouput
+            nClasses = classNum(iClass); % nClasses = total output class
 
             % load features and targets
             hrv = loadmatobject('features/hrv_features_norm.mat', 1);
@@ -65,7 +78,7 @@ for iFile=1:length(fileNames)
             end
             % END OF SPLIT DATA
 
-            % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
+            % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS
             PSOSettings.MAX_ITERATION = MAX_ITERATION;
             PSOSettings.nParticles = 20;
             PSOSettings.W = 0.6;
@@ -79,7 +92,7 @@ for iFile=1:length(fileNames)
                 case 'PSOSVM'
                     [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings);
             end
-            % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS ------------------------
+            % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS
 
             ExperimentResult(iExp).iterationResult = result;
             ExperimentResult(iExp).startTime = startTime;
@@ -92,7 +105,8 @@ end
 % END OF STEP 3
 %}
 
-
+%{
 %% STEP 4: RESULT EXTRACTION
 extractresults('PSOELM_raw_result', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);
 % END OF STEP 4
+%}

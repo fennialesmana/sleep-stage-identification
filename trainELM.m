@@ -1,17 +1,18 @@
-function [ELMModel, acc] = trainELM(feature, target, nHiddenNode)
+function [ELMModel, trainAcc] = trainELM(feature, target, nHiddenNode)
 %Train Extreme Learning Machine (ELM) model
 %   Syntax:
-%   [ELMModel, acc] = trainELM(feature, target, nHiddenNode)
+%   [ELMModel, trainAcc] = trainELM(feature, target, nHiddenNode)
 %
 %   Input:
-%   *) feature: Features used for training (Matrix Size: total training samples X total features)
-%   *) target: Target of each sample (Matrix Size: total training samples X total classes). Example: class 4 -> target is [0 0 0 1].
-%   *) nHiddenNode: Total hidden node of Single Layer Feedforward Neural Network (Range: 1 ... total training samples)
+%   *) feature     - feature collection (Matrix Size: total samples X total features)
+%   *) target      - target of each sample (Matrix Size: total samples X total classes). Example: class 4 -> target is [0 0 0 1].
+%   *) nHiddenNode - total hidden nodes of ELM
 %
 %   Output:
-%   *) ELMModel.inputWeight: input weight (Matrix Size: nHiddenNode (+1 for bias) X total features)
-%   *) ELMModel.outputWeight: output weight (Matrix Size: total classes X nHiddenNode)
-%   *) acc = training accuracy
+%   *) ELMModel.inputWeight  - input weight (Matrix Size: nHiddenNode (+1 for bias) X total features)
+%   *) ELMModel.outputWeight - output weight (Matrix Size: total classes X nHiddenNode)
+%   *) trainAcc              - training accuracy
+
     if size(feature, 2) == 0
         fprintf('Someting went wrong, no feature selected.');
         return
@@ -27,9 +28,7 @@ function [ELMModel, acc] = trainELM(feature, target, nHiddenNode)
     hiddenOutput = sigmoid(hiddenOutput); % apply activation function on hidden output
     
     % STEP 3: CALCULATE THE OUTPUT WEIGHT B
-    %fprintf('before pinv');
     outputWeight = target' * pinv(hiddenOutput); % estimate output weight
-    %fprintf('after pinv');
     
     % STEP 4: APPLY MODEL TO TRAINING DATA
     predictedOutput = outputWeight * hiddenOutput; % linear combination of predicted output
@@ -41,7 +40,7 @@ function [ELMModel, acc] = trainELM(feature, target, nHiddenNode)
         class = find(predictedOutput(:, i) == maxPred(i));
         predictedClass(i) = class(1, 1);
     end
-    acc = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;
+    trainAcc = sum(predictedClass == vec2ind(target')')/size(predictedOutput, 2) * 100;
     ELMModel.inputWeight = inputWeight;
     ELMModel.outputWeight = outputWeight;
 end

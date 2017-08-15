@@ -29,15 +29,15 @@ classdef HRVFeature
             max_val = max(rr);
             min_val = min(rr);
             bin_count = ceil((max_val-min_val)/bin_size);
-            %generate edges
+            % generate edges
             edges = zeros(bin_count+1, 1);
             edges(1) = min_val;
             for i=2:bin_count+1
                 edges(i) = edges(i-1) + bin_size;
             end
-            %calculate histogram
+            % calculate histogram
             N = histcounts(rr, edges);
-            %calculate hrv triangular index
+            % calculate hrv triangular index
             r = max(N)/sum(N);
         end
         
@@ -57,6 +57,7 @@ classdef HRVFeature
         
         % Frequency Domain Features
         function [TP,pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
+        %function source: https://marcusvollmer.github.io/HRV/
         %fft_val_fun Spectral analysis of a sequence.
         %   [pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
         %   uses FFT to compute the spectral density function of the interpolated
@@ -128,6 +129,7 @@ classdef HRVFeature
             end
         end
         function [z,m,s] = nanzscore(x,opt,varargin)
+        %function source: https://marcusvollmer.github.io/HRV/
             if (nargin < 3) % check input
                 dim = find(size(x)>1,1);
                 if isempty(dim)
@@ -148,6 +150,7 @@ classdef HRVFeature
             z = (x-repmat(m,size(x)./size(m)))./repmat(s,size(x)./size(s));
         end
         function m = nanmean(x, varargin)
+        %function source: https://marcusvollmer.github.io/HRV/
             if (nargin < 2) % check input
                 dim = find(size(x)>1,1);
                 if isempty(dim)
@@ -166,6 +169,7 @@ classdef HRVFeature
             m = sum(x,dim)./n;
         end
         function s = nanstd(x, opt, varargin)
+        %function source: https://marcusvollmer.github.io/HRV/
             if (nargin < 3) % check input
                 dim = find(size(x)>1,1);
                 if isempty(dim)

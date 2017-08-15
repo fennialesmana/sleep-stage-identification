@@ -1,9 +1,18 @@
 function OutputData = importslpdb(fileName)
-% fileName: recording name
-% secPerEpoch: amount of seconds in one epoch (value for slpdb is 30)
-% usage example: data = import_data('slp01a', 30)
+%Import and synchronize a slpdb recording
+%   Syntax:
+%   OutputData = importslpdb(fileName)
+%
+%   Input:
+%   *) fileName   - slpdb file name to be imported. Example: 'slp01a'.
+%                   file must be located in 'slpdb' folder,
+%                   three file formats needed: .hea, .rr, and .an
+%
+%   Output:
+%   *) OutputData - struct contains synchronized RR and annotation
+
 fileName = strcat('slpdb/', cell2mat(fileName));
-SEC_PER_EPOCH = 30;
+SEC_PER_EPOCH = 30; % amount of seconds in one epoch (value for slpdb is 30)
 OutputData = [];
 fprintf('\n%s DATA IMPORT...\n', fileName);
 %% IMPORT HEADER DATA
@@ -18,7 +27,6 @@ heaTotalSamples = str2double(cell2mat(headerFile{4}(1)));
 
 heaRecLengthInSec = ceil(heaTotalSamples/heaSamplingFreq);
 heaTotalEpoch = ceil(heaRecLengthInSec/SEC_PER_EPOCH);
-
 heaIdx = size(headerFile{1}, 1); % get last line index of file
 
 if cell2mat(headerFile{1}(end-1)) == '#'
@@ -27,11 +35,15 @@ if cell2mat(headerFile{1}(end-1)) == '#'
     heaIdx = heaIdx - 1;
 end
 
-age = headerFile{2}(heaIdx); %age = str2double(cell2mat(header_file{2}(idx)));
-gender = headerFile{3}(heaIdx); %gender = cell2mat(header_file{3}(idx));
-weight = headerFile{4}(heaIdx); %weight = str2double(cell2mat(header_file{4}(idx)));
+age = headerFile{2}(heaIdx);
+gender = headerFile{3}(heaIdx);
+weight = headerFile{4}(heaIdx);
 
-% output of "IMPORT HEADER DATA" section: heaTotalEpoch, age, gender, weight
+% output of "IMPORT HEADER DATA" section:
+% *) heaTotalEpoch - total epoch according to header data
+% *) age           - age of the subject
+% *) gender        - gender of the subject
+% *) weight        - weight of the subject
 % END OF IMPORT HEADER DATA
 
 %% IMPORT ANNOTATION DATA
@@ -41,6 +53,7 @@ anFile = textscan(fid, '%s%s%s%s%s%s%s%*[^\n]');
 fclose(fid);
 
 % remove header of annotation data (first line)
+% remove this string: 'Elapsed time  Sample #  Type  Sub Chan  Num	Aux'
 for i=1:size(anFile, 2)
    anFile{i}(1) = [];
 end
@@ -50,10 +63,12 @@ anTemp = cell2mat(anFile{1}(1));
 anTemp(end-2:end) = 48;
 anFile{1}(1) = cellstr(anTemp);
 
-anTime = anFile{1}; % waktu dari annotation dalam bentuk cell array
-anClass = anFile{7}; % annotation dalam bentuk cell array
+anTime = anFile{1};
+anClass = anFile{7};
 
-% output of "IMPORT ANNOTATION DATA" section: anTime, anClass
+% output of "IMPORT ANNOTATION DATA" section:
+% *) anTime  - time from annotation file (cell array)
+% *) anClass - annotation (cell array)
 % END OF IMPORT ANNOTATION DATA
 
 %% IMPORT RR DATA
@@ -65,10 +80,10 @@ fclose(fid);
 rrConvertedTime = rrFile{1};
 for i=1:size(rrConvertedTime, 1);
     rrStartTimeChar = cell2mat(rrConvertedTime(i)); % convert cell into char
-    rrStartTimeChar(end-2:end) = 48; % change xx:xx:xx.aaa -> aaa part into 000
+    rrStartTimeChar(end-2:end) = 48; % xx:xx:xx.aaa -> change 'aaa' part into '000'
     
     rrStartTimeMat = strsplit(char(rrConvertedTime(i)), ':')'; % split start time by ":" into matrix
-    rrSecond = str2double(cell2mat(rrStartTimeMat(end))); % get second from the last element
+    rrSecond = str2double(cell2mat(rrStartTimeMat(end))); % get seconds from the last element
     rrWhichGroup = floor(rrSecond/SEC_PER_EPOCH)*SEC_PER_EPOCH; % epoch grouping
     
     % set epoch grouping
@@ -82,7 +97,7 @@ for i=1:size(rrConvertedTime, 1);
     rrConvertedTime(i) = mat2cell(rrStartTimeChar, 1);
 end
 
-% ubah nilai rr dari array of cell menjadi array of double
+% change RR value from 'array of cell' into 'array of double'
 rrNum = zeros(size(rrFile{3}, 1), 1);
 for i=1:size(rrFile{3}, 1)
     rrNum(i) = str2double(cell2mat(rrFile{3}(i)));
@@ -91,16 +106,19 @@ end
 rrTime = rrFile{1};
 
 % output of "IMPORT RR DATA" section:
-% rrConvertedTime = start time rr yang dibulatkan ke waktu sesuai epoch
-% rrInt = nilai RR dalam bentuk array of double
-% rrTIme = start time rr yang tidak dibulatkan
+% *) rrConvertedTime - rounded RR start time according to the epoch
+%                      example: 1:34:31.328 -> 1:34:30.000
+%                               1:50:13.616 -> 1:50:00.000
+% *) rrNum           - RR value (array of double)
+% *) rrTime          - start time of un-rounded RR
 % END OF IMPORT RR DATA
 
 %% VALIDITY CHECK
 fprintf('Data Validity Check:\n');
 % A. Annotation File Check
 
-% *) generate waktu annotation dalam bentuk matrix ukuran jml epoch X 3
+% *) generate annotation time acocrding to total epoch from header file
+% *) result: anTimeGeneratedMat -> Matrix size: number of epoch X 3 (h,m,s)
 anTimeGeneratedMat = zeros(heaTotalEpoch, 3);
 for i=2:heaTotalEpoch
    anTimeGeneratedMat(i, 3) =  anTimeGeneratedMat(i-1, 3) + SEC_PER_EPOCH;
@@ -115,10 +133,11 @@ for i=2:heaTotalEpoch
        end
    end
 end
+
 % convert anTimeGeneratedMat into anTimeGeneratedCell for easier comparison
 anTimeGeneratedCell = cell(size(anTimeGeneratedMat, 1), 1);
 for i = 1:size(anTimeGeneratedMat, 1)
-    if(anTimeGeneratedMat(i, 1) == 0) %kalo jamnya 0
+    if anTimeGeneratedMat(i, 1) == 0 % when the 'hour' is 0
         anTimeGeneratedCell(i) = cellstr(strcat(sprintf('%d',anTimeGeneratedMat(i, 2)), sprintf(':%02d.000',anTimeGeneratedMat(i, 3))));
     else
         temp = strcat(sprintf('%d', anTimeGeneratedMat(i, 1)), sprintf(':%02d',anTimeGeneratedMat(i, 2)));
@@ -179,18 +198,19 @@ end
 %% SYNCHRONIZE RR AND ANNOTATION DATA
 epochCounter = 1;
 rrCounter = 1;
-rrCollection = cell(heaTotalEpoch, 1); % each row contains rr of associated epoch
-rrTimeCollection = cell(heaTotalEpoch, 1); % each row contains rr time of associated epoch
+rrCollection = cell(heaTotalEpoch, 1); % each row contains RRs of associated epoch
+rrTimeCollection = cell(heaTotalEpoch, 1); % each row contains RR time of associated epoch
 
 for i=1:size(rrConvertedTime, 1) % looping for each rrConvertedTime in that file
     if strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter))
-        % jika rr ke-i sama dengan an ke-epoch tsb
+        % when i-th RR time is equal to annotation time of current epoch
         rrCollection{epochCounter}(rrCounter) = rrNum(i);
         rrTimeCollection{epochCounter}(rrCounter) = rrTime(i);
         rrCounter=rrCounter+1;
     elseif ~strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter)) ...
             && ~strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter+1))
-        % jika rr ke i beda dengan an dan dengan an selanjutnya jg beda
+        % when i-th RR time is not equal to annotation time of current epoch
+        % and i-th RR time is not equal to annotation time of the next epoch
         while ~strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter+1))
             epochCounter = epochCounter + 1;
         end
@@ -201,6 +221,8 @@ for i=1:size(rrConvertedTime, 1) % looping for each rrConvertedTime in that file
         rrCounter=rrCounter+1;
     elseif ~strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter)) ...
             && strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter+1))
+        % when i-th RR time is not equal to annotation time of current epoch
+        % and i-th RR time is equal to annotation time of the next epoch
         rrCounter=1;
         epochCounter=epochCounter+1;
         rrCollection{epochCounter}(rrCounter) = rrNum(i);
@@ -232,20 +254,21 @@ isExists = 0;
 for i=heaTotalEpoch:-1:1
     flag = 0;
     if sum(rrCollection{i}) < 28 || sum(rrCollection{i}) > 32
-        % cek sum rr interval dari setiap epoch tidak boleh di bawah 28 (menurut slp04 min sum 29 max 30)
+        % set flag to remove incomplete RR data of that epoch by:
+        % check the sum of RR interval from each epoch, can't be below 28 or higher than 32 (according to slp04 data, min sum is 29 and max is 30)
         flag = 1;
-        fprintf('  Epoch %d (time: %s) of %s data is removed because sum of rrCollection is < 28 || > 32\n', i, anTimeGeneratedCell{i}, fileName);
+        fprintf('  Epoch %d (time: %s) of %s data is removed because incomplete RR data\n', i, anTimeGeneratedCell{i}, fileName);
     elseif strcmp(anClassGeneratedCell(i), {'none'})
-        % buang yg tdk ada annotation
+        % set flag to remove no annotation epoch
         flag = 1;
         fprintf('  Epoch %d (time: %s) of %s data is removed because no annotation\n', i, anTimeGeneratedCell{i}, fileName);
     elseif strcmp(anClassGeneratedCell(i), {'MT'}) || strcmp(anClassGeneratedCell(i), {'M'})
-        % buang yg annotationnya MT atau M
+        % set flag to remove 'MT' or 'M' annotation epoch
         flag = 1;
         fprintf('  Epoch %d (time: %s) of %s data is removed because the annotation is %s\n', i, anTimeGeneratedCell{i}, fileName, anClassGeneratedCell{i});
     end
     
-    % kalau data bermasalah, maka data dikosongkan
+    % when the flag is 1, remove the data
     if flag == 1
         anTimeGeneratedCell{i} = [];
         rrCollection{i} = [];
@@ -254,11 +277,12 @@ for i=heaTotalEpoch:-1:1
     end
 end
 
+% print message if no invalid epoch
 if ~isExists
    fprintf('No invalid epoch\n'); 
 end
 
-% menghapus row yang nilainya empty
+% delete empty row
 anTimeGeneratedCell = anTimeGeneratedCell(~cellfun(@isempty, anTimeGeneratedCell));
 rrCollection = rrCollection(~cellfun(@isempty, rrCollection));
 anClassGeneratedCell = anClassGeneratedCell(~cellfun(@isempty, anClassGeneratedCell));

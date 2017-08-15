@@ -1,5 +1,19 @@
 function extractfeatures(SlpdbData, destination, outputFormat)
-    % directly save the features
+%Extract HRV Features
+%   Syntax:
+%   extractfeatures(SlpdbData, destination, outputFormat)
+%
+%   Input:
+%   *) SlpdbData    - struct generated from importslpdb() function
+%   *) destination  - directory of the result
+%   *) outputFormat - output format: 'xlsx', 'mat', 'all'
+%
+%   Output:
+%   No output variables, but there are two files output:
+%   hrv_features_unorm - unnormalized features
+%	hrv_features_norm  - normalized features
+%	target             - matrix total samples X 6 (1 - 6 classes target)
+
     nSamples = size(SlpdbData, 1);
     nClasses = length(unique([SlpdbData.annotation]));
     hrv = zeros(nSamples, 25);
@@ -71,7 +85,7 @@ function extractfeatures(SlpdbData, destination, outputFormat)
     
     hrv( :, ~any(hrv,1) ) = [];
     
-    % create new dir if not exists
+    % create a new dir if not exists
     dirList = dir;
     isDirExists = 0;
     for i=1:length(dir)
@@ -84,7 +98,7 @@ function extractfeatures(SlpdbData, destination, outputFormat)
         mkdir(destination);
     end
     
-    % save data into destination
+    % save the data into destination
     hrv_features_unorm = hrv;
     hrv_features_norm = normalizedata(hrv, -1, 1);
     if strcmp(outputFormat, 'xlsx') || strcmp(outputFormat, 'all')
