@@ -22,7 +22,6 @@ save('SlpdbData.mat', 'SlpdbData');
 %}
 % END OF STEP 1
 
-
 %{
 %% STEP 2: FEATURE EXTRACTION
 SlpdbData = loadmatobject('SlpdbData.mat', 1);
