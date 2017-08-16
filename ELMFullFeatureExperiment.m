@@ -3,8 +3,8 @@ fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
 classNum = [2 3 4 6];
-MAX_EXPERIMENT = 25;
-MAX_ITERATION = 100;
+MAX_EXPERIMENT = 3;
+MAX_ITERATION = 10;
 rootFolder = 'ELM_result';
 mkdir(rootFolder);
 % load features and targets
@@ -83,8 +83,8 @@ for iFile=1:length(fileNames)
             end
         end
         bestOfAllExperiments = bestOfAllExperiments(1, :);
-        xlswrite(sprintf('%s/ELM_%s_result.xlsx', rootFolder, fileNames{iFile}), {'File Name', 'TrainAcc', 'TestAcc', 'HiddenNode', 'Time (sec)'}, sprintf('%d classes', nClasses));
-        xlswrite(sprintf('%s/ELM_%s_result.xlsx', rootFolder, fileNames{iFile}), fileNames(iFile), sprintf('%d classes', nClasses), sprintf('A%d', iFile+1))
-        xlswrite(sprintf('%s/ELM_%s_result.xlsx', rootFolder, fileNames{iFile}), bestOfAllExperiments, sprintf('%d classes', nClasses), sprintf('B%d', iFile+1))
+        xlswrite(sprintf('%s/ELM_result.xlsx', rootFolder), {'File Name', 'TrainAcc', 'TestAcc', 'HiddenNode', 'Time (sec)'}, sprintf('%d classes', nClasses));
+        xlswrite(sprintf('%s/ELM_result.xlsx', rootFolder), fileNames(iFile), sprintf('%d classes', nClasses), sprintf('A%d', iFile+1))
+        xlswrite(sprintf('%s/ELM_result.xlsx', rootFolder), bestOfAllExperiments, sprintf('%d classes', nClasses), sprintf('B%d', iFile+1))
     end
 end
