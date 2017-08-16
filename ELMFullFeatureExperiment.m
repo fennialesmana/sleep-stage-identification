@@ -3,8 +3,8 @@ fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
 classNum = [2 3 4 6];
-MAX_EXPERIMENT = 3;
-MAX_ITERATION = 10;
+MAX_EXPERIMENT = 25;
+MAX_ITERATION = 100;
 rootFolder = 'ELM_result';
 mkdir(rootFolder);
 % load features and targets
