@@ -1,3 +1,6 @@
+%{
+Run ELM experiment using full feature
+%}
 clear; clc; close all;
 fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...

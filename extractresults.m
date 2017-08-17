@@ -1,9 +1,27 @@
 function extractresults(resultRootFolder, nFeatures, classNum, nExperiments, nIterations)
-    %resultRootFolder = 'PSOELM_raw_result';
-    %nFeatures = 18;
-    %classNum = [2 3 4 6];
-    %nExperiments = 25;
-    %nIterations = 100;
+%Extract raw results of experiment using PSOELM or PSOSVM method
+%   Syntax:
+%   extractresults(resultRootFolder, nFeatures, classNum, nExperiments, nIterations)
+%
+%   Input:
+%   *) resultRootFolder - root directory of the results
+%   *) nFeatures        - total features
+%   *) classNum         - number of class in vector -> [2 3 4 6]
+%   *) nExperiments     - total experiments of PSO
+%   *) nIterations      - total iterations of each PSO
+%
+%   Output:
+%   No output variables, there are excel output files:
+%   [method]_[filename]_extracted_result - results of each experiment
+%   [method]_result                      - best of all experiments
+%
+%   Parameter Example:
+%   resultRootFolder = 'PSOELM_raw_result';
+%   nFeatures = 18;
+%   classNum = [2 3 4 6];
+%   nExperiments = 25;
+%   nIterations = 100;
+
     fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
                 'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
                 'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};    
@@ -48,7 +66,7 @@ function extractresults(resultRootFolder, nFeatures, classNum, nExperiments, nIt
                     temp(iExp, 6) = bintodec(lastResult.gBest.position(nFeatures+1:end));
                 end
                 
-                tempCell(iExp, 1) = {bintostringorder(lastResult.gBest.position)};
+                tempCell(iExp, 1) = {bintostringorder(lastResult.gBest.position(1, 1:nFeatures))};
                 gBestParticles(iExp, :) = lastResult.gBest.position;
             end
 
