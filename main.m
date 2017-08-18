@@ -104,9 +104,9 @@ end
 % END OF STEP 3
 %}
 
-%{
+
 %% STEP 4: RESULT EXTRACTION
 extractresults('PSOELM_raw_result', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);
 % END OF STEP 4
-%}
+
 
