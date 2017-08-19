@@ -102,8 +102,10 @@ function extractfeatures(SlpdbData, destination, outputFormat)
     hrv_features_unorm = hrv;
     hrv_features_norm = normalizedata(hrv, -1, 1);
     if strcmp(outputFormat, 'xlsx') || strcmp(outputFormat, 'all')
-        xlswrite(strcat(destination, 'hrv_features_unorm.xlsx'), hrv_features_unorm);
-        xlswrite(strcat(destination, 'hrv_features_norm.xlsx'), hrv_features_norm);
+        xlswrite(strcat(destination, 'hrv_features_unorm.xlsx'), ...
+            hrv_features_unorm);
+        xlswrite(strcat(destination, 'hrv_features_norm.xlsx'), ...
+            hrv_features_norm);
         xlswrite(strcat(destination, 'target.xlsx'), target);
     end
     if strcmp(outputFormat, 'mat') || strcmp(outputFormat, 'all')

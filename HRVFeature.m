@@ -56,7 +56,8 @@ classdef HRVFeature
         end
         
         % Frequency Domain Features
-        function [TP,pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
+        function [TP,pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = ...
+                fft_val_fun(RR,Fs,type)
         %function source: https://marcusvollmer.github.io/HRV/
         %fft_val_fun Spectral analysis of a sequence.
         %   [pLF,pHF,LFHFratio,VLF,LF,HF,f,Y,NFFT] = fft_val_fun(RR,Fs,type)
@@ -69,8 +70,8 @@ classdef HRVFeature
         %   accepted types (default: 'spline').
         %
         %   Example: If RR = repmat([1 .98 .9],1,20),
-        %      then [pLF,pHF,LFHFratio,VLF,LF,HF] = HRV.fft_val_fun(RR,1000) yields
-        %      pLF = 5.4297 and pHF = 94.5703 and pHFratio = 0.0574 and
+        %      then [pLF,pHF,LFHFratio,VLF,LF,HF] = HRV.fft_val_fun(RR,1000) 
+        %      yields pLF = 5.4297 and pHF = 94.5703 and pHFratio = 0.0574 and
         %      VLF = 0.0505 and LF = 0.1749 and HF = 3.0467.
         %      [pLF,pHF,LFHFratio] = HRV.fft_val_fun(RR,1000,'linear') yields
         %      pLF = 4.0484 and pHF = 95.9516 and LFHFratio = 0.0422.
@@ -79,7 +80,7 @@ classdef HRVFeature
 
             RR = RR(:);
             if nargin<2 || isempty(Fs)
-                error('HRVFeatures.fft_val_fun: wrong number or types of arguments');
+                error('fft_val_fun: wrong number or types of arguments');
             end
             if nargin<3
                 type = 'spline';
@@ -187,7 +188,8 @@ classdef HRVFeature
             n = sum(not(isnan(x)),dim);
             nnan = sum(isnan(x),dim);
 
-            % replace nans with zeros, remove mean value(s) and compute squared sums
+            % replace nans with zeros,
+            % remove mean value(s) and compute squared sums
             x(isnan(x)) = 0;
             m = sum(x, dim)./n;
             x = x-repmat(m, size(x)./size(m));
@@ -202,7 +204,7 @@ classdef HRVFeature
             elseif (opt == 1)
                 s = sqrt(s./n);
             else
-                error('HRV.nanstd: unkown normalization type');
+                error('nanstd: unkown normalization type');
             end
         end        
     end

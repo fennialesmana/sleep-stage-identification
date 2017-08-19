@@ -1,11 +1,13 @@
+%{
+Run SVM experiment using full feature
+%}
 clear; clc; close all;
-classNum = [2 3 4 6];
 fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
-
+classNum = [2 3 4 6];
 for iClass=1:length(classNum)
-    nClasses = classNum(iClass); % jumlah kelas ouput
+    nClasses = classNum(iClass); % nClasses = total output class
     xlswrite('res2.xlsx', {'File Name', 'Training Acc', 'Testing Acc'}, sprintf('%d classes', nClasses));
     results = zeros(length(fileNames), 2);
     for iFile=1:length(fileNames)
@@ -33,10 +35,7 @@ for iClass=1:length(classNum)
         end
         % END OF SPLIT DATA
 
-        % PARTICLE SWARM OPTIMIZATION (PSO) PROCESS -------------------------------
-        %jalnin svm
         SVMModel = trainSVM(trainingData(:, 1:end-1), trainingData(:, end), 'linear');
-        
         trainAcc = testSVM(trainingData(:, 1:end-1), trainingData(:, end), SVMModel);
         testAcc = testSVM(testingData(:, 1:end-1), testingData(:, end), SVMModel);
         results(iFile, 1) = trainAcc;

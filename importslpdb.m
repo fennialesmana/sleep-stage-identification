@@ -80,11 +80,14 @@ fclose(fid);
 rrConvertedTime = rrFile{1};
 for i=1:size(rrConvertedTime, 1);
     rrStartTimeChar = cell2mat(rrConvertedTime(i)); % convert cell into char
-    rrStartTimeChar(end-2:end) = 48; % xx:xx:xx.aaa -> change 'aaa' part into '000'
+    rrStartTimeChar(end-2:end) = 48; % xx:xx:xx.aaa -> change 'aaa' part to '000'
     
-    rrStartTimeMat = strsplit(char(rrConvertedTime(i)), ':')'; % split start time by ":" into matrix
-    rrSecond = str2double(cell2mat(rrStartTimeMat(end))); % get seconds from the last element
-    rrWhichGroup = floor(rrSecond/SEC_PER_EPOCH)*SEC_PER_EPOCH; % epoch grouping
+    % split start time by ":" into matrix
+    rrStartTimeMat = strsplit(char(rrConvertedTime(i)), ':')';
+    % get seconds from the last element
+    rrSecond = str2double(cell2mat(rrStartTimeMat(end)));
+    % epoch grouping
+    rrWhichGroup = floor(rrSecond/SEC_PER_EPOCH)*SEC_PER_EPOCH;
     
     % set epoch grouping
     if rrWhichGroup == 0
@@ -138,10 +141,14 @@ end
 anTimeGeneratedCell = cell(size(anTimeGeneratedMat, 1), 1);
 for i = 1:size(anTimeGeneratedMat, 1)
     if anTimeGeneratedMat(i, 1) == 0 % when the 'hour' is 0
-        anTimeGeneratedCell(i) = cellstr(strcat(sprintf('%d',anTimeGeneratedMat(i, 2)), sprintf(':%02d.000',anTimeGeneratedMat(i, 3))));
+        anTimeGeneratedCell(i) = ...
+            cellstr(strcat(sprintf('%d',anTimeGeneratedMat(i, 2)), ...
+            sprintf(':%02d.000',anTimeGeneratedMat(i, 3))));
     else
-        temp = strcat(sprintf('%d', anTimeGeneratedMat(i, 1)), sprintf(':%02d',anTimeGeneratedMat(i, 2)));
-        anTimeGeneratedCell(i) = cellstr(strcat(temp, sprintf(':%02d.000',anTimeGeneratedMat(i, 3))));
+        temp = strcat(sprintf('%d', anTimeGeneratedMat(i, 1)), ...
+            sprintf(':%02d',anTimeGeneratedMat(i, 2)));
+        anTimeGeneratedCell(i) = ...
+            cellstr(strcat(temp, sprintf(':%02d.000',anTimeGeneratedMat(i, 3))));
     end
 end
 
@@ -169,7 +176,8 @@ else
     fprintf('[WARNING] size(anTime, 1) (%d) != heaTotalEpoch (%d), anTimeGeneratedCell will be used\n', size(anTime, 1), heaTotalEpoch);
 end
 
-% *) ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3', '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
+% *) ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3',
+% '4', 'W', 'R', or {'MT', 'M' -> these two will be removed later}): 
 fprintf('  CHECK 3: ');
 distinctClass = char(unique(anClass));
 for i=1:size(distinctClass, 1)
@@ -186,7 +194,8 @@ fprintf('[SUCCESS] Annotation values is OK\n');
 
 % B. RR File Check
 
-% *) RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1) and heaTotalEpoch):
+% *) RR FILE CHECK 1 (Check equality of size(unique(rrConvertedTime), 1)
+% and heaTotalEpoch):
 fprintf('  CHECK 4: ');
 if size(unique(rrConvertedTime), 1) ~= heaTotalEpoch
     fprintf('[WARNING] size(unique(rrConvertedTime), 1) (%d) != heaTotalEpoch (%d)\n', size(unique(rrConvertedTime), 1), heaTotalEpoch);
@@ -255,14 +264,17 @@ for i=heaTotalEpoch:-1:1
     flag = 0;
     if sum(rrCollection{i}) < 28 || sum(rrCollection{i}) > 32
         % set flag to remove incomplete RR data of that epoch by:
-        % check the sum of RR interval from each epoch, can't be below 28 or higher than 32 (according to slp04 data, min sum is 29 and max is 30)
+        % check the sum of RR interval from each epoch,
+        % can't be below 28 or higher than 32
+        % (according to slp04 data, min sum is 29 and max is 30)
         flag = 1;
         fprintf('  Epoch %d (time: %s) of %s data is removed because incomplete RR data\n', i, anTimeGeneratedCell{i}, fileName);
     elseif strcmp(anClassGeneratedCell(i), {'none'})
         % set flag to remove no annotation epoch
         flag = 1;
         fprintf('  Epoch %d (time: %s) of %s data is removed because no annotation\n', i, anTimeGeneratedCell{i}, fileName);
-    elseif strcmp(anClassGeneratedCell(i), {'MT'}) || strcmp(anClassGeneratedCell(i), {'M'})
+    elseif strcmp(anClassGeneratedCell(i), {'MT'}) || ...
+            strcmp(anClassGeneratedCell(i), {'M'})
         % set flag to remove 'MT' or 'M' annotation epoch
         flag = 1;
         fprintf('  Epoch %d (time: %s) of %s data is removed because the annotation is %s\n', i, anTimeGeneratedCell{i}, fileName, anClassGeneratedCell{i});
@@ -283,12 +295,16 @@ if ~isExists
 end
 
 % delete empty row
-anTimeGeneratedCell = anTimeGeneratedCell(~cellfun(@isempty, anTimeGeneratedCell));
+anTimeGeneratedCell = ...
+    anTimeGeneratedCell(~cellfun(@isempty, anTimeGeneratedCell));
 rrCollection = rrCollection(~cellfun(@isempty, rrCollection));
-anClassGeneratedCell = anClassGeneratedCell(~cellfun(@isempty, anClassGeneratedCell));
+anClassGeneratedCell = ...
+    anClassGeneratedCell(~cellfun(@isempty, anClassGeneratedCell));
 %END OF SYNCHRONIZED DATA VALIDITY CHECK
 
 %% PREPARE THE OUTPUT
-OutputData = struct('filename', fileName, 'time', anTimeGeneratedCell, 'rr', rrCollection, 'annotation', anClassGeneratedCell, 'age', age, 'gender', gender, 'weight', weight);
+OutputData = struct('filename', fileName, 'time', anTimeGeneratedCell, ...
+    'rr', rrCollection, 'annotation', anClassGeneratedCell, 'age', age, ...
+    'gender', gender, 'weight', weight);
 % END OF PREPARE THE OUTPUT
 end
