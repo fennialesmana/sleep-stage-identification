@@ -1,5 +1,5 @@
 %{
-Run SVM experiment using full feature
+Run SVM experiment using full features
 %}
 clear; clc; close all;
 fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
