@@ -1,7 +1,9 @@
-function [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings)
+function [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, ...
+    testingData, PSOSettings)
 %Running PSO with SVM for feature selection
 %   Syntax:
-%   [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings)
+%   [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, ...
+%       testingData, PSOSettings)
 %
 %   Input:
 %   *) nFeatures    - total number of features to be selected
@@ -38,7 +40,8 @@ pBest(PSOSettings.nParticles).trainingAccuracy = [];
 pBest(PSOSettings.nParticles).testingAccuracy = [];
 for i=1:PSOSettings.nParticles
     pBest(i).position = false(1, nFeatures);
-    pBest(i).fitness = repmat(-1000000, PSOSettings.nParticles, 1); % max fitness value
+    % max fitness value
+    pBest(i).fitness = repmat(-1000000, PSOSettings.nParticles, 1);
     pBest(i).trainingAccuracy = 0;
     pBest(i).testingAccuracy = 0;
 end
@@ -63,8 +66,11 @@ result(PSOSettings.MAX_ITERATION+1).gBest = [];
 
 %% INITIALIZATION STEP
 %fitness function evaluation
-[trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
-gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, 0);
+[trainAccArr, testAccArr, timeArr, populationFitness, pBest] = ...
+    evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, ...
+    populationPosition, pBest);
+gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, ...
+    populationPosition, gBest, 0);
 
 % save initial data
 result(1).iteration = 0;
@@ -85,8 +91,8 @@ for iteration=1:PSOSettings.MAX_ITERATION
         % calculate velocity value
         positionDec = int64(bintodec(populationPosition(i, :)));
         populationVelocity(i, 1) = PSOSettings.W * populationVelocity(i, 1) + ...
-            PSOSettings.c1 * r1 * (bintodec(pBest(i).position) - positionDec) + ...
-            PSOSettings.c2 * r2 * (bintodec(gBest.position) - positionDec);
+            PSOSettings.c1 * r1 * (bintodec(pBest(i).position) - positionDec) ...
+            + PSOSettings.c2 * r2 * (bintodec(gBest.position) - positionDec);
         
         % update particle position
         newPosDec = abs(int64(positionDec + populationVelocity(i, 1)));
@@ -112,8 +118,11 @@ for iteration=1:PSOSettings.MAX_ITERATION
     end
     
     % fitness function evaluation
-    [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
-    gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration+1);
+    [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = ...
+        evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, ...
+        populationPosition, pBest);
+    gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, ...
+        populationFitness, populationPosition, gBest, iteration+1);
 
     % save data
     result(iteration+1).iteration = iteration;
@@ -128,7 +137,10 @@ end
 endTime = clock;
 end
 
-function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
+function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = ...
+    evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, ...
+    populationPosition, pBest)
+
     trainAccArr = zeros(PSOSettings.nParticles, 1);
     testAccArr = zeros(PSOSettings.nParticles, 1);
     timeArr = zeros(PSOSettings.nParticles, 1);
@@ -136,15 +148,18 @@ function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluate
     for i=1:PSOSettings.nParticles
         tic;
         % TRAINING
-        maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
+        maskedTrainingFeature = featuremasking(trainingData, ...
+            populationPosition(i, 1:nFeatures)); % remove unselected features
         Model = trainSVM(maskedTrainingFeature, trainingData(:,end), 'RBF');
         trainAcc = testSVM(maskedTrainingFeature, trainingData(:,end), Model);
         
         % TESTING
-        maskedTestingFeature = featuremasking(testingData, populationPosition(i, 1:nFeatures)); % remove unselected features
+        maskedTestingFeature = featuremasking(testingData, ...
+            populationPosition(i, 1:nFeatures)); % remove unselected features
         testAcc = testSVM(maskedTestingFeature, testingData(:,end), Model);
 
-        populationFitness(i, 1) = fitness(PSOSettings.Wa, PSOSettings.Wf, testAcc, populationPosition(i, 1:nFeatures));
+        populationFitness(i, 1) = fitness(PSOSettings.Wa, PSOSettings.Wf, ...
+            testAcc, populationPosition(i, 1:nFeatures));
 
         % pBest update
         ischanged = 0;
@@ -174,16 +189,24 @@ function [trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluate
     end
 end
 
-function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration)
+function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, ...
+    populationFitness, populationPosition, gBest, iteration)
+
     if max(populationFitness) >= gBest.fitness
         found = find(populationFitness == max(populationFitness));
-        if length(found) > 1 % if have the same gBest fitness value, get the max of testAcc
+        if length(found) > 1
+            % if have the same gBest fitness value, get the max of testAcc
             found = found(testAccArr(found) == max(testAccArr(found)));
-            if length(found) > 1 % if have the same testAcc, get the max of trainAcc
+            if length(found) > 1
+                % if have the same testAcc, get the max of trainAcc
                 found = found(trainAccArr(found) == max(trainAccArr(found)));
-                if length(found) > 1 % if have the same trainAcc, get the min of selected features
-                    found = found(sum(populationPosition(found, 1:nFeatures), 2) == min(sum(populationPosition(found, 1:nFeatures), 2)));
-                    if length(found) > 1 % if have the same selected feature, get the first
+                if length(found) > 1
+                    % if have the same trainAcc, get the min of selected features
+                    found = ...
+                        found(sum(populationPosition(found, 1:nFeatures), 2) ...
+                        == min(sum(populationPosition(found, 1:nFeatures), 2)));
+                    if length(found) > 1
+                        % if have the same selected feature, get the first
                         found = found(1);
                     end
                 end

@@ -3,7 +3,6 @@ fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
 
-%{
 %% STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
 SlpdbData = [];
 SingleFile = [];
@@ -19,10 +18,8 @@ save('SlpdbData.mat', 'SlpdbData');
 % Output of this step:
 % 1. nRecSamples.mat -> 18 x 1 matrix contains number of samples each file
 % 2. SlpdbData.mat   -> 10154 x 1 struct contains synchronized data
-%}
 % END OF STEP 1
 
-%{
 %% STEP 2: FEATURE EXTRACTION
 SlpdbData = loadmatobject('SlpdbData.mat', 1);
 extractfeatures(SlpdbData, 'features/', 'all');
@@ -35,22 +32,25 @@ extractfeatures(SlpdbData, 'features/', 'all');
 % 5. hrv_features_norm.mat
 % 6. target.mat
 % END OF STEP 2
-%}
+
 method = 'PSOSVM';
 classNum = [2 3 4 6];
 MAX_EXPERIMENT = 25;
 MAX_ITERATION = 100;
 
-%{
 %% STEP 3: BUILD CLASSIFIER MODEL (OBJECT SPECIFIC RECORDING)
 for iFile=1:length(fileNames)
-    path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, fileNames{iFile});
+    path = sprintf('%s_raw_result/%s_%s_raw_result', method, method, ...
+        fileNames{iFile});
     mkdir(path);
     for iClass=1:length(classNum)
         ExperimentResult = struct([]);
         for iExp=1:MAX_EXPERIMENT
-            fprintf('Building iFile = %d/%d, iClass = %d/%d, iExp = %d/%d\n', iFile, length(fileNames), iClass, length(classNum), iExp, MAX_EXPERIMENT);
-            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile iClass ExperimentResult iExp path MAX_EXPERIMENT MAX_ITERATION
+            fprintf('Building iFile = %d/%d, iClass = %d/%d, iExp = %d/%d\n', ...
+                iFile, length(fileNames), iClass, length(classNum), iExp, ...
+                MAX_EXPERIMENT);
+            clearvars -except fileNames method MAX_EXPERIMENT classNum iFile ...
+                iClass ExperimentResult iExp path MAX_EXPERIMENT MAX_ITERATION
             nClasses = classNum(iClass); % nClasses = total output class
 
             % load features and targets
@@ -87,9 +87,11 @@ for iFile=1:length(fileNames)
             PSOSettings.Wf = 0.05;
             switch method
                 case 'PSOELM'
-                    [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings);
+                    [result, startTime, endTime] = PSOforELM(nFeatures, ...
+                        trainingData, testingData, PSOSettings);
                 case 'PSOSVM'
-                    [result, startTime, endTime] = PSOforSVM(nFeatures, trainingData, testingData, PSOSettings);
+                    [result, startTime, endTime] = PSOforSVM(nFeatures, ...
+                        trainingData, testingData, PSOSettings);
             end
             % END OF PARTICLE SWARM OPTIMIZATION (PSO) PROCESS
 
@@ -98,12 +100,11 @@ for iFile=1:length(fileNames)
             ExperimentResult(iExp).endTime = endTime;
         end
         
-        save(sprintf('%s/%s_%s_%dclasses_raw_result.mat', path, method, fileNames{iFile}, nClasses), 'ExperimentResult', '-v7.3');
+        save(sprintf('%s/%s_%s_%dclasses_raw_result.mat', path, method, ...
+            fileNames{iFile}, nClasses), 'ExperimentResult', '-v7.3');
     end
 end
 % END OF STEP 3
-%}
-
 
 %% STEP 4: RESULT EXTRACTION
 extractresults('PSOELM_raw_result', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);

@@ -1,8 +1,10 @@
-function [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings)
+function [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, ...
+    testingData, PSOSettings)
 %Running PSO with ELM for feature selection and number of hidden nodes
 %optimization
 %   Syntax:
-%   [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testingData, PSOSettings)
+%   [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, ...
+%       testingData, PSOSettings)
 %
 %   Input:
 %   *) nFeatures    - total number of features to be selected
@@ -24,12 +26,13 @@ function [result, startTime, endTime] = PSOforELM(nFeatures, trainingData, testi
 
 startTime = clock;
 %% PSO PARAMETER PREPARATION
-nHiddenBits = length(dectobin(size(trainingData, 1))); % max total bits for hidden nodes
+% max total bits for hidden nodes
+nHiddenBits = length(dectobin(size(trainingData, 1)));
 populationPosition = rand(PSOSettings.nParticles, nFeatures+nHiddenBits) > 0.5;
 for i=1:PSOSettings.nParticles
     while bintodec(populationPosition(i, nFeatures+1:end)) < nFeatures || ...
-          bintodec(populationPosition(i, nFeatures+1:end)) > size(trainingData, 1) || ...
-          sum(populationPosition(i, 1:nFeatures)) == 0
+          bintodec(populationPosition(i, nFeatures+1:end)) > ...
+          size(trainingData, 1) || sum(populationPosition(i, 1:nFeatures)) == 0
         populationPosition(i, :) = rand(1, nFeatures+nHiddenBits) > 0.5;
     end
 end
@@ -42,7 +45,8 @@ pBest(PSOSettings.nParticles).trainingAccuracy = [];
 pBest(PSOSettings.nParticles).testingAccuracy = [];
 for i=1:PSOSettings.nParticles
     pBest(i).position = false(1, nFeatures+nHiddenBits);
-    pBest(i).fitness = repmat(-1000000, PSOSettings.nParticles, 1); % max fitness value
+    % max fitness value
+    pBest(i).fitness = repmat(-1000000, PSOSettings.nParticles, 1);
     pBest(i).trainingAccuracy = 0;
     pBest(i).testingAccuracy = 0;
 end
@@ -68,8 +72,11 @@ result(PSOSettings.MAX_ITERATION+1).gBest = [];
 
 %% INITIALIZATION STEP
 %fitness function evaluation
-[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
-gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, 0);
+[modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = ...
+    evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, ...
+    populationPosition, pBest);
+gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, ...
+    populationPosition, gBest, 0);
 
 % save initial data
 result(1).iteration = 0;
@@ -91,22 +98,26 @@ for iteration=1:PSOSettings.MAX_ITERATION
         % calculate velocity value
         positionDec = int64(bintodec(populationPosition(i, :)));
         populationVelocity(i, 1) = PSOSettings.W * populationVelocity(i, 1) + ...
-            PSOSettings.c1 * r1 * (bintodec(pBest(i).position) - positionDec) + ...
-            PSOSettings.c2 * r2 * (bintodec(gBest.position) - positionDec);
+            PSOSettings.c1 * r1 * (bintodec(pBest(i).position) - positionDec) ...
+            + PSOSettings.c2 * r2 * (bintodec(gBest.position) - positionDec);
         
         % update particle position
         newPosDec = abs(int64(positionDec + populationVelocity(i, 1)));
         newPosBin = dectobin(newPosDec);
         
-        % if the total bits is lower than nFeatures + nHiddenBits, add zeros in front
+        % if the total bits is lower than nFeatures + nHiddenBits,
+        % add zeros in front
         if size(newPosBin, 2) < (nFeatures + nHiddenBits)
-            newPosBin = [zeros(1, (nFeatures + nHiddenBits)-size(newPosBin, 2)) newPosBin];
+            newPosBin = ...
+                [zeros(1, (nFeatures + nHiddenBits) - size(newPosBin, 2)) ...
+                newPosBin];
         end
         
         % if the number of hidden node is more than the number of samples
         if bintodec(newPosBin(1, nFeatures+1:end)) > size(trainingData, 1) ...
                 || size(newPosBin(1, nFeatures+1:end), 2) > nHiddenBits
-            newPosBin = [newPosBin(1, 1:nFeatures) dectobin(size(trainingData, 1))];
+            newPosBin = ...
+                [newPosBin(1, 1:nFeatures) dectobin(size(trainingData, 1))];
         end
         
         % if the number of selected features is 0
@@ -119,8 +130,11 @@ for iteration=1:PSOSettings.MAX_ITERATION
     end
     
     % fitness function evaluation
-    [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest);
-    gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration+1);
+    [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = ...
+        evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, ...
+        populationPosition, pBest);
+    gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, ...
+        populationFitness, populationPosition, gBest, iteration+1);
 
     % save data
     result(iteration+1).iteration = iteration;
@@ -136,7 +150,10 @@ end
 endTime = clock;
 end
 
-function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, testingData, populationPosition, pBest)
+function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, ...
+    pBest] = evaluatefitness(PSOSettings, nFeatures, trainingData, ...
+    testingData, populationPosition, pBest)
+
     modelArr(PSOSettings.nParticles).inputWeight = []; % ELM Specific
     modelArr(PSOSettings.nParticles).outputWeight = []; % ELM Specific
     trainAccArr = zeros(PSOSettings.nParticles, 1);
@@ -146,16 +163,24 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
     for i=1:PSOSettings.nParticles
         tic;
         % TRAINING
-        maskedTrainingFeature = featuremasking(trainingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-        trainingTarget = full(ind2vec(trainingData(:,end)'))'; % prepare the target data (example: transformation from 4 into [0 0 0 1 0 0])
-        [Model, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, bintodec(populationPosition(i, nFeatures+1:end)));
+        maskedTrainingFeature = featuremasking(trainingData, ...
+            populationPosition(i, 1:nFeatures)); % remove unselected features
+        % prepare the target data
+        % (example: transformation from 4 into [0 0 0 1 0 0])
+        trainingTarget = full(ind2vec(trainingData(:,end)'))'; 
+        [Model, trainAcc] = trainELM(maskedTrainingFeature, trainingTarget, ...
+            bintodec(populationPosition(i, nFeatures+1:end)));
 
         % TESTING
-        maskedTestingFeature = featuremasking(testingData, populationPosition(i, 1:nFeatures)); % remove unselected features
-        testingTarget = full(ind2vec(testingData(:,end)'))'; % prepare the target data (example: transformation from 4 into [0 0 0 1 0 0])
+        maskedTestingFeature = featuremasking(testingData, ...
+            populationPosition(i, 1:nFeatures)); % remove unselected features
+        % prepare the target data
+        % (example: transformation from 4 into [0 0 0 1 0 0])
+        testingTarget = full(ind2vec(testingData(:,end)'))';
         testAcc = testELM(maskedTestingFeature, testingTarget, Model);
 
-        populationFitness(i, 1) = fitness(PSOSettings.Wa, PSOSettings.Wf, testAcc, populationPosition(i, 1:nFeatures));
+        populationFitness(i, 1) = fitness(PSOSettings.Wa, PSOSettings.Wf, ...
+            testAcc, populationPosition(i, 1:nFeatures));
 
         % pBest update
         ischanged = 0;
@@ -189,19 +214,29 @@ function [modelArr, trainAccArr, testAccArr, timeArr, populationFitness, pBest] 
     end
 end
 
-function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, populationFitness, populationPosition, gBest, iteration)
+function gBest = gbestupdate(nFeatures, trainAccArr, testAccArr, ...
+    populationFitness, populationPosition, gBest, iteration)
+
     if max(populationFitness) >= gBest.fitness
         found = find(populationFitness == max(populationFitness));
-        if length(found) > 1 % if have the same gBest fitness value, get the max of testAcc
+        if length(found) > 1
+            % if have the same gBest fitness value, get the max of testAcc
             found = found(testAccArr(found) == max(testAccArr(found)));
-            if length(found) > 1 % if have the same testAcc, get the max of trainAcc
+            if length(found) > 1
+                % if have the same testAcc, get the max of trainAcc
                 found = found(trainAccArr(found) == max(trainAccArr(found)));
-                if length(found) > 1 % if have the same trainAcc, get the min of selected features
-                    found = found(sum(populationPosition(found, 1:nFeatures), 2) == min(sum(populationPosition(found, 1:nFeatures), 2)));
-                    if length(found) > 1 % if have the same selected feature, get the min of hidden node
+                if length(found) > 1
+                    % if have the same trainAcc, get the min of selected features
+                    found = ...
+                        found(sum(populationPosition(found, 1:nFeatures), 2) ...
+                        == min(sum(populationPosition(found, 1:nFeatures), 2)));
+                    if length(found) > 1
+                        % if have the same selected feature,
+                        % get the min of hidden node
                         hn = zeros(length(found), 1);
                         for i=1:length(found)
-                            hn(i, 1) = bintodec(populationPosition(found(i), nFeatures+1:end));
+                            hn(i, 1) = bintodec(populationPosition(found(i), ...
+                                nFeatures+1:end));
                         end
                         found = found(hn == min(hn));
                         if length(found) > 1

@@ -157,9 +157,15 @@ fprintf('  CHECK 1: ');
 if heaTotalEpoch == size(anTime, 1) && ...
     size(unique(rrConvertedTime), 1) == size(anTimeGeneratedMat, 1) && ...
     heaTotalEpoch == size(unique(rrConvertedTime), 1)
-    fprintf('[SUCCESS] heaTotalEpoch (%d) == size(anTime, 1) (%d) == size(unique(rrConvertedTime), 1) (%d) == size(anTimeGeneratedMat, 1) (%d)\n', heaTotalEpoch, size(anTime, 1), size(unique(rrConvertedTime), 1), size(anTimeGeneratedMat, 1));
+    fprintf('[SUCCESS] heaTotalEpoch (%d) == size(anTime, 1) (%d) == ', ...
+        'size(unique(rrConvertedTime), 1) (%d) == ', ...
+        'size(anTimeGeneratedMat, 1) (%d)\n', heaTotalEpoch, size(anTime, 1), ...
+        size(unique(rrConvertedTime), 1), size(anTimeGeneratedMat, 1));
 else
-    fprintf('[WARNING] heaTotalEpoch (%d) != size(anTime, 1) (%d) != size(unique(rrConvertedTime), 1) (%d) != size(anTimeGeneratedMat, 1) (%d)\n', heaTotalEpoch, size(anTime, 1), size(unique(rrConvertedTime), 1), size(anTimeGeneratedMat, 1));
+    fprintf('[WARNING] heaTotalEpoch (%d) != size(anTime, 1) (%d) != ', ...
+        'size(unique(rrConvertedTime), 1) (%d) != ', ...
+        'size(anTimeGeneratedMat, 1) (%d)\n', heaTotalEpoch, size(anTime, 1), ...
+        size(unique(rrConvertedTime), 1), size(anTimeGeneratedMat, 1));
 end
 
 % *) ANNOTATION FILE CHECK 2 (Check equality of anTimeGeneratedCell and anTime): 
@@ -173,7 +179,8 @@ if size(anTime, 1) == heaTotalEpoch
     end
     fprintf('[SUCCESS] anTimeGeneratedCell is EQUAL to anTime\n');
 else
-    fprintf('[WARNING] size(anTime, 1) (%d) != heaTotalEpoch (%d), anTimeGeneratedCell will be used\n', size(anTime, 1), heaTotalEpoch);
+    fprintf('[WARNING] size(anTime, 1) (%d) != heaTotalEpoch (%d), ', ...
+        'anTimeGeneratedCell will be used\n', size(anTime, 1), heaTotalEpoch);
 end
 
 % *) ANNOTATION FILE CHECK 3 (Check annotation value must be '1', '2', '3',
@@ -198,17 +205,21 @@ fprintf('[SUCCESS] Annotation values is OK\n');
 % and heaTotalEpoch):
 fprintf('  CHECK 4: ');
 if size(unique(rrConvertedTime), 1) ~= heaTotalEpoch
-    fprintf('[WARNING] size(unique(rrConvertedTime), 1) (%d) != heaTotalEpoch (%d)\n', size(unique(rrConvertedTime), 1), heaTotalEpoch);
+    fprintf('[WARNING] size(unique(rrConvertedTime), 1) (%d) != ', ...
+        'heaTotalEpoch (%d)\n', size(unique(rrConvertedTime), 1), heaTotalEpoch);
 else
-    fprintf('[SUCCESS] size(unique(rrConvertedTime), 1) (%d) == heaTotalEpoch (%d)\n', size(unique(rrConvertedTime), 1), heaTotalEpoch);
+    fprintf('[SUCCESS] size(unique(rrConvertedTime), 1) (%d) == ', ...
+        'heaTotalEpoch (%d)\n', size(unique(rrConvertedTime), 1), heaTotalEpoch);
 end
 % END OF VALIDITY CHECK
 
 %% SYNCHRONIZE RR AND ANNOTATION DATA
 epochCounter = 1;
 rrCounter = 1;
-rrCollection = cell(heaTotalEpoch, 1); % each row contains RRs of associated epoch
-rrTimeCollection = cell(heaTotalEpoch, 1); % each row contains RR time of associated epoch
+% rrCollection = each row contains RRs of associated epoch
+rrCollection = cell(heaTotalEpoch, 1);
+% rrTimeCollection = each row contains RR time of associated epoch
+rrTimeCollection = cell(heaTotalEpoch, 1);
 
 for i=1:size(rrConvertedTime, 1) % looping for each rrConvertedTime in that file
     if strcmp(rrConvertedTime(i), anTimeGeneratedCell(epochCounter))
@@ -268,16 +279,20 @@ for i=heaTotalEpoch:-1:1
         % can't be below 28 or higher than 32
         % (according to slp04 data, min sum is 29 and max is 30)
         flag = 1;
-        fprintf('  Epoch %d (time: %s) of %s data is removed because incomplete RR data\n', i, anTimeGeneratedCell{i}, fileName);
+        fprintf('  Epoch %d (time: %s) of %s data is removed because ', ...
+            'incomplete RR data\n', i, anTimeGeneratedCell{i}, fileName);
     elseif strcmp(anClassGeneratedCell(i), {'none'})
         % set flag to remove no annotation epoch
         flag = 1;
-        fprintf('  Epoch %d (time: %s) of %s data is removed because no annotation\n', i, anTimeGeneratedCell{i}, fileName);
+        fprintf('  Epoch %d (time: %s) of %s data is removed because ', ...
+            'no annotation\n', i, anTimeGeneratedCell{i}, fileName);
     elseif strcmp(anClassGeneratedCell(i), {'MT'}) || ...
             strcmp(anClassGeneratedCell(i), {'M'})
         % set flag to remove 'MT' or 'M' annotation epoch
         flag = 1;
-        fprintf('  Epoch %d (time: %s) of %s data is removed because the annotation is %s\n', i, anTimeGeneratedCell{i}, fileName, anClassGeneratedCell{i});
+        fprintf('  Epoch %d (time: %s) of %s data is removed because ', ...
+            'the annotation is %s\n', i, anTimeGeneratedCell{i}, fileName, ...
+            anClassGeneratedCell{i});
     end
     
     % when the flag is 1, remove the data

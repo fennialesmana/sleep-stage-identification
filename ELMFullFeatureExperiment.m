@@ -10,6 +10,7 @@ MAX_EXPERIMENT = 25;
 MAX_ITERATION = 100;
 rootFolder = 'ELM_result';
 mkdir(rootFolder);
+
 % load features and targets
 hrv = loadmatobject('features/hrv_features_norm.mat', 1);
 nFeatures = size(hrv, 2);
