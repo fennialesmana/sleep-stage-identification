@@ -43,10 +43,10 @@ classdef HRVFeature
         
         % Poincare Features
         function r = SD1(sdsd)
-            r = (sdsd^2)/2;
+            r = sqrt((sdsd^2)/2);
         end
         function r = SD2(sdnn, sdsd)
-            r = 2*(sdnn^2)-(sdsd^2)/2;
+            r = sqrt(2*(sdnn^2)-(sdsd^2)/2);
         end
         function r = SD1_SD2_RATIO(sd1, sd2)
             r = sd1/sd2;

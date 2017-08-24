@@ -2,7 +2,7 @@ clear; clc; close all;
 fileNames = {'slp01a' 'slp01b' 'slp02a' 'slp02b' 'slp03' 'slp04' ...
             'slp14' 'slp16' 'slp32' 'slp37' 'slp41' 'slp45' 'slp48' ...
             'slp59' 'slp60' 'slp61' 'slp66' 'slp67x'};
-
+%{
 %% STEP 1: IMPORT AND SYNCHRONIZE ALL DATA
 SlpdbData = [];
 SingleFile = [];
@@ -32,8 +32,8 @@ extractfeatures(SlpdbData, 'features/', 'all');
 % 5. hrv_features_norm.mat
 % 6. target.mat
 % END OF STEP 2
-
-method = 'PSOSVM';
+%}
+method = 'PSOELM';
 classNum = [2 3 4 6];
 MAX_EXPERIMENT = 25;
 MAX_ITERATION = 100;
@@ -106,8 +106,8 @@ for iFile=1:length(fileNames)
 end
 % END OF STEP 3
 
+%{
 %% STEP 4: RESULT EXTRACTION
 extractresults('PSOELM_raw_result', 18, classNum, MAX_EXPERIMENT, MAX_ITERATION);
 % END OF STEP 4
-
-
+%}
