@@ -85,7 +85,7 @@ result(1).pBest = pBest;
 result(1).time = timeArr;
 result(1).trainingAccuracy = trainAccArr;
 result(1).testingAccuracy = testAccArr;
-result(1).model = modelArr;
+%result(1).model = modelArr;
 result(1).gBest = gBest;
 % END OF INITIALIZATION STEP
 
@@ -143,7 +143,7 @@ for iteration=1:PSOSettings.MAX_ITERATION
     result(iteration+1).time = timeArr;
     result(iteration+1).trainingAccuracy = trainAccArr;
     result(iteration+1).testingAccuracy = testAccArr;
-    result(iteration+1).model = modelArr;
+    %result(iteration+1).model = modelArr;
     result(iteration+1).gBest = gBest;
 end
 % END OF PSO ITERATION
