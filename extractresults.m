@@ -136,7 +136,7 @@ function extractresults(resultRootFolder, nFeatures, classNum, nExperiments, ...
                 sprintf('%d classes', classNum(iClass)), ...
                 sprintf('%s%d', ...
                 getexcelcolumncode(length(headerEachExp)+1), bestExpIdx+1));
-
+            %{
             % gather gBest fitness of the best experiment
             gBest = zeros(nIterations, 1);
             for iItr=1:nIterations
@@ -155,7 +155,7 @@ function extractresults(resultRootFolder, nFeatures, classNum, nExperiments, ...
                 sprintf('%s/[%s] Best Experiment of %s (%d classes).png', ...
                 eachFileFolder, method, fileNames{iFile}, classNum(iClass)));
             close all;
-            
+            %}
             % save result to main excel
             switch method
                 case 'PSOELM'
