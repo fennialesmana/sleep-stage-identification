@@ -253,18 +253,18 @@ end
 % END OF SYNCHRONIZE RR AND ANNOTATION DATA
 
 %% SYNCHRONIZED DATA VALIDITY CHECK
-% generate matrix berisi annotation, mengisi time yang tidak ada annotationnya
+% generate new annotation matrix, fill the time without annotation
 anClassGeneratedCell = cell(heaTotalEpoch, 1);
 je = 1;
 for i=1:heaTotalEpoch
    if strcmp(anTimeGeneratedCell(i), anTime(je))
-       % jika waktunya sama, maka pindahkan annotationnya
+	   % if the time is the same, copy the annotation
        anClassGeneratedCell(i) = anClass(je);
        if je < size(anClass, 1)
            je = je + 1;
        end
    else
-       % jika waktunya beda, maka isi dengan 'none'
+	   % if the time is different, fill with 'none'
        anClassGeneratedCell(i) = {'none'};
    end
 end
